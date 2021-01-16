@@ -3,6 +3,7 @@ This repository contains the python with the irods rule logic
 
 # Repository structure
 
+```
 < REPOSITORY ROOT >
    |
    |-- irods_rule_wrapper/                 # The root folder of the package
@@ -19,3 +20,4 @@ This repository contains the python with the irods rule logic
    |-- setup.py                            # Setup containing the dependencies and build properties
    |
    |-- ************************************************************************
+```

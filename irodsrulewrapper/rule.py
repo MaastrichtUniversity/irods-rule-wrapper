@@ -21,10 +21,6 @@ class RuleManager:
                                      password=os.environ['IRODS_PASS'], zone='nlmumc', client_user=client_user)
 
     @rule_call
-    def get_test_arg(self, arg1, arg2):
-        return RuleInfo(name="test_arg", get_result=True, session=self.session)
-
-    @rule_call
     def get_users(self, showServiceAccounts):
         return RuleInfo(name="getUsers", get_result=True, session=self.session)
 
@@ -41,9 +37,4 @@ class RuleManager:
     def close_project_collection(self, project, project_collection):
         # Do input validation here
         return RuleInfo(name="closeProjectCollection", get_result=False, session=self.session)
-
-    @rule_call
-    def get_irods_username(self):
-        # Do input validation here
-        return RuleInfo(name="get_irods_username", get_result=True, session=self.session)
 

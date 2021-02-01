@@ -51,14 +51,6 @@ import json
 
 rule_manager = RuleManager()
 
-print("Call python rule get_irods_username")
-result = rule_manager.get_irods_username()
-print(result)
-
-print("Call python rule test_arg")
-result = rule_manager.get_test_arg("Testing decorator", "Value from variable")
-print(result)
-
 print("Call iRODS rule getUsers")
 result = json.loads(rule_manager.get_users("false"))
 print(json.dumps(result, indent=4, sort_keys=True))
@@ -72,12 +64,5 @@ result = rule_manager.open_project_collection("P000000010", "C000000001", "rods"
 
 print("Call iRODS rule closeProjectCollection")
 result = rule_manager.close_project_collection("P000000010", "C000000001")
-
-
-rule_manager = RuleManager("auser")
-
-print("Call python rule get_irods_username with proxy user")
-result = rule_manager.get_irods_username()
-print(result)
 
 ```

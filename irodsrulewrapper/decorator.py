@@ -10,7 +10,7 @@ def rule_call(func):
             and the list of keyword/named arguments (**kargs)
         Example:
             create_rule_body("P000000010", "C000000001",
-                                rule_metadata.name="test_arg", rule_metadata.get_result=True)
+                                rule_info.name="test_arg", rule_info.get_result=True)
         will return
             rule_body='''
             execute_rule{
@@ -41,7 +41,7 @@ def rule_call(func):
             and the list of keyword/named arguments (**kargs)
         Example:
             create_rule_input("P000000010", "C000000001",
-                                rule_metadata.name="test_arg", rule_metadata.get_result=True)
+                                rule_info.name="test_arg", rule_info.get_result=True)
         will return
             {
                 "*arg1": '"P000000010"',
@@ -50,8 +50,8 @@ def rule_call(func):
             }
             '''
         """
-        rule_metadata = kargs['rule_metadata']
-        if rule_metadata.get_result:
+        rule_info = kargs['rule_info']
+        if rule_info.get_result:
             input_params = {"*result": '""'}
         else:
             input_params = {}

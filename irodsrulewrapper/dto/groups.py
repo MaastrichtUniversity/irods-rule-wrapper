@@ -1,9 +1,15 @@
+from .group import Group
+
+
 class Groups:
-    def __init__(self, groups, group_objects):
+    def __init__(self, groups):
         self.groups = groups
-        self.groupObject = group_objects
 
     @classmethod
     def create_from_rule_result(cls, result):
-        groups = cls(result['groups'], result['group_objects'])
+        output = []
+        for item in result:
+            group = Group.create_from_rule_result(item)
+            output.append(group)
+        groups = cls(output)
         return groups

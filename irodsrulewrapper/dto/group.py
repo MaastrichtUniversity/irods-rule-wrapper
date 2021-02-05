@@ -6,6 +6,6 @@ class Group:
         self.description = description
 
     @classmethod
-    def create_from_rule_result(cls, group):
-        group = cls(group["userName"], group["userId"], group["displayName"], group["description"])
+    def create_from_rule_result(cls, result):
+        group = cls(result["userName"], result["userId"], result["displayName"], result["description"])
         return group

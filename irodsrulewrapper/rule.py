@@ -8,6 +8,19 @@ from .dto.data_stewards import DataStewards
 import os
 
 
+class RuleInputValidationError(Exception):
+    """Exception raised for errors during the rule's validation of the input parameters.
+
+    Attributes:
+        message -- explanation of the error
+    """
+    def __init__(self, message):
+        self.message = message
+
+    def __str__(self):
+        return "RuleInputValidationError, {0}".format(self.message)
+
+
 class RuleInfo:
     def __init__(self, name, get_result, session, dto):
         self.name = name
@@ -26,11 +39,15 @@ class RuleManager:
                                         password=os.environ['IRODS_PASS'], zone='nlmumc', client_user=client_user)
 
     @rule_call
-    def get_users(self, showServiceAccounts):
+    def get_users(self, show_service_accounts):
+        if show_service_accounts != "false" and show_service_accounts != "true":
+            raise RuleInputValidationError("invalid value for *showServiceAccounts: expected 'true' or 'false'")
         return RuleInfo(name="getUsers", get_result=True, session=self.session, dto=Users)
 
     @rule_call
-    def get_groups(self, showSpecialGroups):
+    def get_groups(self, show_service_accounts):
+        if show_service_accounts != "false" and show_service_accounts != "true":
+            raise RuleInputValidationError("invalid value for *showServiceAccounts: expected 'true' or 'false'")
         return RuleInfo(name="getGroups", get_result=True, session=self.session, dto=Groups)
 
     @rule_call

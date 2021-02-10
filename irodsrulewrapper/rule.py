@@ -5,6 +5,7 @@ from .dto.groups import Groups
 from .dto.users import Users
 from .dto.data_stewards import DataStewards
 from .dto.create_project import CreateProject
+from .dto.attribute_value import AttributeValue
 
 import os
 
@@ -71,3 +72,13 @@ class RuleManager:
                        dataSteward, respCostCenter, openAccess, tapeArchive):
         # Do input validation here
         return RuleInfo(name="create_new_project", get_result=True, session=self.session, dto=CreateProject)
+
+    @rule_call
+    def get_username_attribute_value(self, username, attribute):
+        # Do input validation here
+        return RuleInfo(name="get_username_attribute_value", get_result=True, session=self.session, dto=AttributeValue)
+
+    @rule_call
+    def set_acl(self, mode, access_level, user, path):
+        # Do input validation here
+        return RuleInfo(name="set_acl", get_result=False, session=self.session, dto=None)

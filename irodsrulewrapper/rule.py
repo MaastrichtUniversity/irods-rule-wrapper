@@ -4,6 +4,7 @@ from irods.session import iRODSSession
 from .dto.groups import Groups
 from .dto.users import Users
 from .dto.data_stewards import DataStewards
+from .dto.create_project import CreateProject
 
 import os
 
@@ -64,3 +65,9 @@ class RuleManager:
         # Do input validation here
         return RuleInfo(name="closeProjectCollection", get_result=False, session=self.session, dto=None)
 
+    @rule_call
+    def create_new_project(self, authorizationPeriodEndDate, dataRetentionPeriodEndDate,
+                       ingestResource, resource, storageQuotaGb, title, principalInvestigator,
+                       dataSteward, respCostCenter, openAccess, tapeArchive):
+        # Do input validation here
+        return RuleInfo(name="create_new_project", get_result=True, session=self.session, dto=CreateProject)

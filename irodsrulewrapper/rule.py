@@ -1,5 +1,6 @@
 from irodsrulewrapper.decorator import rule_call
 from irods.session import iRODSSession
+from irods.exception import CAT_INVALID_CLIENT_USER
 
 from .dto.groups import Groups
 from .dto.users import Users
@@ -40,6 +41,14 @@ class RuleManager:
         else:
             self.session = iRODSSession(host=os.environ['IRODS_HOST'], port=1247, user=os.environ['IRODS_USER'],
                                         password=os.environ['IRODS_PASS'], zone='nlmumc', client_user=client_user)
+
+    def check_irods_connection(self):
+        try:
+            self.session.pool.get_connection()
+        except CAT_INVALID_CLIENT_USER:
+            return False
+        else:
+            return True
 
     @rule_call
     def get_users(self, show_service_accounts):

@@ -92,4 +92,7 @@ class RuleManager:
     def get_destination_resources(self):
         return RuleInfo(name="getDestinationResources", get_result=True, session=self.session, dto=Resources)
 
+    @rule_call
+    def get_user_group_memberships(self, show_special_groups, username):
+        return RuleInfo(name="get_user_group_memberships", get_result=True, session=self.session, dto=Groups)
 

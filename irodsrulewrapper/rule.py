@@ -6,6 +6,7 @@ from .dto.users import Users
 from .dto.data_stewards import DataStewards
 from .dto.create_project import CreateProject
 from .dto.attribute_value import AttributeValue
+from .dto.resources import Resources
 
 import os
 
@@ -82,3 +83,13 @@ class RuleManager:
     def set_acl(self, mode, access_level, user, path):
         # Do input validation here
         return RuleInfo(name="set_acl", get_result=False, session=self.session, dto=None)
+
+    @rule_call
+    def get_ingest_resources(self):
+        return RuleInfo(name="getIngestResources", get_result=True, session=self.session, dto=Resources)
+
+    @rule_call
+    def get_destination_resources(self):
+        return RuleInfo(name="getDestinationResources", get_result=True, session=self.session, dto=Resources)
+
+

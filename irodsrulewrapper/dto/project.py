@@ -20,7 +20,7 @@ class Project:
 
     @classmethod
     def create_from_rule_result(cls, result: Dict):
-        project = cls(result["project"]
+        project = cls(result["project"],
                       result["resource"],
                       result["title"],
                       result["principalInvestigator"],

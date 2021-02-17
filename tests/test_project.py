@@ -5,6 +5,7 @@ import json
 
 PROJECT_JSON = '''
 {
+    "project": "test_project",
     "resource": "test_resource",
     "title": "test_title",
     "principalInvestigator": "test_pi",
@@ -17,6 +18,7 @@ PROJECT_JSON = '''
 PROJECTS_JSON = '''
 [
 {
+    "project": "test_project",
     "resource": "test_resource",
     "title": "test_title",
     "principalInvestigator": "test_pi",
@@ -25,6 +27,7 @@ PROJECTS_JSON = '''
     "dataSteward": "test_datasteward"
 },
 {
+    "project": "test_project2",
     "resource": "test_resource2",
     "title": "test_title2",
     "principalInvestigator": "test_pi2",
@@ -104,6 +107,7 @@ PROJECT_DETAILS_JSON = '''
 def test_project():
     project = Project.create_from_rule_result(json.loads(PROJECT_JSON))
     assert project is not None
+    assert project.project == "test_project"
     assert project.resource == "test_resource"
     assert project.title == "test_title"
     assert project.principle_investigator == "test_pi"

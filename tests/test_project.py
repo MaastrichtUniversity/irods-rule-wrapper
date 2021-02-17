@@ -1,6 +1,6 @@
 from irodsrulewrapper.dto.project import Project
 from irodsrulewrapper.dto.projects import Projects
-from irodsrulewrapper.dto.project_details import ProjectDetails
+from irodsrulewrapper.dto.project_data import ProjectData
 import json
 
 PROJECT_JSON = '''
@@ -125,7 +125,7 @@ def test_projects():
 
 
 def test_project_details():
-    project_details = ProjectDetails.create_from_rule_result(json.loads(PROJECT_DETAILS_JSON))
+    project_details = ProjectData.create_from_rule_result(json.loads(PROJECT_DETAILS_JSON))
     assert project_details is not None
     assert project_details.manager_users.users[0].display_name == 'test_manager'
     assert project_details.contributor_users.users[0].display_name == 'test_contributor'

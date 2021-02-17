@@ -3,7 +3,7 @@ from .groups import Groups
 from typing import List, Dict
 
 
-class ProjectDetails:
+class ProjectData:
     def __init__(self,
                  project: str,
                  title: str,
@@ -31,7 +31,7 @@ class ProjectDetails:
         self.viewer_groups: Groups = viewer_groups
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> 'ProjectDetails':
+    def create_from_rule_result(cls, result: Dict) -> 'ProjectData':
         project_details = cls(result["project"],
                               result["title"],
                               result["enableOpenAccessExport"],

@@ -8,6 +8,7 @@ from .dto.data_stewards import DataStewards
 from .dto.create_project import CreateProject
 from .dto.attribute_value import AttributeValue
 from .dto.resources import Resources
+from .dto.projects import Projects
 
 import os
 
@@ -286,3 +287,18 @@ class RuleManager:
 
         return RuleInfo(name="get_user_group_memberships", get_result=True, session=self.session, dto=Groups)
 
+    @rule_call
+    def get_projects(self):
+        """
+        Get the list of projects
+
+        Parameters
+        ----------
+        none
+
+        Returns
+        -------
+        Projects
+            dto.Projects object
+        """
+        return RuleInfo(name="reportProjects", get_result=True, session=self.session, dto=Projects)

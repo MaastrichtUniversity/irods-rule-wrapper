@@ -1,5 +1,6 @@
 class Project:
-    def __init__(self, resource, title, pi, responsible_cost_center, storage_quota_gb, data_steward):
+    def __init__(self, project, resource, title, pi, responsible_cost_center, storage_quota_gb, data_steward):
+        self.project = project
         self.resource = resource
         self.title = title
         self.pi = pi
@@ -9,5 +10,5 @@ class Project:
 
     @classmethod
     def create_from_rule_result(cls, result):
-        Project = cls(result["resource"], result["title"], result["principalInvestigator"], result["respCostCenter"], result["storageQuotaGiB"], result["dataSteward"])
+        Project = cls(result["project"], result["resource"], result["title"], result["principalInvestigator"], result["respCostCenter"], result["storageQuotaGiB"], result["dataSteward"])
         return Project

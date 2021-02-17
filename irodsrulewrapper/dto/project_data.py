@@ -5,24 +5,30 @@ from typing import List, Dict
 
 class ProjectData:
     def __init__(self,
-                 project: str,
+                 id: str,
                  title: str,
                  enable_open_access_export: bool,
                  enable_archive: bool,
                  principal_investigator_display_name: str,
                  data_steward_display_name: str,
+                 responsible_cost_center: str,
+                 storage_quota_gb: int,
+                 size: int,
                  manager_users: Users,
-                 manager_groups: Users,
+                 manager_groups: Groups,
                  contributor_users: Users,
                  contributor_groups: Groups,
                  viewer_users: Users,
                  viewer_groups: Groups):
-        self.project: str = project
+        self.id: str = id
         self.title: str = title
         self.enable_open_access_export: bool = enable_open_access_export
         self.enable_archive: bool = enable_archive
         self.principal_investigator_display_name: str = principal_investigator_display_name
         self.data_steward_display_name: str = data_steward_display_name
+        self.responsible_cost_center: str = responsible_cost_center
+        self.storage_quota_gb: int = storage_quota_gb
+        self.size: int = size
         self.manager_users: Users = manager_users
         self.manager_groups: Groups = manager_groups
         self.contributor_users: Users = contributor_users
@@ -38,6 +44,9 @@ class ProjectData:
                               result["enableArchive"],
                               result["principalInvestigatorDisplayName"],
                               result["dataStewardDisplayName"],
+                              result["respCostCenter"],
+                              result["storageQuotaGiB"],
+                              result["dataSizeGiB"],
                               Users.create_from_rule_result(result['managers']['userObjects']),
                               Groups.create_from_rule_result(result['managers']['groupObjects']),
                               Users.create_from_rule_result(result['contributors']['userObjects']),

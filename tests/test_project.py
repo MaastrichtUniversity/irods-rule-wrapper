@@ -46,6 +46,9 @@ PROJECT_DETAILS_JSON = '''
     "enableArchive": true,
     "principalInvestigatorDisplayName": "test_pi",
     "dataStewardDisplayName": "test_datasteward",
+    "respCostCenter": "test_cost2",
+    "storageQuotaGiB": 11,
+    "dataSizeGiB": 99,
     "managers": {
         "userObjects": 
         [
@@ -133,3 +136,4 @@ def test_project_details():
     assert project_details.title == 'test_title'
     assert project_details.enable_open_access_export is False
     assert project_details.enable_archive is True
+    assert project_details.size == 99

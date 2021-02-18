@@ -8,6 +8,7 @@ from .dto.data_stewards import DataStewards
 from .dto.create_project import CreateProject
 from .dto.attribute_value import AttributeValue
 from .dto.resources import Resources
+from .dto.managing_projects import ManagingProjects
 
 import os
 
@@ -285,4 +286,42 @@ class RuleManager:
             raise RuleInputValidationError("invalid value for *showServiceAccounts: expected 'true' or 'false'")
 
         return RuleInfo(name="get_user_group_memberships", get_result=True, session=self.session, dto=Groups)
+
+    @rule_call
+    def get_managing_project(self, project_id):
+        """
+        Query the list of ACL for a project for the client user
+
+        Parameters
+        ----------
+        project_id : str
+            The project's id; eg.g P000000010
+
+        Returns
+        -------
+        dict
+            The list of usernames for managers, contributors and viewers.
+            Returns an empty list if the user is not a manager.
+        """
+
+        return RuleInfo(name="get_managing_project", get_result=True, session=self.session, dto=ManagingProjects)
+
+    @rule_call
+    def change_project_permissions(self, project_id, users):
+        """
+        Change immediately the ACL on the project level.
+        Then in the delay queue, change recursively all the collections under the project.
+
+        Parameters
+        ----------
+        project_id : str
+            The project's id; eg.g P000000010
+        users: str
+            The input string to modify the ACL.
+            It should follow the following format: 'username:access_level"
+            e.g "p.vanschayck@maastrichtuniversity.nl:read m.coonen@maastrichtuniversity.nl:write"
+        """
+
+        return RuleInfo(name="changeProjectPermissions", get_result=False, session=self.session, dto=None)
+
 

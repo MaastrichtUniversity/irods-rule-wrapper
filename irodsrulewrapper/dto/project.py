@@ -19,7 +19,8 @@ class Project:
                  contributor_users: Users,
                  contributor_groups: Groups,
                  viewer_users: Users,
-                 viewer_groups: Groups):
+                 viewer_groups: Groups,
+                 has_financial_view_access: bool):
         self.id: str = id
         self.title: str = title
         self.enable_open_access_export: bool = enable_open_access_export
@@ -35,6 +36,7 @@ class Project:
         self.contributor_groups: Groups = contributor_groups
         self.viewer_users: Users = viewer_users
         self.viewer_groups: Groups = viewer_groups
+        self.has_financial_view_access = has_financial_view_access
 
     @classmethod
     def create_from_rule_result(cls, result: Dict) -> 'ProjectData':
@@ -52,5 +54,6 @@ class Project:
                               Users.create_from_rule_result(result['contributors']['userObjects']),
                               Groups.create_from_rule_result(result['contributors']['groupObjects']),
                               Users.create_from_rule_result(result['viewers']['userObjects']),
-                              Groups.create_from_rule_result(result['viewers']['groupObjects']))
+                              Groups.create_from_rule_result(result['viewers']['groupObjects']),
+                              result["has_financial_view_access"])
         return project_details

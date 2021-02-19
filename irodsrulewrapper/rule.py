@@ -9,6 +9,7 @@ from .dto.create_project import CreateProject
 from .dto.attribute_value import AttributeValue
 from .dto.resources import Resources
 from .dto.managing_projects import ManagingProjects
+from .dto.projects_cost import ProjectsCost
 
 import os
 
@@ -324,7 +325,6 @@ class RuleManager:
 
         return RuleInfo(name="changeProjectPermissions", get_result=False, session=self.session, dto=None)
 
-
     @rule_call
     def set_collection_avu(self, collection_path, attribute, value):
         """
@@ -341,5 +341,21 @@ class RuleManager:
         """
 
         return RuleInfo(name="setCollectionAVU", get_result=False, session=self.session, dto=None)
+
+    @rule_call
+    def get_projects_finance(self):
+        """
+        Get the list of projects financial information
+
+        Returns
+        -------
+        dict
+            The list of projects financial information
+
+        """
+
+        return RuleInfo(name="get_projects_finance", get_result=True, session=self.session, dto=ProjectsCost)
+
+
 
 

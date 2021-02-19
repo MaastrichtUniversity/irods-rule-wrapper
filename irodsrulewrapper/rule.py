@@ -292,13 +292,9 @@ class RuleManager:
         """
         Get the list of projects
 
-        Parameters
-        ----------
-        none
-
         Returns
         -------
         Projects
             dto.Projects object
         """
-        return RuleInfo(name="reportProjects", get_result=True, session=self.session, dto=Projects)
+        return RuleInfo(name="list_projects", get_result=True, session=self.session, dto=Projects)

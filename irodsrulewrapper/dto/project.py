@@ -42,8 +42,8 @@ class Project:
     def create_from_rule_result(cls, result: Dict) -> 'ProjectData':
         project_details = cls(result["project"],
                               result["title"],
-                              result["enableOpenAccessExport"],
-                              result["enableArchive"],
+                              result["enableOpenAccessExport"] == 'true',
+                              result["enableArchive"] == 'true',
                               result["principalInvestigatorDisplayName"],
                               result["dataStewardDisplayName"],
                               result["respCostCenter"],

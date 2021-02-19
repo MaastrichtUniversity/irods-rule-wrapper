@@ -325,3 +325,21 @@ class RuleManager:
         return RuleInfo(name="changeProjectPermissions", get_result=False, session=self.session, dto=None)
 
 
+    @rule_call
+    def set_collection_avu(self, collection_path, attribute, value):
+        """
+        Set a collection AVU
+
+        Parameters
+        ----------
+        collection_path : str
+            The collection's absolute path; eg. /nlmumc/projects/P000000001
+        attribute: str
+            The attribute that is going to be set; eg. 'responsibleCostCenter'
+        value: str
+            The value that is going to bet set; eg. 'UM-12345678N'
+        """
+
+        return RuleInfo(name="setCollectionAVU", get_result=False, session=self.session, dto=None)
+
+

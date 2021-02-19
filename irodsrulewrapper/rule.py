@@ -9,6 +9,7 @@ from .dto.create_project import CreateProject
 from .dto.attribute_value import AttributeValue
 from .dto.resources import Resources
 from .dto.projects import Projects
+from .dto.project import Project
 
 import os
 
@@ -298,3 +299,15 @@ class RuleManager:
             dto.Projects object
         """
         return RuleInfo(name="list_projects", get_result=True, session=self.session, dto=Projects)
+
+    @rule_call
+    def get_project_details(self, project_path):
+        """
+        Get the list of projects
+
+        Returns
+        -------
+        Projects
+            dto.Projects object
+        """
+        return RuleInfo(name="get_project_details", get_result=True, session=self.session, dto=Project)

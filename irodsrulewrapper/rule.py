@@ -386,11 +386,11 @@ class RuleManager:
     @rule_call
     def get_collections(self, project_path):
         """
-        Get the list of projects
+        Get the list of project's collections
 
         Returns
         -------
-        Projects
-            dto.Projects object
+        Collections
+            dto.Collections object
         """
         return RuleInfo(name="list_collections", get_result=True, session=self.session, dto=Collections)

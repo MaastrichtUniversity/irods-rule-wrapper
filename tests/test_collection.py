@@ -14,8 +14,8 @@ PLACEHOLDER
 
 def test_rule_get_collections():
     result = RuleManager().get_collections("/nlmumc/projects/P000000010")
-    projects = result.projects
-    assert projects is not None
+    collections = result.collections
+    assert collections is not None
 
 
 def test_collection():

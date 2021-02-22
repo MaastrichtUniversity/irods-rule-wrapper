@@ -14,6 +14,7 @@ from .dto.projects import Projects
 from .dto.project import Project
 from .dto.collections import Collections
 
+from .utils import *
 import os
 
 
@@ -184,12 +185,41 @@ class RuleManager:
         CreateProject
             dto.CreateProject object
         """
-        # TODO extend parameters validation
+        # TODO check data format
+        if type(authorizationPeriodEndDate) != str:
+            raise RuleInputValidationError("invalid type for *authorizationPeriodEndDate: expected a string")
+
+        # TODO check data format
+        if type(dataRetentionPeriodEndDate) != str:
+            raise RuleInputValidationError("invalid type for *dataRetentionPeriodEndDate: expected a string")
+
+        if type(ingestResource) != str:
+            raise RuleInputValidationError("invalid type for *ingestResource: expected a string")
+
+        if type(resource) != str:
+            raise RuleInputValidationError("invalid type for *resource: expected a string")
+
+        if not storageQuotaGb.isdigit():
+            raise RuleInputValidationError("invalid type for *storageQuotaGb: expected a string digit")
+
+        if type(title) != str:
+            raise RuleInputValidationError("invalid type for *title: expected a string")
+
+        if type(principalInvestigator) != str:
+            raise RuleInputValidationError("invalid type for *principalInvestigator: expected a string")
+
+        if type(dataSteward) != str:
+            raise RuleInputValidationError("invalid type for *dataSteward: expected a string")
+
+        if type(respCostCenter) != str:
+            raise RuleInputValidationError("invalid type for *respCostCenter: expected a string")
+
         if openAccess != "false" and openAccess != "true":
             raise RuleInputValidationError("invalid value for *openAccess: expected 'true' or 'false'")
 
         if tapeArchive != "false" and tapeArchive != "true":
             raise RuleInputValidationError("invalid value for *tapeArchive: expected 'true' or 'false'")
+
         return RuleInfo(name="create_new_project", get_result=True, session=self.session, dto=CreateProject)
 
     @rule_call
@@ -289,6 +319,9 @@ class RuleManager:
         if show_special_groups != "false" and show_special_groups != "true":
             raise RuleInputValidationError("invalid value for *showServiceAccounts: expected 'true' or 'false'")
 
+        if type(username) != str:
+            raise RuleInputValidationError("invalid type for *username: expected a string")
+
         return RuleInfo(name="get_user_group_memberships", get_result=True, session=self.session, dto=Groups)
 
     @rule_call
@@ -299,14 +332,16 @@ class RuleManager:
         Parameters
         ----------
         project_id : str
-            The project's id; eg.g P000000010
+            The project's id; e.g P000000010
 
         Returns
         -------
-        dict
+        ManagingProjects
             The list of usernames for managers, contributors and viewers.
             Returns an empty list if the user is not a manager.
         """
+        if not check_project_id_format(project_id):
+            raise RuleInputValidationError("invalid project's path format: e.g P000000010")
 
         return RuleInfo(name="get_managing_project", get_result=True, session=self.session, dto=ManagingProjects)
 
@@ -319,12 +354,17 @@ class RuleManager:
         Parameters
         ----------
         project_id : str
-            The project's id; eg.g P000000010
+            The project's id; e.g P000000010
         users: str
             The input string to modify the ACL.
             It should follow the following format: 'username:access_level"
             e.g "p.vanschayck@maastrichtuniversity.nl:read m.coonen@maastrichtuniversity.nl:write"
         """
+        if not check_project_id_format(project_id):
+            raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010")
+
+        if type(users) != str:
+            raise RuleInputValidationError("invalid type for *users: expected a string")
 
         return RuleInfo(name="changeProjectPermissions", get_result=False, session=self.session, dto=None)
 
@@ -338,10 +378,18 @@ class RuleManager:
         collection_path : str
             The collection's absolute path; eg. /nlmumc/projects/P000000001
         attribute: str
-            The attribute that is going to be set; eg. 'responsibleCostCenter'
+            The attribute that is going to be set; e.g 'responsibleCostCenter'
         value: str
-            The value that is going to bet set; eg. 'UM-12345678N'
+            The value that is going to bet set; e.g 'UM-12345678N'
         """
+        if not check_project_path_format(collection_path) or check_project_collection_path_format(collection_path):
+            raise RuleInputValidationError("invalid path format")
+
+        if type(attribute) != str:
+            raise RuleInputValidationError("invalid type for *attribute: expected a string")
+
+        if type(value) != str:
+            raise RuleInputValidationError("invalid type for *value: expected a string")
 
         return RuleInfo(name="setCollectionAVU", get_result=False, session=self.session, dto=None)
 
@@ -352,7 +400,7 @@ class RuleManager:
 
         Returns
         -------
-        dict
+        ProjectsCost
             The list of projects financial information
 
         """
@@ -376,11 +424,19 @@ class RuleManager:
         """
         Get the list of projects
 
+        Parameters
+        ----------
+        project_path : str
+            The project's absolute path; eg. /nlmumc/projects/P000000010
+
         Returns
         -------
         Project
             dto.Project object
         """
+        if not check_project_path_format(project_path):
+            raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010")
+
         return RuleInfo(name="get_project_details", get_result=True, session=self.session, dto=Project)
 
     @rule_call
@@ -388,9 +444,17 @@ class RuleManager:
         """
         Get the list of project's collections
 
+        Parameters
+        ----------
+        project_path : str
+            The project's absolute path; eg. /nlmumc/projects/P000000010
+
         Returns
         -------
         Collections
             dto.Collections object
         """
+        if not check_project_path_format(project_path):
+            raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010")
+
         return RuleInfo(name="list_collections", get_result=True, session=self.session, dto=Collections)

@@ -12,6 +12,7 @@ from .dto.managing_projects import ManagingProjects
 from .dto.projects_cost import ProjectsCost
 from .dto.projects import Projects
 from .dto.project import Project
+from .dto.collections import Collections
 
 import os
 
@@ -381,3 +382,15 @@ class RuleManager:
             dto.Project object
         """
         return RuleInfo(name="get_project_details", get_result=True, session=self.session, dto=Project)
+
+    @rule_call
+    def get_collections(self, project_path):
+        """
+        Get the list of projects
+
+        Returns
+        -------
+        Projects
+            dto.Projects object
+        """
+        return RuleInfo(name="list_collections", get_result=True, session=self.session, dto=Collections)

@@ -1,5 +1,6 @@
 class Collection:
-    def __init__(self, creator, size, title, pid, num_files):
+    def __init__(self, id, creator, size, title, pid, num_files):
+        self.id = id
         self.creator = creator
         self.size = size
         self.title = title
@@ -8,5 +9,5 @@ class Collection:
 
     @classmethod
     def create_from_rule_result(cls, result):
-        user = cls(result["creator"], result["size"], result["title"], result["PID"], result["numFiles"])
-        return user
+        collection = cls(result["id"], result["creator"], result["size"], result["title"], result["PID"], result["numFiles"])
+        return collection

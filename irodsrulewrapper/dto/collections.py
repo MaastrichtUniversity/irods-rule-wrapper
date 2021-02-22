@@ -5,7 +5,7 @@ from typing import List, Dict
 
 class Collections:
     def __init__(self, project: Project, collections):
-        self.projects: List['Project'] = project
+        self.project: List['Project'] = project
         self.collections = collections
 
     @classmethod

@@ -377,7 +377,7 @@ class RuleManager:
 
         Returns
         -------
-        Projects
-            dto.Projects object
+        Project
+            dto.Project object
         """
         return RuleInfo(name="get_project_details", get_result=True, session=self.session, dto=Project)

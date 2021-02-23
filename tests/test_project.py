@@ -4,9 +4,30 @@ from irodsrulewrapper.rule import RuleManager
 import json
 
 
+def test_rule_create_new_project():
+    manager = RuleManager()
+    project = manager.create_new_project("authorizationPeriodEndDate", "dataRetentionPeriodEndDate",
+                       "ingestResource", "resource", "42", "PyTest title", "jmelius",
+                       "opalmen", "XXXXXXXXX", "true", "false")
+    assert project.project_id is not None
+    assert project.project_path is not None
+    # Set ACL otherwise list_project fails
+    manager.set_acl('default', 'own', "opalmen", project.project_path)
+    manager.set_acl('default', 'own', "jmelius", project.project_path)
+
+
+def test_rule_get_managing_project():
+    project = RuleManager('jmelius').get_managing_project('P000000010')
+    assert project.viewers is not None
+    assert project.contributors is not None
+    assert project.managers is not None
+    assert project.principal_investigator is not None
+    assert project.data_steward is not None
+
+
 def test_rule_get_project_cost():
-    project_details = RuleManager('jmelius').get_projects_finance()
-    assert project_details is not None
+    project = RuleManager('jmelius').get_projects_finance()
+    assert project.projects_cost is not None
 
 
 def test_rule_get_project_details():

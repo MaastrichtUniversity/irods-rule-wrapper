@@ -25,7 +25,7 @@ def test_rule_get_managing_project():
     assert project.data_steward is not None
 
 
-def test_rule_get_project_cost():
+def test_rule_get_projects_finance():
     project = RuleManager('jmelius').get_projects_finance()
     assert project.projects_cost is not None
 

@@ -3,8 +3,8 @@ from typing import List, Dict
 
 
 class Collections:
-    def __init__(self, collections):
-        self.collections = collections
+    def __init__(self, collections: List['Collection']):
+        self.collections: List['Collection'] = collections
 
     @classmethod
     def create_from_rule_result(cls, result: Dict) -> 'Collections':

@@ -1,13 +1,17 @@
+from typing import List, Dict
+
+
 class ManagingProjects:
-    def __init__(self, managers, contributors, viewers, principal_investigator, data_steward):
-        self.managers = managers
-        self.contributors = contributors
-        self.viewers = viewers
-        self.principal_investigator = principal_investigator
-        self.data_steward = data_steward
+    def __init__(self, managers: List[str], contributors: List[str], viewers: List[str],
+                 principal_investigator: str, data_steward: str):
+        self.managers: List[str] = managers
+        self.contributors: List[str] = contributors
+        self.viewers: List[str] = viewers
+        self.principal_investigator: str = principal_investigator
+        self.data_steward: str = data_steward
 
     @classmethod
-    def create_from_rule_result(cls, result):
+    def create_from_rule_result(cls, result: Dict) -> 'ManagingProjects':
         # get_managing_project returns an empty list, if the user is not a manager for the project
         if len(result) == 0:
             return None

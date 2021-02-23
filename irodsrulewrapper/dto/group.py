@@ -1,12 +1,15 @@
+from typing import Dict
+
+
 class Group:
-    def __init__(self, name, group_id, display_name, description):
-        self.name = name
-        self.id = group_id
-        self.display_name = display_name
-        self.description = description
+    def __init__(self, name: str, group_id: str, display_name: str, description: str):
+        self.name: str = name
+        self.id: str = group_id
+        self.display_name: str = display_name
+        self.description: str = description
 
     @classmethod
-    def create_from_rule_result(cls, result):
+    def create_from_rule_result(cls, result: Dict) -> 'Group':
         # Backward compatibility
         name = ''
         if "userName" in result:

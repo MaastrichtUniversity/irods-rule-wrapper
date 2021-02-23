@@ -39,7 +39,7 @@ class Project:
         self.has_financial_view_access = has_financial_view_access
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> 'ProjectData':
+    def create_from_rule_result(cls, result: Dict) -> 'Project':
         project_details = cls(result["project"],
                               result["title"],
                               result["enableOpenAccessExport"] == 'true',

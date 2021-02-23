@@ -1,13 +1,13 @@
 class ProjectCost:
-    def __init__(self, project_id, project_cost_yearly, project_cost_monthly,
-                 project_size_gb, project_size_gib, budget_number, title):
-        self.project_id = project_id
-        self.project_cost_yearly = project_cost_yearly
-        self.project_cost_monthly = project_cost_monthly
-        self.project_size_gb = project_size_gb
-        self.project_size_gib = project_size_gib
-        self.budget_number = budget_number
-        self.title = title
+    def __init__(self, project_id: str, project_cost_yearly: float, project_cost_monthly: float,
+                 project_size_gb: float, project_size_gib: float, budget_number: str, title: str):
+        self.project_id: str = project_id
+        self.project_cost_yearly: float = project_cost_yearly
+        self.project_cost_monthly: float = project_cost_monthly
+        self.project_size_gb: float = project_size_gb
+        self.project_size_gib: float = project_size_gib
+        self.budget_number: str = budget_number
+        self.title: str = title
 
     @classmethod
     def create_from_rule_result(cls, result):

@@ -1,13 +1,17 @@
+from typing import Dict
+
+
 class Collection:
-    def __init__(self, id, creator, size, title, pid, num_files):
-        self.id = id
-        self.creator = creator
-        self.size = size
-        self.title = title
-        self.pid = pid
-        self.num_files = num_files
+    def __init__(self, id: str, creator: str, size: float, title: str, pid: str, num_files: str):
+        self.id: str = id
+        self.creator: str = creator
+        self.size: float = size
+        self.title: str = title
+        self.pid: str = pid
+        self.num_files: str = num_files
 
     @classmethod
-    def create_from_rule_result(cls, result):
-        collection = cls(result["id"], result["creator"], result["size"], result["title"], result["PID"], result["numFiles"])
+    def create_from_rule_result(cls, result: Dict) -> 'Collection':
+        collection = cls(result["id"], result["creator"], result["size"],
+                         result["title"], result["PID"], result["numFiles"])
         return collection

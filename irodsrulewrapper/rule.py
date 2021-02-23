@@ -382,7 +382,7 @@ class RuleManager:
         value: str
             The value that is going to bet set; e.g 'UM-12345678N'
         """
-        if not check_project_path_format(collection_path) or check_project_collection_path_format(collection_path):
+        if not check_project_path_format(collection_path) and not check_project_collection_path_format(collection_path):
             raise RuleInputValidationError("invalid path format")
 
         if type(attribute) != str:

@@ -21,5 +21,8 @@ setuptools.setup(
     python_requires='>=3.6',
     install_requires=[
         'python-irodsclient>=0.8.1,<1.0.0'
-    ]
+    ],
+    tests_requires=[
+        'pytest'
+    ],
 )

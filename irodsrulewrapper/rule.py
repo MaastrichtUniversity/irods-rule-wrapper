@@ -200,7 +200,7 @@ class RuleManager:
             raise RuleInputValidationError("invalid type for *resource: expected a string")
 
         if type(storageQuotaGb) != int:
-            raise RuleInputValidationError("invalid type for *storageQuotaGb: expected a string digit")
+            raise RuleInputValidationError("invalid type for *storageQuotaGb: expected an integer")
 
         if type(title) != str:
             raise RuleInputValidationError("invalid type for *title: expected a string")

@@ -7,7 +7,7 @@ import json
 def test_rule_create_new_project():
     manager = RuleManager()
     project = manager.create_new_project("authorizationPeriodEndDate", "dataRetentionPeriodEndDate",
-                       "ingestResource", "resource", "42", "PyTest title", "jmelius",
+                       "ingestResource", "resource", 42, "PyTest title", "jmelius",
                        "opalmen", "XXXXXXXXX", "true", "false")
     assert project.project_id is not None
     assert project.project_path is not None

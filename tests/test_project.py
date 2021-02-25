@@ -4,6 +4,11 @@ from irodsrulewrapper.rule import RuleManager
 import json
 
 
+def test_rule_get_contributing_projects():
+    result = RuleManager('jmelius').get_contributing_projects()
+    assert result is not None
+
+
 def test_rule_create_new_project():
     manager = RuleManager()
     project = manager.create_new_project("authorizationPeriodEndDate", "dataRetentionPeriodEndDate",

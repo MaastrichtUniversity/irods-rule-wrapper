@@ -14,6 +14,7 @@ from .dto.projects import Projects
 from .dto.project import Project
 from .dto.collections import Collections
 from .dto.drop_zones import DropZones
+from .dto.contributing_projects import ContributingProjects
 
 from .utils import *
 import os
@@ -480,3 +481,16 @@ class RuleManager:
 
         return RuleInfo(name="listActiveDropZones", get_result=True, session=self.session, dto=DropZones)
 
+    @rule_call
+    def get_contributing_projects(self):
+        """
+        Query the list of ACL for a project for the client user.
+        Returns an empty list if the user is not a contributor.
+
+        Returns
+        -------
+        ContributingProjects
+            dto.ContributingProjects object
+        """
+
+        return RuleInfo(name="list_contributing_project", get_result=True, session=self.session, dto=ContributingProjects)

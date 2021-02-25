@@ -17,7 +17,7 @@ def test_rule_create_new_project():
 
 
 def test_rule_get_managing_project():
-    project = RuleManager('jmelius').get_managing_project('P000000010')
+    project = RuleManager('opalmen').get_managing_project('P000000010')
     assert project.viewers is not None
     assert project.contributors is not None
     assert project.managers is not None
@@ -38,7 +38,7 @@ def test_rule_get_project_details():
     assert project_details.responsible_cost_center == "AZM-123456"
     assert project_details.manager_users.users[0].display_name == 'Pascal Suppers'
     assert project_details.contributor_users.users[0].display_name == 'service-mdl'
-    assert project_details.viewer_groups.groups[0].display_name == 'DataHub'
+    # assert project_details.viewer_groups.groups[0].display_name == 'DataHub'
     assert project_details.title == '(HVC) Placeholder project'
     assert project_details.enable_open_access_export is False
     assert project_details.enable_archive is False

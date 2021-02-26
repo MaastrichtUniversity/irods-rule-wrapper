@@ -20,3 +20,59 @@ def check_project_collection_path_format(project):
         return True
     else:
         return False
+
+
+# TODO create rule
+import random
+
+
+class RandomToken:
+    ADJECTIVES = """adorable
+    adventurous
+    aggressive
+    agreeable
+    alert
+    alive
+    amused
+    angry
+    annoyed
+    annoying
+    anxious
+    arrogant
+    ashamed
+    attractive
+    average
+    awful
+    bad
+    beautiful
+    better
+    bewildered"""
+
+    NOUNS = """aardvark
+    addax
+    albatross
+    alligator
+    alpaca
+    anaconda
+    angelfish
+    anteater
+    antelope
+    ant
+    ape
+    armadillo
+    baboon
+    badger
+    barracuda
+    bat
+    batfish
+    bear
+    beaver
+    bee"""
+    adjectives = ADJECTIVES.splitlines()
+    nouns = NOUNS.splitlines()
+
+    @staticmethod
+    def generate_token():
+        adjective = random.choice(RandomToken.adjectives)
+        noun = random.choice(RandomToken.nouns)
+        return adjective.strip() + "-" + noun.strip()

@@ -34,11 +34,13 @@ class RuleInputValidationError(Exception):
 
 
 class RuleInfo:
-    def __init__(self, name, get_result, session, dto):
+    def __init__(self, name, get_result, session, dto, input_params=None, rule_body=None):
         self.name = name
         self.get_result = get_result
         self.session = session
         self.dto = dto
+        self.input_params = input_params
+        self.rule_body = rule_body
 
 
 class RuleManager:
@@ -494,3 +496,71 @@ class RuleManager:
         """
 
         return RuleInfo(name="list_contributing_project", get_result=True, session=self.session, dto=ContributingProjects)
+
+    @rule_call
+    def create_ingest(self, user, token, project, title):
+
+        input_params = {
+            '*user': '"{}"'.format(user),
+            '*token': '"{}"'.format(token),
+            '*project': '"{}"'.format(project),
+            '*title': '"{}"'.format(title)
+        }
+
+        rule_body = """
+        execute_rule{
+            createIngest;
+        }
+        """
+
+        return RuleInfo(name="createIngest", get_result=False, session=self.session,
+                        dto=None, input_params=input_params, rule_body=rule_body)
+
+    def create_drop_zone(self, data):
+        token = RandomToken.generate_token()
+        self.create_ingest(data["user"], token, data["project"], data["title"])
+        self.create_metadata_xml(data["user"], token, data["project"], data["title"], data["date"])
+
+    def create_metadata_xml(self, user, token, project, title, date):
+        xml = """<?xml version="1.0"?>
+<metadata>
+  <project>*project</project>
+  <title>*title</title>
+  <description></description>
+  <date>*date</date>
+  <factors>
+    <factor></factor>
+  </factors>
+  <organism id=""></organism>
+  <tissue id=""></tissue>
+  <technology id=""></technology>
+  <article></article>
+  <creator>*creator</creator>
+  <contact>
+    <lastName></lastName>
+    <firstName></firstName>
+    <midInitials></midInitials>
+    <email></email>
+    <phone></phone>
+    <address></address>
+    <affiliation></affiliation>
+    <role></role>
+  </contact>
+  <protocol>
+    <name></name>
+    <filename></filename>
+  </protocol>
+</metadata>"""
+
+        xml = xml.replace('*project', project)
+        xml = xml.replace('*title', title)
+        xml = xml.replace('*date', date)
+        xml = xml.replace('*creator', user)
+
+        with open("./metadata.xml", "w+") as f:
+            f.write(xml)
+
+        ingest_zone = "/nlmumc/ingest/zones/" + token + "/" + "metadata.xml"
+        self.session.data_objects.put("./metadata.xml", ingest_zone)
+
+        os.remove("./metadata.xml")

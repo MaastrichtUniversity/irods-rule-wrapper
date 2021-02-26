@@ -31,7 +31,7 @@ def test_rule_get_managing_project():
 
 
 def test_rule_get_projects_finance():
-    project = RuleManager('jmelius').get_projects_finance()
+    project = RuleManager('opalmen').get_projects_finance()
     assert project.projects_cost is not None
 
 

@@ -498,6 +498,23 @@ class RuleManager:
         return RuleInfo(name="list_contributing_project", get_result=True, session=self.session, dto=ContributingProjects)
 
     @rule_call
+    def start_ingest(self, user, token):
+
+        input_params = {
+            '*user': '"{}"'.format(user),
+            '*token': '"{}"'.format(token)
+        }
+
+        rule_body = """
+            execute_rule{
+                ingest;
+            }
+            """
+
+        return RuleInfo(name="ingest", get_result=False, session=self.session,
+                        dto=None, input_params=input_params, rule_body=rule_body)
+
+    @rule_call
     def create_ingest(self, user, token, project, title):
 
         input_params = {

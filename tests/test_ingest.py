@@ -11,3 +11,7 @@ def test_rule_create_drop_zone():
     result = RuleManager().create_drop_zone(data)
     assert result is None
 
+
+# def test_rule_start_ingest():
+#     result = RuleManager().start_ingest('jmelius', 'token')
+#     assert result is None

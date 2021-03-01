@@ -15,6 +15,7 @@ from .dto.project import Project
 from .dto.collections import Collections
 from .dto.drop_zones import DropZones
 from .dto.contributing_projects import ContributingProjects
+from .dto.metadata_xml import MetadataXML
 
 from .utils import *
 import os
@@ -536,48 +537,12 @@ class RuleManager:
     def create_drop_zone(self, data):
         token = RandomToken.generate_token()
         self.create_ingest(data["user"], token, data["project"], data["title"])
-        self.create_metadata_xml(data["user"], token, data["project"], data["title"], data["date"])
+        data["token"] = token
+        xml = MetadataXML.create_from_dict(data)
+        xml.write_metadata_xml(self.session)
 
-    def create_metadata_xml(self, user, token, project, title, date):
-        xml = """<?xml version="1.0"?>
-<metadata>
-  <project>*project</project>
-  <title>*title</title>
-  <description></description>
-  <date>*date</date>
-  <factors>
-    <factor></factor>
-  </factors>
-  <organism id=""></organism>
-  <tissue id=""></tissue>
-  <technology id=""></technology>
-  <article></article>
-  <creator>*creator</creator>
-  <contact>
-    <lastName></lastName>
-    <firstName></firstName>
-    <midInitials></midInitials>
-    <email></email>
-    <phone></phone>
-    <address></address>
-    <affiliation></affiliation>
-    <role></role>
-  </contact>
-  <protocol>
-    <name></name>
-    <filename></filename>
-  </protocol>
-</metadata>"""
+        return token
 
-        xml = xml.replace('*project', project)
-        xml = xml.replace('*title', title)
-        xml = xml.replace('*date', date)
-        xml = xml.replace('*creator', user)
-
-        with open("./metadata.xml", "w+") as f:
-            f.write(xml)
-
-        ingest_zone = "/nlmumc/ingest/zones/" + token + "/" + "metadata.xml"
-        self.session.data_objects.put("./metadata.xml", ingest_zone)
-
-        os.remove("./metadata.xml")
+    def read_metadata_xml(self, token):
+        xml = MetadataXML.read_metadata_xml(self.session, token)
+        return xml

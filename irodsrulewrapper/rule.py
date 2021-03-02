@@ -16,6 +16,7 @@ from .dto.collections import Collections
 from .dto.drop_zones import DropZones
 from .dto.contributing_projects import ContributingProjects
 from .dto.metadata_xml import MetadataXML
+from .dto.token import Token
 
 from .utils import *
 import os

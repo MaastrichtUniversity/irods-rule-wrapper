@@ -13,6 +13,7 @@ from .dto.projects_cost import ProjectsCost
 from .dto.projects import Projects
 from .dto.project import Project
 from .dto.collections import Collections
+from .dto.drop_zones import DropZones
 
 from .utils import *
 import os
@@ -458,3 +459,24 @@ class RuleManager:
             raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010")
 
         return RuleInfo(name="list_collections", get_result=True, session=self.session, dto=Collections)
+
+    @rule_call
+    def get_active_drop_zones(self, report):
+        """
+        Get the list of active drop zones
+
+        Parameters
+        ----------
+        report : str
+            'true'/'false' excepted values; If true, show extra values: startDate, endDate & userName
+
+        Returns
+        -------
+        DropZones
+            dto.DropZones object
+        """
+        if report != "false" and report != "true":
+            raise RuleInputValidationError("invalid value for *report: expected 'true' or 'false'")
+
+        return RuleInfo(name="listActiveDropZones", get_result=True, session=self.session, dto=DropZones)
+

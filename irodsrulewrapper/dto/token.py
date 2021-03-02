@@ -1,5 +1,6 @@
 from typing import Dict
 
+
 class Token:
     def __init__(self, token: str):
         self.token: str = token

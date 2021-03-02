@@ -72,7 +72,7 @@ class MetadataXML:
             metadata_xml = ""
             # logger.warning("ProjectCollection %s/%s is missing metadata.xml" % (project, collection))
 
-        if metadata_xml is "":
+        if metadata_xml == "":
             return
 
         try:

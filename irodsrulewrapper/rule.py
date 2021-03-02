@@ -13,7 +13,7 @@ from .dto.projects_cost import ProjectsCost
 from .dto.projects import Projects
 from .dto.project import Project
 from .dto.collections import Collections
-from .dto.drop_zones import DropZones
+from .dto.drop_zones import DropZones, DropZone
 from .dto.contributing_projects import ContributingProjects
 from .dto.metadata_xml import MetadataXML
 from .dto.token import Token
@@ -484,6 +484,31 @@ class RuleManager:
             raise RuleInputValidationError("invalid value for *report: expected 'true' or 'false'")
 
         return RuleInfo(name="listActiveDropZones", get_result=True, session=self.session, dto=DropZones)
+
+    @rule_call
+    def get_active_drop_zone(self, token, check_ingest_resource_status):
+        """
+        Get the list of active drop zones
+
+        Parameters
+        ----------
+        token : str
+            The dropzone token
+        check_ingest_resource_status : str
+            'true'/'false' excepted values; If true, show the project resource status
+
+        Returns
+        -------
+        DropZone
+            dto.DropZone object
+        """
+        if type(token) != str:
+            raise RuleInputValidationError("invalid type for *token: expected a string")
+
+        if check_ingest_resource_status != "false" and check_ingest_resource_status != "true":
+            raise RuleInputValidationError("invalid value for *check_ingest_resource_status: expected 'true' or 'false'")
+
+        return RuleInfo(name="get_active_drop_zone", get_result=True, session=self.session, dto=DropZone)
 
     @rule_call
     def get_contributing_projects(self):

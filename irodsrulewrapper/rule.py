@@ -586,3 +586,17 @@ class RuleManager:
         """
 
         return RuleInfo(name="generate_token", get_result=True, session=self.session, dto=Token)
+
+    @rule_call
+    def list_destination_resources_status(self):
+        """
+        Lists the destination resources and their statuses
+
+        Returns
+        -------
+        Resources
+            The resources
+
+        """
+
+        return RuleInfo(name="list_destination_resources_status", get_result=True, session=self.session, dto=Resources)

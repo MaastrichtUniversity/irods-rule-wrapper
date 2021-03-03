@@ -564,14 +564,16 @@ class RuleManager:
         token = self.generate_token().token
         self.create_ingest(data["user"], token, data["project"], data["title"])
         data["token"] = token
-        xml = MetadataXML.create_from_dict(data)
-        xml.write_metadata_xml(self.session)
-
+        self.save_metadata_xml(data)
         return token
 
     def read_metadata_xml(self, token):
         xml = MetadataXML.read_metadata_xml(self.session, token)
         return xml
+
+    def save_metadata_xml(self, data):
+        xml = MetadataXML.create_from_dict(data)
+        xml.write_metadata_xml(self.session)
 
     @rule_call
     def generate_token(self):

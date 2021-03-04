@@ -414,19 +414,27 @@ class RuleManager:
         return RuleInfo(name="get_projects_finance", get_result=True, session=self.session, dto=ProjectsCost)
 
     @rule_call
-    def get_projects(self):
+    def get_projects(self, show_service_accounts):
         """
         Get the list of projects
+
+        Parameters
+        ----------
+        show_service_accounts: str
+            'true'/'false' expected; If true, hide the service accounts in the result
 
         Returns
         -------
         Projects
             dto.Projects object
         """
+        if show_service_accounts != "false" and show_service_accounts != "true":
+            raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
+
         return RuleInfo(name="list_projects", get_result=True, session=self.session, dto=Projects)
 
     @rule_call
-    def get_project_details(self, project_path):
+    def get_project_details(self, project_path, show_service_accounts):
         """
         Get the list of projects
 
@@ -434,6 +442,8 @@ class RuleManager:
         ----------
         project_path : str
             The project's absolute path; eg. /nlmumc/projects/P000000010
+        show_service_accounts: str
+            'true'/'false' expected; If true, hide the service accounts in the result
 
         Returns
         -------
@@ -442,6 +452,8 @@ class RuleManager:
         """
         if not check_project_path_format(project_path):
             raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010")
+        if show_service_accounts != "false" and show_service_accounts != "true":
+            raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
 
         return RuleInfo(name="get_project_details", get_result=True, session=self.session, dto=Project)
 

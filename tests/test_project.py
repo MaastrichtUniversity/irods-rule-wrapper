@@ -36,7 +36,7 @@ def test_rule_get_projects_finance():
 
 
 def test_rule_get_project_details():
-    project_details = RuleManager().get_project_details("/nlmumc/projects/P000000011")
+    project_details = RuleManager().get_project_details("/nlmumc/projects/P000000011", 'true')
     assert project_details is not None
     assert project_details.principal_investigator_display_name == "Pascal Suppers"
     assert project_details.data_steward_display_name == "Olav Palmen"
@@ -52,7 +52,7 @@ def test_rule_get_project_details():
 
 
 def test_rule_get_projects():
-    result = RuleManager().get_projects()
+    result = RuleManager().get_projects('false')
     projects = result.projects
     assert projects is not None
     assert projects.__len__() >= 2

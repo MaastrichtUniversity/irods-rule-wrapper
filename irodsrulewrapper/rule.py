@@ -28,6 +28,7 @@ class RuleInputValidationError(Exception):
     Attributes:
         message -- explanation of the error
     """
+
     def __init__(self, message):
         self.message = message
 
@@ -156,8 +157,8 @@ class RuleManager:
 
     @rule_call
     def create_new_project(self, authorizationPeriodEndDate, dataRetentionPeriodEndDate,
-                       ingestResource, resource, storageQuotaGb, title, principalInvestigator,
-                       dataSteward, respCostCenter, openAccess, tapeArchive):
+                           ingestResource, resource, storageQuotaGb, title, principalInvestigator,
+                           dataSteward, respCostCenter, openAccess, tapeArchive):
         """
         Create a new iRODS project
 
@@ -518,7 +519,8 @@ class RuleManager:
             raise RuleInputValidationError("invalid type for *token: expected a string")
 
         if check_ingest_resource_status != "false" and check_ingest_resource_status != "true":
-            raise RuleInputValidationError("invalid value for *check_ingest_resource_status: expected 'true' or 'false'")
+            raise RuleInputValidationError(
+                "invalid value for *check_ingest_resource_status: expected 'true' or 'false'")
 
         return RuleInfo(name="get_active_drop_zone", get_result=True, session=self.session, dto=DropZone)
 
@@ -534,7 +536,8 @@ class RuleManager:
             dto.ContributingProjects object
         """
 
-        return RuleInfo(name="list_contributing_project", get_result=True, session=self.session, dto=ContributingProjects)
+        return RuleInfo(name="list_contributing_project", get_result=True, session=self.session,
+                        dto=ContributingProjects)
 
     @rule_call
     def start_ingest(self, user, token):
@@ -614,3 +617,34 @@ class RuleManager:
         """
 
         return RuleInfo(name="list_destination_resources_status", get_result=True, session=self.session, dto=Resources)
+
+    @rule_call
+    def edit_drop_zone(self, token, project, title):
+        """
+        Edits the dropzone's project and title AVUs
+
+        Parameters
+        ----------
+        token : str
+            the token of the DZ to modify
+        project : str
+            the new project number (ex. P000000001)
+        title : str
+            the new title (ex. bar)
+
+        """
+
+        input_params = {
+            '*token': '"{}"'.format(token),
+            '*project': '"{}"'.format(project),
+            '*title': '"{}"'.format(title)
+        }
+
+        rule_body = """
+               execute_rule{
+                   editIngest;
+               }
+               """
+
+        return RuleInfo(name="editIngest", get_result=False, session=self.session, dto=None, input_params=input_params,
+                        rule_body=rule_body)

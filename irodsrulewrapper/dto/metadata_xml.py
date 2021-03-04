@@ -5,16 +5,17 @@ import xml.etree.cElementTree as ET
 
 
 class MetadataXML:
-    def __init__(self, creator: str, token: str, project: str, title: str, date: str):
+    def __init__(self, creator: str, token: str, project: str, title: str, date: str, articles: str):
         self.creator = creator
         self.token = token
         self.project = project
         self.title = title
         self.date = date
+        self.articles = articles
 
     @classmethod
     def create_from_dict(cls, data: Dict) -> 'MetadataXML':
-        metadata = cls(data["creator"], data["token"], data["project"], data["title"], data["date"])
+        metadata = cls(data["creator"], data["token"], data["project"], data["title"], data["date"], data["articles"])
         return metadata
 
     def write_metadata_xml(self, session):
@@ -53,8 +54,13 @@ class MetadataXML:
         xml = xml.replace('*date', self.date)
         xml = xml.replace('*creator', self.creator)
 
-        with open("./metadata.xml", "w+") as f:
-            f.write(xml)
+        medata_xml = ET.fromstring(xml)
+
+        for article in self.articles.split(","):
+            url = "https://doi.org/" + article
+            medata_xml.append(ET.fromstring("<article>" + url + "</article>"))
+
+        ET.ElementTree(medata_xml).write("./metadata.xml", encoding='UTF-8', xml_declaration=True)
 
         ingest_zone = "/nlmumc/ingest/zones/" + self.token + "/" + "metadata.xml"
         session.data_objects.put("./metadata.xml", ingest_zone)
@@ -83,11 +89,23 @@ class MetadataXML:
                 "description": root.find("description").text,
                 "date": root.find("date").text,
                 "creator": root.find("creator").text,
-                "token": token
+                "token": token,
+                "articles": read_tag_list(root, "article"),
             }
 
-            return cls(data["creator"], data["token"], data["project"], data["title"], data["date"])
+            return cls(data["creator"], data["token"], data["project"], data["title"], data["date"], data["articles"])
 
         except ET.ParseError:
             # logger.warning("ProjectCollection %s/%s has invalid metadata.xml" % (project, collection))
             return
+
+
+def read_tag_list(root, tag):
+    concatenation = ''
+    for k in root.findall(tag):
+        for i in k.iter():
+            if i.text is not None:
+                concatenation += ',' + i.text.replace("https://doi.org/", "")
+    return concatenation[1:]
+
+

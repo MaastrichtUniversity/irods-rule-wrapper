@@ -5,17 +5,26 @@ import xml.etree.cElementTree as ET
 
 
 class MetadataXML:
-    def __init__(self, creator: str, token: str, project: str, title: str, date: str, articles: str):
-        self.creator = creator
-        self.token = token
-        self.project = project
-        self.title = title
-        self.date = date
-        self.articles = articles
+    def __init__(self,
+                 creator: str,
+                 token: str,
+                 project: str,
+                 title: str,
+                 description: str,
+                 date: str,
+                 articles: str):
+        self.creator: str = creator
+        self.token: str = token
+        self.project: str = project
+        self.title: str = title
+        self.description: str = description
+        self.date: str = date
+        self.articles: str = articles
 
     @classmethod
     def create_from_dict(cls, data: Dict) -> 'MetadataXML':
-        metadata = cls(data["creator"], data["token"], data["project"], data["title"], data["date"], data["articles"])
+        metadata = cls(data["creator"], data["token"], data["project"],
+                       data["title"], data["description"], data["date"], data["articles"])
         return metadata
 
     def write_metadata_xml(self, session):
@@ -23,7 +32,7 @@ class MetadataXML:
 <metadata>
   <project>*project</project>
   <title>*title</title>
-  <description></description>
+  <description>*description</description>
   <date>*date</date>
   <factors>
     <factor></factor>
@@ -51,6 +60,7 @@ class MetadataXML:
 
         xml = xml.replace('*project', self.project)
         xml = xml.replace('*title', self.title)
+        xml = xml.replace('*description', self.description)
         xml = xml.replace('*date', self.date)
         xml = xml.replace('*creator', self.creator)
 
@@ -93,7 +103,8 @@ class MetadataXML:
                 "articles": read_tag_list(root, "article"),
             }
 
-            return cls(data["creator"], data["token"], data["project"], data["title"], data["date"], data["articles"])
+            return cls(data["creator"], data["token"], data["project"],
+                       data["title"], data["description"], data["date"], data["articles"])
 
         except ET.ParseError:
             # logger.warning("ProjectCollection %s/%s has invalid metadata.xml" % (project, collection))

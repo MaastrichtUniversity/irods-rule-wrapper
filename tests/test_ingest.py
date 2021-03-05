@@ -32,7 +32,8 @@ from irodsrulewrapper.dto.metadata_xml import MetadataXML
 #         "tissue_id": "efo:http://www.ebi.ac.uk/efo/EFO_0000803",
 #         "tissue_label": "renal system",
 #         "technology_id": "ero:http://purl.obolibrary.org/obo/ERO_0000570",
-#         "technology_label": "heart perfusion"
+#         "technology_label": "heart perfusion",
+#         "factors": ["heart perfusion", "test1"]
 #     }
 #     rule_manager = RuleManager()
 #     xml = MetadataXML.create_from_dict(data)

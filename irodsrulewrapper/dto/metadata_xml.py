@@ -3,7 +3,6 @@ import os
 from irods import exception
 import xml.etree.cElementTree as ET
 
-
 class MetadataXML:
     def __init__(self,
                  creator: str,
@@ -18,7 +17,8 @@ class MetadataXML:
                  tissue_id: str,
                  tissue_label: str,
                  technology_id: str,
-                 technology_label: str):
+                 technology_label: str,
+                 factors: str):
 
         self.creator: str = creator
         self.token: str = token
@@ -33,6 +33,7 @@ class MetadataXML:
         self.tissue_label: str = tissue_label
         self.technology_id: str = technology_id
         self.technology_label: str = technology_label
+        self.factors: str = factors
 
     @classmethod
     def create_from_dict(cls, data: Dict) -> 'MetadataXML':
@@ -41,7 +42,7 @@ class MetadataXML:
                        data["date"], data["articles"],
                        data["organism_id"], data["organism_label"],
                        data["tissue_id"], data["tissue_label"],
-                       data["technology_id"], data["technology_label"])
+                       data["technology_id"], data["technology_label"], data["factors"])
         return metadata
 
     def write_metadata_xml(self, session):
@@ -100,7 +101,11 @@ class MetadataXML:
 
         for article in self.articles.split(","):
             url = "https://doi.org/" + article
-            medata_xml.append(ET.fromstring("<article>" + url + "</article>"))
+            medata_xml.append(ET.fromstring("\t<article>" + url + "</article>\n"))
+
+        factors = medata_xml.find("factors")
+        for factor in self.factors:
+            factors.append(ET.fromstring("\t<factor>" + factor + "</factor>\n"))
 
         ET.ElementTree(medata_xml).write("./metadata.xml", encoding='UTF-8', xml_declaration=True)
 
@@ -141,7 +146,8 @@ class MetadataXML:
                 "tissue_id": tissue['id'],
                 "tissue_label": tissue['label'],
                 "technology_id": technology['id'],
-                "technology_label": technology['label']
+                "technology_label": technology['label'],
+                "factors": read_tag_node(root, "factors")
             }
 
             return cls(data["creator"], data["token"],
@@ -149,7 +155,7 @@ class MetadataXML:
                        data["date"], data["articles"],
                        data["organism_id"], data["organism_label"],
                        data["tissue_id"], data["tissue_label"],
-                       data["technology_id"], data["technology_label"])
+                       data["technology_id"], data["technology_label"], data["factors"])
 
         except ET.ParseError:
             # logger.warning("ProjectCollection %s/%s has invalid metadata.xml" % (project, collection))
@@ -174,3 +180,12 @@ def read_tag(root, tag):
             return {"id": "", "label": root.find(tag).text}
     else:
         return {"id": "", "label": ""}
+
+
+def read_tag_node(root, tag):
+    node_list = []
+    for i in root.iterfind(tag):
+        for k in i:
+            if k.text is not None:
+                node_list.append(k.text)
+    return node_list

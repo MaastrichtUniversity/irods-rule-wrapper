@@ -132,7 +132,7 @@ class MetadataXML:
 
         factors = ET.SubElement(root, "factors")
         for factor in self.factors:
-            ET.SubElement(factors, "creator").text = factor
+            ET.SubElement(factors, "factor").text = factor
 
         contacts = json.loads(self.contacts)
         for contact in contacts:

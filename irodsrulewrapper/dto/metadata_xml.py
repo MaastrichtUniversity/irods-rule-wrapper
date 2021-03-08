@@ -129,6 +129,8 @@ class MetadataXML:
             if article != '':
                 url = "https://doi.org/" + article
                 ET.SubElement(root, "article").text = url
+            else:
+                ET.SubElement(root, "article")
 
         factors = ET.SubElement(root, "factors")
         for factor in self.factors:

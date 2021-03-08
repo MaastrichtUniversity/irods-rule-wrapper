@@ -2,6 +2,8 @@ from typing import List, Dict
 import os
 from irods import exception
 import xml.etree.cElementTree as ET
+import json
+
 
 class MetadataXML:
     def __init__(self,
@@ -18,7 +20,8 @@ class MetadataXML:
                  tissue_label: str,
                  technology_id: str,
                  technology_label: str,
-                 factors: str):
+                 factors: str,
+                 contacts: str):
 
         self.creator: str = creator
         self.token: str = token
@@ -34,6 +37,7 @@ class MetadataXML:
         self.technology_id: str = technology_id
         self.technology_label: str = technology_label
         self.factors: str = factors
+        self.contacts: str = contacts
 
     @classmethod
     def create_from_dict(cls, data: Dict) -> 'MetadataXML':
@@ -42,76 +46,14 @@ class MetadataXML:
                        data["date"], data["articles"],
                        data["organism_id"], data["organism_label"],
                        data["tissue_id"], data["tissue_label"],
-                       data["technology_id"], data["technology_label"], data["factors"])
+                       data["technology_id"], data["technology_label"], data["factors"], data['contacts'])
         return metadata
 
     def write_metadata_xml(self, session):
-        xml = """<?xml version="1.0"?>
-<metadata>
-  <project>*project</project>
-  <title>*title</title>
-  <description>*description</description>
-  <date>*date</date>
-  <factors>
-    <factor></factor>
-  </factors>
-  <organism id=""></organism>
-  <tissue id=""></tissue>
-  <technology id=""></technology>
-  <article></article>
-  <creator>*creator</creator>
-  <contact>
-    <lastName></lastName>
-    <firstName></firstName>
-    <midInitials></midInitials>
-    <email></email>
-    <phone></phone>
-    <address></address>
-    <affiliation></affiliation>
-    <role></role>
-  </contact>
-  <protocol>
-    <name></name>
-    <filename></filename>
-  </protocol>
-</metadata>"""
-
-        xml = xml.replace('*project', self.project)
-        xml = xml.replace('*title', self.title)
-        xml = xml.replace('*description', self.description)
-        xml = xml.replace('*date', self.date)
-        xml = xml.replace('*creator', self.creator)
-
-        medata_xml = ET.fromstring(xml)
-
-        if self.organism_label != '':
-            organism = medata_xml.find("organism")
-            organism.set("id", self.organism_id)
-            organism.text = self.organism_label
-
-        if self.tissue_label != '':
-            tissue = medata_xml.find("tissue")
-            tissue.set("id", self.tissue_id)
-            tissue.text = self.tissue_label
-
-        if self.technology_label != '':
-            technology = medata_xml.find("technology")
-            technology.set("id", self.technology_id)
-            technology.text = self.technology_label
-
-        for article in self.articles.split(","):
-            url = "https://doi.org/" + article
-            medata_xml.append(ET.fromstring("\t<article>" + url + "</article>\n"))
-
-        factors = medata_xml.find("factors")
-        for factor in self.factors:
-            factors.append(ET.fromstring("\t<factor>" + factor + "</factor>\n"))
-
-        ET.ElementTree(medata_xml).write("./metadata.xml", encoding='UTF-8', xml_declaration=True)
-
+        xml = self.build_metadata()
+        xml.write("./metadata.xml", encoding='UTF-8', xml_declaration=True)
         ingest_zone = "/nlmumc/ingest/zones/" + self.token + "/" + "metadata.xml"
         session.data_objects.put("./metadata.xml", ingest_zone)
-
         os.remove("./metadata.xml")
 
     @classmethod
@@ -147,7 +89,8 @@ class MetadataXML:
                 "tissue_label": tissue['label'],
                 "technology_id": technology['id'],
                 "technology_label": technology['label'],
-                "factors": read_tag_node(root, "factors")
+                "factors": read_tag_node(root, "factors"),
+                "contacts": ""
             }
 
             return cls(data["creator"], data["token"],
@@ -155,11 +98,55 @@ class MetadataXML:
                        data["date"], data["articles"],
                        data["organism_id"], data["organism_label"],
                        data["tissue_id"], data["tissue_label"],
-                       data["technology_id"], data["technology_label"], data["factors"])
+                       data["technology_id"], data["technology_label"], data["factors"], data["contacts"])
 
         except ET.ParseError:
             # logger.warning("ProjectCollection %s/%s has invalid metadata.xml" % (project, collection))
             return
+
+    def build_metadata(self):
+        root = ET.Element("metadata")
+        ET.SubElement(root, "project").text = self.project
+        ET.SubElement(root, "title").text = self.title
+        ET.SubElement(root, "description").text = self.description
+        ET.SubElement(root, "date").text = self.date
+        ET.SubElement(root, "creator").text = self.creator
+
+        if self.organism_label != '':
+            ET.SubElement(root, "organism", id=self.organism_id).text = self.organism_label
+        else:
+            ET.SubElement(root, "organism", id="")
+        if self.tissue_label != '':
+            ET.SubElement(root, "tissue", id=self.tissue_id).text = self.tissue_label
+        else:
+            ET.SubElement(root, "tissue", id="")
+        if self.technology_label != '':
+            ET.SubElement(root, "technology", id=self.technology_id).text = self.technology_label
+        else:
+            ET.SubElement(root, "technology", id="")
+
+        for article in self.articles.split(","):
+            url = "https://doi.org/" + article
+            ET.SubElement(root, "article").text = url
+
+        factors = ET.SubElement(root, "factors")
+        for factor in self.factors:
+            ET.SubElement(factors, "creator").text = factor
+
+        contacts = json.loads(self.contacts)
+        for contact in contacts:
+            if not is_invalid_contact(contact):
+                contact_element = ET.SubElement(root, "contact")
+                ET.SubElement(contact_element, "lastName").text = contact["LastName"]
+                ET.SubElement(contact_element, "firstName").text = contact["FirstName"]
+                ET.SubElement(contact_element, "midInitials").text = contact["MidInitials"]
+                ET.SubElement(contact_element, "email").text = contact["Email"]
+                ET.SubElement(contact_element, "phone").text = contact["Phone"]
+                ET.SubElement(contact_element, "address").text = contact["Address"]
+                ET.SubElement(contact_element, "affiliation").text = contact["Affiliation"]
+                ET.SubElement(contact_element, "role").text = contact["Role"]
+
+        return ET.ElementTree(root)
 
 
 def read_tag_list(root, tag):
@@ -189,3 +176,9 @@ def read_tag_node(root, tag):
             if k.text is not None:
                 node_list.append(k.text)
     return node_list
+
+
+def is_invalid_contact(contact):
+    return contact["LastName"] is None and contact["FirstName"] is None and contact["MidInitials"] is None and contact[
+        "Email"] is None and contact["Phone"] is None and contact["Address"] is None and contact[
+               "Affiliation"] is None and contact["Role"] is None

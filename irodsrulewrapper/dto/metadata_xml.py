@@ -126,8 +126,9 @@ class MetadataXML:
             ET.SubElement(root, "technology", id="")
 
         for article in self.articles.split(","):
-            url = "https://doi.org/" + article
-            ET.SubElement(root, "article").text = url
+            if article != '':
+                url = "https://doi.org/" + article
+                ET.SubElement(root, "article").text = url
 
         factors = ET.SubElement(root, "factors")
         for factor in self.factors:

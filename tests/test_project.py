@@ -5,7 +5,7 @@ import json
 
 
 def test_rule_get_contributing_projects():
-    result = RuleManager('jmelius').get_contributing_projects()
+    result = RuleManager('jmelius').get_contributing_projects("false")
     assert result is not None
 
 
@@ -22,7 +22,7 @@ def test_rule_create_new_project():
 
 
 def test_rule_get_managing_project():
-    project = RuleManager('opalmen').get_managing_project('P000000010')
+    project = RuleManager('opalmen').get_managing_project('P000000010', "false")
     assert project.viewers is not None
     assert project.contributors is not None
     assert project.managers is not None

@@ -332,7 +332,7 @@ class RuleManager:
         return RuleInfo(name="get_user_group_memberships", get_result=True, session=self.session, dto=Groups)
 
     @rule_call
-    def get_managing_project(self, project_id):
+    def get_managing_project(self, project_id, show_service_accounts):
         """
         Query the list of ACL for a project for the client user
 
@@ -340,6 +340,8 @@ class RuleManager:
         ----------
         project_id : str
             The project's id; e.g P000000010
+        show_service_accounts: str
+            'true'/'false' expected; If true, hide the service accounts in the result
 
         Returns
         -------
@@ -349,6 +351,8 @@ class RuleManager:
         """
         if not check_project_id_format(project_id):
             raise RuleInputValidationError("invalid project's path format: e.g P000000010")
+        if show_service_accounts != "false" and show_service_accounts != "true":
+            raise RuleInputValidationError("invalid value for *showServiceAccounts: expected 'true' or 'false'")
 
         return RuleInfo(name="get_managing_project", get_result=True, session=self.session, dto=ManagingProjects)
 
@@ -525,16 +529,23 @@ class RuleManager:
         return RuleInfo(name="get_active_drop_zone", get_result=True, session=self.session, dto=DropZone)
 
     @rule_call
-    def get_contributing_projects(self):
+    def get_contributing_projects(self, show_service_accounts):
         """
         Query the list of ACL for a project for the client user.
         Returns an empty list if the user is not a contributor.
+
+        Parameters
+        ----------
+        show_service_accounts: str
+            'true'/'false' expected; If true, hide the service accounts in the result
 
         Returns
         -------
         ContributingProjects
             dto.ContributingProjects object
         """
+        if show_service_accounts != "false" and show_service_accounts != "true":
+            raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
 
         return RuleInfo(name="list_contributing_project", get_result=True, session=self.session,
                         dto=ContributingProjects)

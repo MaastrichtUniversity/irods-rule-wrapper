@@ -12,7 +12,7 @@ class ManagingProjects:
 
     @classmethod
     def create_from_rule_result(cls, result: Dict) -> 'ManagingProjects':
-        # get_managing_project returns an empty list, if the user is not a manager for the project
+        # get_managing_projects returns an empty list, if the user is not a manager for the project
         if len(result) == 0:
             return None
 

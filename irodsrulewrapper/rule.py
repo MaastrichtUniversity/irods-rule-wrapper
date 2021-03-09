@@ -332,7 +332,7 @@ class RuleManager:
         return RuleInfo(name="get_user_group_memberships", get_result=True, session=self.session, dto=Groups)
 
     @rule_call
-    def get_managing_project(self, project_id, show_service_accounts):
+    def get_managing_projects(self, project_id, show_service_accounts):
         """
         Query the list of ACL for a project for the client user
 
@@ -354,7 +354,7 @@ class RuleManager:
         if show_service_accounts != "false" and show_service_accounts != "true":
             raise RuleInputValidationError("invalid value for *showServiceAccounts: expected 'true' or 'false'")
 
-        return RuleInfo(name="get_managing_project", get_result=True, session=self.session, dto=ManagingProjects)
+        return RuleInfo(name="get_managing_projects", get_result=True, session=self.session, dto=ManagingProjects)
 
     @rule_call
     def change_project_permissions(self, project_id, users):

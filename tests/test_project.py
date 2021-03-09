@@ -21,8 +21,8 @@ def test_rule_create_new_project():
     manager.set_acl('default', 'own', "jmelius", project.project_path)
 
 
-def test_rule_get_managing_project():
-    project = RuleManager('opalmen').get_managing_project('P000000010', "false")
+def test_rule_get_managing_projects():
+    project = RuleManager('opalmen').get_managing_projects('P000000010', "false")
     assert project.viewers is not None
     assert project.contributors is not None
     assert project.managers is not None

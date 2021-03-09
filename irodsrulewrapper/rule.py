@@ -1,6 +1,10 @@
 from irodsrulewrapper.decorator import rule_call
 from irods.session import iRODSSession
 from irods.exception import CAT_INVALID_CLIENT_USER
+from irods.exception import DataObjectDoesNotExist, CollectionDoesNotExist, NoResultFound
+from irods.data_object import irods_basename
+from irods.models import Collection as iRODSCollection
+from irods.models import DataObject
 
 from .dto.groups import Groups
 from .dto.users import Users
@@ -690,3 +694,58 @@ class RuleManager:
             raise RuleInputValidationError("invalid value for *inherited: expected 'true' or 'false'")
 
         return RuleInfo(name="detailsProjectCollection", get_result=True, session=self.session, dto=Collection)
+
+    def get_collection_tree(self, path):
+        output = []
+        absolute_path = "/nlmumc/projects/" + path
+        collection = self.session.collections.get(absolute_path)
+
+        for coll in collection.subcollections:
+            # query extra collection info: ctime
+            query = self.session.query(iRODSCollection).filter(iRODSCollection.id == coll.id)
+            try:
+                result = query.one()
+            except NoResultFound:
+                raise CollectionDoesNotExist()
+
+            name = irods_basename(result[iRODSCollection.name])
+            ctime = result[iRODSCollection.create_time]
+            relative_path = path + "/" + name
+
+            folder_node = {
+                'id': relative_path,
+                'webix_kids': True,
+                'value': name,
+                'path': relative_path,
+                'type': 'folder',
+                'size': "--",
+                'rescname': "--",
+                'ctime': ctime.strftime('%Y-%m-%d %H:%M:%S')
+            }
+
+            output.append(folder_node)
+
+        for data in collection.data_objects:
+            # query extra data info: ctime
+            query = self.session.query(DataObject).filter(DataObject.id == data.id)
+            try:
+                result = query.first()
+            except NoResultFound:
+                raise DataObjectDoesNotExist()
+
+            ctime = result[DataObject.create_time]
+            relative_path = path + "/" + data.name
+
+            data_node = {
+                'id': relative_path,
+                'value': data.name,
+                'path': relative_path,
+                'type': 'file',
+                'size': data.size,
+                'rescname': data.resource_name,
+                'ctime': ctime.strftime('%Y-%m-%d %H:%M:%S')
+            }
+
+            output.append(data_node)
+
+        return output

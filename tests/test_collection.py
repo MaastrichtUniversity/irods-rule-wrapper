@@ -4,6 +4,11 @@ from irodsrulewrapper.rule import RuleManager
 import json
 
 
+def test_rule_get_collection_tree():
+    collection = RuleManager().get_collection_tree("P000000010/C000000001")
+    assert collection is not None
+
+
 def test_rule_get_project_collection_details():
     collection = RuleManager().get_project_collection_details("P000000011", "C000000001", "false")
     assert collection is not None

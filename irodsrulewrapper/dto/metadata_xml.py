@@ -90,7 +90,7 @@ class MetadataXML:
                 "technology_id": technology['id'],
                 "technology_label": technology['label'],
                 "factors": read_tag_node(root, "factors"),
-                "contacts": ""
+                "contacts": read_contacts(root)
             }
 
             return cls(data["creator"], data["token"],
@@ -133,9 +133,12 @@ class MetadataXML:
                 ET.SubElement(root, "article")
 
         factors = ET.SubElement(root, "factors")
-        for factor in self.factors:
-            ET.SubElement(factors, "factor").text = factor
-
+        if any(self.factors):
+            for factor in self.factors:
+                ET.SubElement(factors, "factor").text = factor
+        else:
+            ET.SubElement(factors, "factor")
+            
         contacts = json.loads(self.contacts)
         for contact in contacts:
             if not is_invalid_contact(contact):
@@ -159,6 +162,22 @@ def read_tag_list(root, tag):
             if i.text is not None:
                 concatenation += ',' + i.text.replace("https://doi.org/", "")
     return concatenation[1:]
+
+
+def read_contacts(root):
+    contacts = []
+    for contact in root.findall("contact"):
+        contact_object = {"FirstName": contact.find('firstName').text,
+                          "LastName": contact.find('lastName').text,
+                          "MidInitials": contact.find('midInitials').text,
+                          "Email": contact.find('email').text,
+                          "Phone": contact.find('phone').text,
+                          "Address": contact.find('address').text,
+                          "Affiliation": contact.find('affiliation').text,
+                          "Role": contact.find('role').text}
+        contacts.append(contact_object)
+
+    return json.dumps(contacts)
 
 
 def read_tag(root, tag):

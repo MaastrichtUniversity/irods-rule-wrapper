@@ -547,7 +547,7 @@ class RuleManager:
         if show_service_accounts != "false" and show_service_accounts != "true":
             raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
 
-        return RuleInfo(name="list_contributing_project", get_result=True, session=self.session,
+        return RuleInfo(name="list_contributing_projects", get_result=True, session=self.session,
                         dto=ContributingProjects)
 
     @rule_call

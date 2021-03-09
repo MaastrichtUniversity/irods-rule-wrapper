@@ -133,9 +133,12 @@ class MetadataXML:
                 ET.SubElement(root, "article")
 
         factors = ET.SubElement(root, "factors")
-        for factor in self.factors:
-            ET.SubElement(factors, "factor").text = factor
-
+        if any(self.factors):
+            for factor in self.factors:
+                ET.SubElement(factors, "factor").text = factor
+        else:
+            ET.SubElement(factors, "factor")
+            
         contacts = json.loads(self.contacts)
         for contact in contacts:
             if not is_invalid_contact(contact):

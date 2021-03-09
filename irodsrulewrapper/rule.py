@@ -12,7 +12,7 @@ from .dto.managing_projects import ManagingProjects
 from .dto.projects_cost import ProjectsCost
 from .dto.projects import Projects
 from .dto.project import Project
-from .dto.collections import Collections
+from .dto.collections import Collections, Collection
 from .dto.drop_zones import DropZones, DropZone
 from .dto.contributing_projects import ContributingProjects
 from .dto.metadata_xml import MetadataXML
@@ -659,3 +659,34 @@ class RuleManager:
 
         return RuleInfo(name="editIngest", get_result=False, session=self.session, dto=None, input_params=input_params,
                         rule_body=rule_body)
+
+    @rule_call
+    def get_project_collection_details(self, project, collection, inherited):
+        """
+        Lists the destination resources and their statuses
+
+        Parameters
+        ----------
+        project : str
+            The collection's absolute path; eg. P000000001
+        collection : str
+            The collection's id; eg. C000000001
+        inherited: str
+            The attribute that is going to be set; e.g 'responsibleCostCenter'
+
+        Returns
+        -------
+        Collection
+            The collection avu & acl
+
+        """
+        if not check_project_id_format(project):
+            raise RuleInputValidationError("invalid project id; eg. P000000001")
+
+        if not check_collection_id_format(collection):
+            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+
+        if inherited != "false" and inherited != "true":
+            raise RuleInputValidationError("invalid value for *inherited: expected 'true' or 'false'")
+
+        return RuleInfo(name="detailsProjectCollection", get_result=True, session=self.session, dto=Collection)

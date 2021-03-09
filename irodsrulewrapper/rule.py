@@ -115,6 +115,23 @@ class RuleManager:
         return RuleInfo(name="getDataStewards", get_result=True, session=self.session, dto=DataStewards)
 
     @rule_call
+    def get_users_in_group(self, group_id):
+        """
+        Get the list of users in a specific group
+
+        Parameters
+        ----------
+        group_id : str
+            Group id
+
+        Returns
+        -------
+        Users
+            dto.Users object
+        """
+        return RuleInfo(name="getUsersInGroup", get_result=True, session=self.session, dto=Users)
+
+    @rule_call
     def open_project_collection(self, project, project_collection, user, rights):
         """
         Set the ACL of a given collection

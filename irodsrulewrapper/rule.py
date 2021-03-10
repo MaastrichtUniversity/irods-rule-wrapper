@@ -713,9 +713,7 @@ class RuleManager:
             relative_path = path + "/" + name
 
             folder_node = {
-                'id': relative_path,
-                'webix_kids': True,
-                'value': name,
+                'name': name,
                 'path': relative_path,
                 'type': 'folder',
                 'size': "--",
@@ -737,8 +735,7 @@ class RuleManager:
             relative_path = path + "/" + data.name
 
             data_node = {
-                'id': relative_path,
-                'value': data.name,
+                'name': data.name,
                 'path': relative_path,
                 'type': 'file',
                 'size': data.size,

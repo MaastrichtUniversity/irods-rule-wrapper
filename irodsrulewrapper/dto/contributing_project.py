@@ -14,7 +14,7 @@ class ContributingProject:
         self.resource: str = resource
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> 'ManagingProjects':
+    def create_from_rule_result(cls, result: Dict) -> 'ContributingProject':
         managers = result["managers"]["users"]
         contributors_users = result["contributors"]["users"]
         contributors_groups = result["contributors"]["groups"]

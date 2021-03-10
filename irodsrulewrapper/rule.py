@@ -1,6 +1,7 @@
 from irodsrulewrapper.decorator import rule_call
 from irods.session import iRODSSession
 from irods.exception import CAT_INVALID_CLIENT_USER
+from irods.connection import Connection
 
 from .dto.groups import Groups
 from .dto.users import Users
@@ -659,3 +660,6 @@ class RuleManager:
 
         return RuleInfo(name="editIngest", get_result=False, session=self.session, dto=None, input_params=input_params,
                         rule_body=rule_body)
+
+    def get_temp_password(self):
+        return self.session.pool.get_connection().temp_password()

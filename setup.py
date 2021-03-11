@@ -20,7 +20,7 @@ setuptools.setup(
     ],
     python_requires='>=3.6',
     install_requires=[
-        'python-irodsclient @ git+https://github.com/MaastrichtUniversity/python-irodsclient.git@DHS-1146#egg=python-irodsclient'
+        'python-irodsclient @ git+https://github.com/MaastrichtUniversity/python-irodsclient.git#egg=python-irodsclient'
     ],
     tests_requires=[
         'pytest'

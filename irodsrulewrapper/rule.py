@@ -1,7 +1,7 @@
 from irodsrulewrapper.decorator import rule_call
 from irods.session import iRODSSession
 from irods.exception import CAT_INVALID_CLIENT_USER
-from irods.exception import DataObjectDoesNotExist, CollectionDoesNotExist, NoResultFound
+from irods.exception import DataObjectDoesNotExist, CollectionDoesNotExist, NoResultFound, CAT_NO_ACCESS_PERMISSION
 from irods.data_object import irods_basename
 from irods.models import Collection as iRODSCollection
 from irods.models import DataObject
@@ -695,10 +695,14 @@ class RuleManager:
 
         return RuleInfo(name="detailsProjectCollection", get_result=True, session=self.session, dto=Collection)
 
-    def get_collection_tree(self, path):
+    def get_collection_tree(self, base, path):
         output = []
+        base_path = "/nlmumc/projects/" + base
         absolute_path = "/nlmumc/projects/" + path
         collection = self.session.collections.get(absolute_path)
+
+        if not is_safe_path(base_path, absolute_path):
+            raise CAT_NO_ACCESS_PERMISSION
 
         for coll in collection.subcollections:
             # query extra collection info: ctime

@@ -5,7 +5,7 @@ import json
 
 
 def test_rule_get_collection_tree():
-    collection = RuleManager().get_collection_tree("P000000010/C000000001")
+    collection = RuleManager().get_collection_tree("P000000010/C000000001", "P000000010/C000000001")
     assert collection is not None
 
 

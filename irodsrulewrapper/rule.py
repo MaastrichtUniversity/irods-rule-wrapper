@@ -21,6 +21,7 @@ from .dto.drop_zones import DropZones, DropZone
 from .dto.contributing_projects import ContributingProjects
 from .dto.metadata_xml import MetadataXML
 from .dto.token import Token
+from .dto.migration_cards import MigrationCards
 
 from .utils import *
 import os
@@ -750,3 +751,23 @@ class RuleManager:
             output.append(data_node)
 
         return output
+
+    @rule_call
+    def get_project_migration_status(self, project_path):
+        """
+        Get the list of project's collections
+
+        Parameters
+        ----------
+        project_path : str
+            The project's absolute path; eg. /nlmumc/projects/P000000010
+
+        Returns
+        -------
+        Collections
+            dto.Collections object
+        """
+        if not check_project_path_format(project_path):
+            raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010")
+
+        return RuleInfo(name="get_project_migration_status", get_result=True, session=self.session, dto=MigrationCards)

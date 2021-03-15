@@ -4,6 +4,27 @@ from irodsrulewrapper.rule import RuleManager
 import json
 
 
+def test_rule_get_project_migration_status():
+    result = RuleManager().get_project_migration_status("/nlmumc/projects/P000000010")
+    cards = result.cards
+    assert cards is not None
+
+
+def test_rule_get_collection_tree():
+    collection = RuleManager().get_collection_tree("P000000010/C000000001", "P000000010/C000000001")
+    assert collection is not None
+
+
+def test_rule_get_project_collection_details():
+    collection = RuleManager().get_project_collection_details("P000000011", "C000000001", "false")
+    assert collection is not None
+    assert collection.id == "C000000001"
+    assert collection.creator == "irods_bootstrap@docker.dev"
+    assert collection.title == "(HVC) Placeholder collection"
+    assert collection.enable_archive is False
+    assert collection.enable_open_access_export is False
+
+
 def test_rule_get_collections():
     result = RuleManager().get_collections("/nlmumc/projects/P000000011")
     collections = result.collections

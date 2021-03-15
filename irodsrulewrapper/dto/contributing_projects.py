@@ -8,7 +8,7 @@ class ContributingProjects:
 
     @classmethod
     def create_from_rule_result(cls, result: Dict) -> 'ContributingProject':
-        # get_contributing_projects returns an empty list, if the user is not a manager for the project
+        # get_contributing_projects returns an empty list, if the user is not a contributor for the project
         if len(result) == 0:
             return None
 

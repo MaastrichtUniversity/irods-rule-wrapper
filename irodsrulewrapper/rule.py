@@ -13,7 +13,10 @@ from .dto.projects_cost import ProjectsCost
 from .dto.projects import Projects
 from .dto.project import Project
 from .dto.collections import Collections
-from .dto.drop_zones import DropZones
+from .dto.drop_zones import DropZones, DropZone
+from .dto.contributing_projects import ContributingProjects
+from .dto.metadata_xml import MetadataXML
+from .dto.token import Token
 
 from .utils import *
 import os
@@ -25,6 +28,7 @@ class RuleInputValidationError(Exception):
     Attributes:
         message -- explanation of the error
     """
+
     def __init__(self, message):
         self.message = message
 
@@ -33,11 +37,13 @@ class RuleInputValidationError(Exception):
 
 
 class RuleInfo:
-    def __init__(self, name, get_result, session, dto):
+    def __init__(self, name, get_result, session, dto, input_params=None, rule_body=None):
         self.name = name
         self.get_result = get_result
         self.session = session
         self.dto = dto
+        self.input_params = input_params
+        self.rule_body = rule_body
 
 
 class RuleManager:
@@ -151,8 +157,8 @@ class RuleManager:
 
     @rule_call
     def create_new_project(self, authorizationPeriodEndDate, dataRetentionPeriodEndDate,
-                       ingestResource, resource, storageQuotaGb, title, principalInvestigator,
-                       dataSteward, respCostCenter, openAccess, tapeArchive):
+                           ingestResource, resource, storageQuotaGb, title, principalInvestigator,
+                           dataSteward, respCostCenter, openAccess, tapeArchive):
         """
         Create a new iRODS project
 
@@ -326,7 +332,7 @@ class RuleManager:
         return RuleInfo(name="get_user_group_memberships", get_result=True, session=self.session, dto=Groups)
 
     @rule_call
-    def get_managing_project(self, project_id):
+    def get_project_acl_for_manager(self, project_id, show_service_accounts):
         """
         Query the list of ACL for a project for the client user
 
@@ -334,6 +340,8 @@ class RuleManager:
         ----------
         project_id : str
             The project's id; e.g P000000010
+        show_service_accounts: str
+            'true'/'false' expected; If true, hide the service accounts in the result
 
         Returns
         -------
@@ -343,8 +351,10 @@ class RuleManager:
         """
         if not check_project_id_format(project_id):
             raise RuleInputValidationError("invalid project's path format: e.g P000000010")
+        if show_service_accounts != "false" and show_service_accounts != "true":
+            raise RuleInputValidationError("invalid value for *showServiceAccounts: expected 'true' or 'false'")
 
-        return RuleInfo(name="get_managing_project", get_result=True, session=self.session, dto=ManagingProjects)
+        return RuleInfo(name="get_project_acl_for_manager", get_result=True, session=self.session, dto=ManagingProjects)
 
     @rule_call
     def change_project_permissions(self, project_id, users):
@@ -409,19 +419,27 @@ class RuleManager:
         return RuleInfo(name="get_projects_finance", get_result=True, session=self.session, dto=ProjectsCost)
 
     @rule_call
-    def get_projects(self):
+    def get_projects(self, show_service_accounts):
         """
         Get the list of projects
+
+        Parameters
+        ----------
+        show_service_accounts: str
+            'true'/'false' expected; If true, hide the service accounts in the result
 
         Returns
         -------
         Projects
             dto.Projects object
         """
+        if show_service_accounts != "false" and show_service_accounts != "true":
+            raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
+
         return RuleInfo(name="list_projects", get_result=True, session=self.session, dto=Projects)
 
     @rule_call
-    def get_project_details(self, project_path):
+    def get_project_details(self, project_path, show_service_accounts):
         """
         Get the list of projects
 
@@ -429,6 +447,8 @@ class RuleManager:
         ----------
         project_path : str
             The project's absolute path; eg. /nlmumc/projects/P000000010
+        show_service_accounts: str
+            'true'/'false' expected; If true, hide the service accounts in the result
 
         Returns
         -------
@@ -437,6 +457,8 @@ class RuleManager:
         """
         if not check_project_path_format(project_path):
             raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010")
+        if show_service_accounts != "false" and show_service_accounts != "true":
+            raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
 
         return RuleInfo(name="get_project_details", get_result=True, session=self.session, dto=Project)
 
@@ -480,3 +502,160 @@ class RuleManager:
 
         return RuleInfo(name="listActiveDropZones", get_result=True, session=self.session, dto=DropZones)
 
+    @rule_call
+    def get_active_drop_zone(self, token, check_ingest_resource_status):
+        """
+        Get the list of active drop zones
+
+        Parameters
+        ----------
+        token : str
+            The dropzone token
+        check_ingest_resource_status : str
+            'true'/'false' excepted values; If true, show the project resource status
+
+        Returns
+        -------
+        DropZone
+            dto.DropZone object
+        """
+        if type(token) != str:
+            raise RuleInputValidationError("invalid type for *token: expected a string")
+
+        if check_ingest_resource_status != "false" and check_ingest_resource_status != "true":
+            raise RuleInputValidationError(
+                "invalid value for *check_ingest_resource_status: expected 'true' or 'false'")
+
+        return RuleInfo(name="get_active_drop_zone", get_result=True, session=self.session, dto=DropZone)
+
+    @rule_call
+    def get_contributing_projects(self, show_service_accounts):
+        """
+        Query the list of ACL for a project for the client user.
+        Returns an empty list if the user is not a contributor.
+
+        Parameters
+        ----------
+        show_service_accounts: str
+            'true'/'false' expected; If true, hide the service accounts in the result
+
+        Returns
+        -------
+        ContributingProjects
+            dto.ContributingProjects object
+        """
+        if show_service_accounts != "false" and show_service_accounts != "true":
+            raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
+
+        return RuleInfo(name="list_contributing_projects", get_result=True, session=self.session,
+                        dto=ContributingProjects)
+
+    @rule_call
+    def start_ingest(self, user, token):
+
+        input_params = {
+            '*user': '"{}"'.format(user),
+            '*token': '"{}"'.format(token)
+        }
+
+        rule_body = """
+            execute_rule{
+                ingest;
+            }
+            """
+
+        return RuleInfo(name="ingest", get_result=False, session=self.session,
+                        dto=None, input_params=input_params, rule_body=rule_body)
+
+    @rule_call
+    def create_ingest(self, user, token, project, title):
+
+        input_params = {
+            '*user': '"{}"'.format(user),
+            '*token': '"{}"'.format(token),
+            '*project': '"{}"'.format(project),
+            '*title': '"{}"'.format(title)
+        }
+
+        rule_body = """
+        execute_rule{
+            createIngest;
+        }
+        """
+
+        return RuleInfo(name="createIngest", get_result=False, session=self.session,
+                        dto=None, input_params=input_params, rule_body=rule_body)
+
+    def create_drop_zone(self, data):
+        token = self.generate_token().token
+        self.create_ingest(data["user"], token, data["project"], data["title"])
+        data["token"] = token
+        self.save_metadata_xml(data)
+        return token
+
+    def read_metadata_xml(self, token):
+        xml = MetadataXML.read_metadata_xml(self.session, token)
+        return xml
+
+    def save_metadata_xml(self, data):
+        xml = MetadataXML.create_from_dict(data)
+        xml.write_metadata_xml(self.session)
+
+    @rule_call
+    def generate_token(self):
+        """
+        Gets a unused (dropzone) token generated by iRODS
+
+        Returns
+        -------
+        Token
+            The token generated by iRODS
+
+        """
+
+        return RuleInfo(name="generate_token", get_result=True, session=self.session, dto=Token)
+
+    @rule_call
+    def list_destination_resources_status(self):
+        """
+        Lists the destination resources and their statuses
+
+        Returns
+        -------
+        Resources
+            The resources
+
+        """
+
+        return RuleInfo(name="list_destination_resources_status", get_result=True, session=self.session, dto=Resources)
+
+    @rule_call
+    def edit_drop_zone(self, token, project, title):
+        """
+        Edits the dropzone's project and title AVUs
+
+        Parameters
+        ----------
+        token : str
+            the token of the DZ to modify
+        project : str
+            the new project number (ex. P000000001)
+        title : str
+            the new title (ex. bar)
+
+        """
+
+        input_params = {
+            '*token': '"{}"'.format(token),
+            '*project': '"{}"'.format(project),
+            '*title': '"{}"'.format(title)
+        }
+
+        rule_body = """
+               execute_rule{
+                   editIngest;
+               }
+               """
+
+        return RuleInfo(name="editIngest", get_result=False, session=self.session, dto=None, input_params=input_params,
+                        rule_body=rule_body)

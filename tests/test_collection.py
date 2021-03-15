@@ -4,7 +4,6 @@ from irodsrulewrapper.rule import RuleManager
 import json
 
 
-
 def test_rule_get_collections():
     result = RuleManager().get_collections("/nlmumc/projects/P000000011")
     collections = result.collections

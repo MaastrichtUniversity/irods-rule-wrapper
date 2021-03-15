@@ -1,6 +1,10 @@
 from irodsrulewrapper.decorator import rule_call
 from irods.session import iRODSSession
 from irods.exception import CAT_INVALID_CLIENT_USER
+from irods.exception import DataObjectDoesNotExist, CollectionDoesNotExist, NoResultFound, CAT_NO_ACCESS_PERMISSION
+from irods.data_object import irods_basename
+from irods.models import Collection as iRODSCollection
+from irods.models import DataObject
 
 from .dto.groups import Groups
 from .dto.users import Users
@@ -12,11 +16,12 @@ from .dto.managing_projects import ManagingProjects
 from .dto.projects_cost import ProjectsCost
 from .dto.projects import Projects
 from .dto.project import Project
-from .dto.collections import Collections
+from .dto.collections import Collections, Collection
 from .dto.drop_zones import DropZones, DropZone
 from .dto.contributing_projects import ContributingProjects
 from .dto.metadata_xml import MetadataXML
 from .dto.token import Token
+from .dto.migration_cards import MigrationCards
 
 from .utils import *
 import os
@@ -659,3 +664,110 @@ class RuleManager:
 
         return RuleInfo(name="editIngest", get_result=False, session=self.session, dto=None, input_params=input_params,
                         rule_body=rule_body)
+
+    @rule_call
+    def get_project_collection_details(self, project, collection, inherited):
+        """
+        Lists the destination resources and their statuses
+
+        Parameters
+        ----------
+        project : str
+            The collection's absolute path; eg. P000000001
+        collection : str
+            The collection's id; eg. C000000001
+        inherited: str
+            The attribute that is going to be set; e.g 'responsibleCostCenter'
+
+        Returns
+        -------
+        Collection
+            The collection avu & acl
+
+        """
+        if not check_project_id_format(project):
+            raise RuleInputValidationError("invalid project id; eg. P000000001")
+
+        if not check_collection_id_format(collection):
+            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+
+        if inherited != "false" and inherited != "true":
+            raise RuleInputValidationError("invalid value for *inherited: expected 'true' or 'false'")
+
+        return RuleInfo(name="detailsProjectCollection", get_result=True, session=self.session, dto=Collection)
+
+    def get_collection_tree(self, base, path):
+        output = []
+        base_path = "/nlmumc/projects/" + base
+        absolute_path = "/nlmumc/projects/" + path
+        collection = self.session.collections.get(absolute_path)
+
+        if not is_safe_path(base_path, absolute_path):
+            raise CAT_NO_ACCESS_PERMISSION
+
+        for coll in collection.subcollections:
+            # query extra collection info: ctime
+            query = self.session.query(iRODSCollection).filter(iRODSCollection.id == coll.id)
+            try:
+                result = query.one()
+            except NoResultFound:
+                raise CollectionDoesNotExist()
+
+            name = irods_basename(result[iRODSCollection.name])
+            ctime = result[iRODSCollection.create_time]
+            relative_path = path + "/" + name
+
+            folder_node = {
+                'name': name,
+                'path': relative_path,
+                'type': 'folder',
+                'size': "--",
+                'rescname': "--",
+                'ctime': ctime.strftime('%Y-%m-%d %H:%M:%S')
+            }
+
+            output.append(folder_node)
+
+        for data in collection.data_objects:
+            # query extra data info: ctime
+            query = self.session.query(DataObject).filter(DataObject.id == data.id)
+            try:
+                result = query.first()
+            except NoResultFound:
+                raise DataObjectDoesNotExist()
+
+            ctime = result[DataObject.create_time]
+            relative_path = path + "/" + data.name
+
+            data_node = {
+                'name': data.name,
+                'path': relative_path,
+                'type': 'file',
+                'size': data.size,
+                'rescname': data.resource_name,
+                'ctime': ctime.strftime('%Y-%m-%d %H:%M:%S')
+            }
+
+            output.append(data_node)
+
+        return output
+
+    @rule_call
+    def get_project_migration_status(self, project_path):
+        """
+        Get the list of project's collections
+
+        Parameters
+        ----------
+        project_path : str
+            The project's absolute path; eg. /nlmumc/projects/P000000010
+
+        Returns
+        -------
+        Collections
+            dto.Collections object
+        """
+        if not check_project_path_format(project_path):
+            raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010")
+
+        return RuleInfo(name="get_project_migration_status", get_result=True, session=self.session, dto=MigrationCards)

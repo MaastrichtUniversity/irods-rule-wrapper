@@ -665,6 +665,10 @@ class RuleManager:
         return RuleInfo(name="editIngest", get_result=False, session=self.session, dto=None, input_params=input_params,
                         rule_body=rule_body)
 
+
+    def get_temp_password(self, username):
+        return self.session.users.temp_password_for_user(username)
+
     @rule_call
     def get_project_collection_details(self, project, collection, inherited):
         """
@@ -771,3 +775,4 @@ class RuleManager:
             raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010")
 
         return RuleInfo(name="get_project_migration_status", get_result=True, session=self.session, dto=MigrationCards)
+

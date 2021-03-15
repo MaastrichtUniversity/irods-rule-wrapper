@@ -1,7 +1,6 @@
 from irodsrulewrapper.decorator import rule_call
 from irods.session import iRODSSession
 from irods.exception import CAT_INVALID_CLIENT_USER
-from irods.connection import Connection
 
 from .dto.groups import Groups
 from .dto.users import Users

@@ -665,9 +665,26 @@ class RuleManager:
         return RuleInfo(name="editIngest", get_result=False, session=self.session, dto=None, input_params=input_params,
                         rule_body=rule_body)
 
+    def get_temp_password(self, username, sessions_cleanup=True):
+        """
+        Get a temporary password for a user. Must be called with an admin account.
 
-    def get_temp_password(self, username):
-        return self.session.users.temp_password_for_user(username)
+        Parameters
+        ----------
+        username : str
+            The client username
+        sessions_cleanup: bool
+            If true, the session will be closed after retrieving the values.
+
+        Returns
+        -------
+        str
+            The temporary password
+        """
+        pwd = self.session.users.temp_password_for_user(username)
+        if sessions_cleanup:
+            self.session.cleanup()
+        return pwd
 
     @rule_call
     def get_project_collection_details(self, project, collection, inherited):
@@ -700,7 +717,24 @@ class RuleManager:
 
         return RuleInfo(name="detailsProjectCollection", get_result=True, session=self.session, dto=Collection)
 
-    def get_collection_tree(self, base, path):
+    def get_collection_tree(self, base, path, sessions_cleanup=True):
+        """
+        Lists the folders and files attributes at the input 'path'
+
+        Parameters
+        ----------
+        base : str
+            The base path to validate ; eg. P000000001/C000000001
+        path : str
+            The collection's id; eg. P000000001/C000000001/SubFolder1/Experiment1/
+        sessions_cleanup: bool
+            If true, the session will be closed after retrieving the values.
+
+        Returns
+        -------
+        dict
+            The folders and files attributes at the requested path
+        """
         output = []
         base_path = "/nlmumc/projects/" + base
         absolute_path = "/nlmumc/projects/" + path
@@ -754,6 +788,9 @@ class RuleManager:
 
             output.append(data_node)
 
+        if sessions_cleanup:
+            self.session.cleanup()
+
         return output
 
     @rule_call
@@ -768,8 +805,8 @@ class RuleManager:
 
         Returns
         -------
-        Collections
-            dto.Collections object
+        MigrationCards
+            dto.MigrationCards object
         """
         if not check_project_path_format(project_path):
             raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010")

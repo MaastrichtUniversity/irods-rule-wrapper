@@ -63,3 +63,27 @@ class UserRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid type for *attribute: expected a string")
 
         return RuleInfo(name="get_username_attribute_value", get_result=True, session=self.session, dto=AttributeValue)
+
+    @rule_call
+    def set_username_attribute_value(self, username, attribute, value):
+        """
+        Set an attribute value to the input user
+
+        Parameters
+        ----------
+        username : str
+            The username
+        attribute : str
+            The user attribute to set
+        value : str
+            The user attribute's value to set
+
+        """
+        if type(username) != str:
+            raise RuleInputValidationError("invalid type for *username: expected a string")
+        if type(attribute) != str:
+            raise RuleInputValidationError("invalid type for *attribute: expected a string")
+        if type(value) != str:
+            raise RuleInputValidationError("invalid type for *attribute: expected a string")
+
+        return RuleInfo(name="set_username_attribute_value", get_result=False, session=self.session, dto=None)

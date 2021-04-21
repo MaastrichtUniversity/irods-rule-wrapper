@@ -84,6 +84,6 @@ class UserRuleManager(BaseRuleManager):
         if type(attribute) != str:
             raise RuleInputValidationError("invalid type for *attribute: expected a string")
         if type(value) != str:
-            raise RuleInputValidationError("invalid type for *attribute: expected a string")
+            raise RuleInputValidationError("invalid type for *value: expected a string")
 
         return RuleInfo(name="set_username_attribute_value", get_result=False, session=self.session, dto=None)

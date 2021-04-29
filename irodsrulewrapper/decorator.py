@@ -74,8 +74,17 @@ def rule_call(func):
 
     def wrapper_decorator(*args, **kwargs):
         rule_info = func(*args)
-        rule_body = create_rule_body(*args, rule_info=rule_info)
-        input_params = create_rule_input(*args, rule_info=rule_info)
+
+        if rule_info.rule_body is None:
+            rule_body = create_rule_body(*args, rule_info=rule_info)
+        else:
+            rule_body = rule_info.rule_body
+
+        if rule_info.input_params is None:
+            input_params = create_rule_input(*args, rule_info=rule_info)
+        else:
+            input_params = rule_info.input_params
+
         result = execute_rule(rule_body, input_params, rule_info)
         return result
     return wrapper_decorator

@@ -40,6 +40,10 @@ class Project:
 
     @classmethod
     def create_from_rule_result(cls, result: Dict) -> 'Project':
+        if "principalInvestigatorDisplayName" not in result:
+            result["principalInvestigatorDisplayName"] = ''
+        if "dataStewardDisplayName" not in result:
+            result["dataStewardDisplayName"] = ''
         project_details = cls(result["project"],
                               result["title"],
                               result["enableOpenAccessExport"] == 'true',

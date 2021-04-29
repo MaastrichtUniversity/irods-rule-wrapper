@@ -4,6 +4,17 @@ from irodsrulewrapper.rule import RuleManager
 import json
 
 
+def test_rule_get_contributing_projects():
+    result = RuleManager('jmelius').get_contributing_projects("false")
+    assert result is not None
+
+
+def test_rule_get_project_migration_status():
+    result = RuleManager().get_project_migration_status("/nlmumc/projects/P000000010")
+    cards = result.cards
+    assert cards is not None
+
+
 def test_rule_create_new_project():
     manager = RuleManager()
     project = manager.create_new_project("authorizationPeriodEndDate", "dataRetentionPeriodEndDate",
@@ -16,8 +27,8 @@ def test_rule_create_new_project():
     manager.set_acl('default', 'own', "jmelius", project.project_path)
 
 
-def test_rule_get_managing_project():
-    project = RuleManager('jmelius').get_managing_project('P000000010')
+def test_rule_get_project_acl_for_manager():
+    project = RuleManager('opalmen').get_project_acl_for_manager('P000000010', "false")
     assert project.viewers is not None
     assert project.contributors is not None
     assert project.managers is not None
@@ -26,19 +37,19 @@ def test_rule_get_managing_project():
 
 
 def test_rule_get_projects_finance():
-    project = RuleManager('jmelius').get_projects_finance()
+    project = RuleManager('opalmen').get_projects_finance()
     assert project.projects_cost is not None
 
 
 def test_rule_get_project_details():
-    project_details = RuleManager().get_project_details("/nlmumc/projects/P000000011")
+    project_details = RuleManager().get_project_details("/nlmumc/projects/P000000011", 'true')
     assert project_details is not None
     assert project_details.principal_investigator_display_name == "Pascal Suppers"
     assert project_details.data_steward_display_name == "Olav Palmen"
     assert project_details.responsible_cost_center == "AZM-123456"
     assert project_details.manager_users.users[0].display_name == 'Pascal Suppers'
     assert project_details.contributor_users.users[0].display_name == 'service-mdl'
-    assert project_details.viewer_groups.groups[0].display_name == 'DataHub'
+    # assert project_details.viewer_groups.groups[0].display_name == 'DataHub'
     assert project_details.title == '(HVC) Placeholder project'
     assert project_details.enable_open_access_export is False
     assert project_details.enable_archive is False
@@ -47,7 +58,7 @@ def test_rule_get_project_details():
 
 
 def test_rule_get_projects():
-    result = RuleManager().get_projects()
+    result = RuleManager().get_projects('false')
     projects = result.projects
     assert projects is not None
     assert projects.__len__() >= 2

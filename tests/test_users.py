@@ -11,6 +11,14 @@ def test_rule_get_username_attribute_value():
     assert value == "jmelius@sram.surf.nl"
 
 
+def test_rule_set_username_attribute_value():
+    RuleManager().set_username_attribute_value("jmelius", "lastToSAcceptedTimestamp", "1618476697")
+    result = RuleManager().get_username_attribute_value("jmelius", "lastToSAcceptedTimestamp")
+    value = result.value
+    assert value is not None
+    assert value == "1618476697"
+
+
 def test_rule_get_user_group_memberships():
     result = RuleManager().get_user_group_memberships("true", "jmelius")
     assert result.groups is not None

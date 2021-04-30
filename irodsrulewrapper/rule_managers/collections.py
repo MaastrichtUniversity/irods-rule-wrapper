@@ -126,8 +126,6 @@ class CollectionRuleManager(BaseRuleManager):
 
         Parameters
         ----------
-        ctx : Context
-            Combined type of a callback and rei struct.
         project: str
             The project's id; e.g P000000010
         collection: str
@@ -145,3 +143,34 @@ class CollectionRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid collection id; eg. C000000001")
 
         return RuleInfo(name="get_project_collection_tape_estimate", get_result=True, session=self.session, dto=TapeEstimate)
+
+    @rule_call
+    def archive_project_collection(self, collection):
+        """
+        Archive all the eligible files from the collection to tape
+
+        Parameters
+        collection: str
+            The absolute collection path: e.g /nlmumc/projects/P000000010/C000000001
+
+        """
+        if not check_project_collection_path_format(collection):
+            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+
+        return RuleInfo(name="prepareTapeArchive", get_result=False, session=self.session, dto=None)
+
+
+    @rule_call
+    def unarchive_project_collection(self, path):
+        """
+        Un-archive a single file or entire collection from tape
+
+        Parameters
+        ----------
+        path: str
+            The absolute path of the collection or the single file to un-archive
+            e.g: /nlmumc/projects/P000000010/C000000001 or /nlmumc/projects/P000000010/C000000001/test.txt
+        """
+
+        return RuleInfo(name="prepareTapeUnArchive", get_result=False, session=self.session, dto=None)
+

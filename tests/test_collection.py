@@ -3,6 +3,35 @@ from irodsrulewrapper.dto.collections import Collections
 from irodsrulewrapper.rule import RuleManager
 import json
 
+import datetime
+
+
+def test_rule_time():
+    manager = RuleManager()
+    a = datetime.datetime.now()
+    project_details = manager.get_project_details("/nlmumc/projects/P000000011", 'true')
+    b = datetime.datetime.now()
+    c = b - a
+    print(str(c.microseconds / 1000))
+    a = datetime.datetime.now()
+    collection = manager.get_collections("/nlmumc/projects/P000000011")
+    b = datetime.datetime.now()
+    c = b - a
+    print(str(c.microseconds / 1000))
+    a = datetime.datetime.now()
+    print(a)
+    result = manager.get_project_migration_status("/nlmumc/projects/P000000010")
+    b = datetime.datetime.now()
+    print(b)
+    c = b - a
+    print(str(c.microseconds / 1000))
+    assert collection is not None
+
+
+def test_get_project_collection_tape_estimate():
+    collection = RuleManager().get_project_collection_tape_estimate("P000000010", "C000000001")
+    assert collection is not None
+
 
 def test_rule_get_collection_tree():
     collection = RuleManager().get_collection_tree("P000000010/C000000001", "P000000010/C000000001")

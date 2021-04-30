@@ -2,6 +2,7 @@ from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.utils import check_project_path_format, check_project_collection_path_format, \
     check_project_id_format, check_collection_id_format, BaseRuleManager, RuleInfo, RuleInputValidationError
 from irodsrulewrapper.dto.collections import Collections, Collection
+from irodsrulewrapper.dto.tape_estimate import TapeEstimate
 
 
 class CollectionRuleManager(BaseRuleManager):
@@ -117,3 +118,30 @@ class CollectionRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid value for *inherited: expected 'true' or 'false'")
 
         return RuleInfo(name="detailsProjectCollection", get_result=True, session=self.session, dto=Collection)
+
+    @rule_call
+    def get_project_collection_tape_estimate(self, project, collection):
+        """
+        The project collection tape status & the number and total bytes size of files eligible for tape
+
+        Parameters
+        ----------
+        ctx : Context
+            Combined type of a callback and rei struct.
+        project: str
+            The project's id; e.g P000000010
+        collection: str
+            The collection's id; e.g C000000001
+
+        Returns
+        -------
+        dict
+            The project collection tape status, above_threshold and archivable
+        """
+        if not check_project_id_format(project):
+            raise RuleInputValidationError("invalid project id; eg. P000000001")
+
+        if not check_collection_id_format(collection):
+            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+
+        return RuleInfo(name="get_project_collection_tape_estimate", get_result=True, session=self.session, dto=TapeEstimate)

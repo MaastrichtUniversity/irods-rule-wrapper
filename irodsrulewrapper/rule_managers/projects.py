@@ -8,6 +8,7 @@ from irodsrulewrapper.dto.projects_cost import ProjectsCost
 from irodsrulewrapper.dto.create_project import CreateProject
 from irodsrulewrapper.dto.migration_cards import MigrationCards
 from irodsrulewrapper.dto.project_contributors import ProjectContributors
+from irodsrulewrapper.dto.contributing_project import ContributingProject
 
 
 class ProjectRuleManager(BaseRuleManager):
@@ -291,5 +292,31 @@ class ProjectRuleManager(BaseRuleManager):
         if show_service_accounts != "false" and show_service_accounts != "true":
             raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
 
-        return RuleInfo(name="list_project_contributors", get_result=True, session=self.session, dto=ProjectContributors)
+        return RuleInfo(name="list_project_contributors", get_result=True, session=self.session,
+                        dto=ProjectContributors)
 
+    @rule_call
+    def get_contributing_project(self, project_id, show_service_accounts):
+        """
+        Get project ACL if the user is a contributor. Otherwise, it returns None
+
+        Parameters
+        ----------
+        project_id : str
+            The project's id path; eg. 000000010
+        show_service_accounts: str
+            'true'/'false' expected; If true, hide the service accounts in the result
+
+        Returns
+        -------
+        ContributingProject
+            dto.ContributingProject object
+        """
+
+        if not check_project_id_format(project_id):
+            raise RuleInputValidationError("invalid project id; eg. P000000001")
+
+        if show_service_accounts != "false" and show_service_accounts != "true":
+            raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
+
+        return RuleInfo(name="get_contributing_project", get_result=True, session=self.session, dto=ContributingProject)

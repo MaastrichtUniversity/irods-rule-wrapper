@@ -160,7 +160,6 @@ class CollectionRuleManager(BaseRuleManager):
 
         return RuleInfo(name="prepareTapeArchive", get_result=False, session=self.session, dto=None)
 
-
     @rule_call
     def unarchive_project_collection(self, path):
         """

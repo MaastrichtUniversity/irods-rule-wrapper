@@ -4,6 +4,11 @@ from irodsrulewrapper.rule import RuleManager
 import json
 
 
+def test_rule_get_contributing_project():
+    result = RuleManager('mcoonen').get_contributing_project("P000000010", "false")
+    assert result is not None
+
+
 def test_rule_get_project_contributors():
     result = RuleManager('opalmen').get_project_contributors("P000000010", "true", "false")
     assert result is not None

@@ -3,6 +3,7 @@ from irodsrulewrapper.utils import check_project_path_format, check_project_coll
     check_project_id_format, check_collection_id_format, BaseRuleManager, RuleInfo, RuleInputValidationError
 from irodsrulewrapper.dto.collections import Collections, Collection
 from irodsrulewrapper.dto.tape_estimate import TapeEstimate
+from irodsrulewrapper.dto.attribute_value import AttributeValue
 
 
 class CollectionRuleManager(BaseRuleManager):
@@ -173,4 +174,31 @@ class CollectionRuleManager(BaseRuleManager):
         """
 
         return RuleInfo(name="prepareTapeUnArchive", get_result=False, session=self.session, dto=None)
+
+    @rule_call
+    def get_collection_attribute_value(self, path, attribute):
+        """
+        Get the attribute value of an iRODS collection
+
+        Parameters
+        ----------
+        path: str
+            The absolute path of the collection
+            e.g: /nlmumc/projects/P000000010/C000000001 or /nlmumc/ingest/zones/grieving-giant
+        attribute: str
+            The attribute to query
+
+        Returns
+        -------
+        AttributeValue
+            dto.AttributeValue object
+        """
+
+        if type(path) != str:
+            raise RuleInputValidationError("invalid type for *path: expected a string")
+
+        if type(attribute) != str:
+            raise RuleInputValidationError("invalid type for *attribute: expected a string")
+
+        return RuleInfo(name="get_collection_attribute_value", get_result=True, session=self.session, dto=AttributeValue)
 

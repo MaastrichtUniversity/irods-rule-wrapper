@@ -122,6 +122,7 @@ class RuleManager(CollectionRuleManager, ProjectRuleManager, UserRuleManager,
                 'type': 'file',
                 'size': data.size,
                 'rescname': data.resource_name,
+                'offlineResource': data.resource_name == 'arcRescSURF01',
                 'ctime': ctime.strftime('%Y-%m-%d %H:%M:%S')
             }
 

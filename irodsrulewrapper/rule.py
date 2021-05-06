@@ -150,8 +150,8 @@ class RuleManager(CollectionRuleManager, ProjectRuleManager, UserRuleManager,
         try:
             file_information = self.session.data_objects.get(path_prefix + path)
             file = self.session.data_objects.open(path_prefix + path, 'r')
-        except exception.DataObjectDoesNotExist as error:
-            print('File download request of ' + path + ' failed, file does not exist')
+        except (CollectionDoesNotExist, DataObjectDoesNotExist) as error:
+            print('File download request of "' + path + '" failed, file does not exist')
             print(error)
 
         return file, file_information

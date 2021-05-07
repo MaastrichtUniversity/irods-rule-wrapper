@@ -129,6 +129,7 @@ class RuleManager(CollectionRuleManager, ProjectRuleManager, UserRuleManager,
                 'type': 'file',
                 'size': data.size,
                 'rescname': data.resource_name,
+                'offlineResource': data.resource_name == 'arcRescSURF01',
                 'ctime': ctime.strftime('%Y-%m-%d %H:%M:%S')
             }
 
@@ -138,3 +139,26 @@ class RuleManager(CollectionRuleManager, ProjectRuleManager, UserRuleManager,
             self.session.cleanup()
 
         return output
+
+    def download_file(self, path):
+        """
+        Returns the file buffer of the path given, if the file exists
+
+        Parameters
+        ----------
+        path : str
+            The full path to the file
+            e.g. "P000000012/C000000001/metadata.xml"
+        """
+        file = None
+        file_information = None
+        path_prefix = '/nlmumc/projects/'
+
+        try:
+            file_information = self.session.data_objects.get(path_prefix + path)
+            file = self.session.data_objects.open(path_prefix + path, 'r')
+        except (CollectionDoesNotExist, DataObjectDoesNotExist) as error:
+            print('File download request of "' + path + '" failed, file does not exist')
+            print(error)
+
+        return file, file_information

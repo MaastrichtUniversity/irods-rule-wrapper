@@ -17,6 +17,10 @@ class ContributingProject:
 
     @classmethod
     def create_from_rule_result(cls, result: Dict) -> 'ContributingProject':
+        # get_contributing_project returns an empty list, if the user is not a contributor for the project
+        if len(result) == 0:
+            return None
+
         managers = Users.create_from_rule_result(result['managers']['userObjects'])
         contributors_users = Users.create_from_rule_result(result['contributors']['userObjects'])
         contributors_groups = Groups.create_from_rule_result(result['contributors']['groupObjects'])

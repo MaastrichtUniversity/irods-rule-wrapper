@@ -4,6 +4,16 @@ from irodsrulewrapper.rule import RuleManager
 import json
 
 
+def test_rule_get_collection_avu():
+    avu = RuleManager().get_collection_attribute_value("/nlmumc/projects/P000000010/C000000001", "title")
+    assert avu is not None
+
+
+def test_get_project_collection_tape_estimate():
+    collection = RuleManager().get_project_collection_tape_estimate("P000000010", "C000000001")
+    assert collection is not None
+
+
 def test_rule_get_collection_tree():
     collection = RuleManager().get_collection_tree("P000000010/C000000001", "P000000010/C000000001")
     assert collection is not None

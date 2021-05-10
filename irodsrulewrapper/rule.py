@@ -19,6 +19,13 @@ class RuleManager(CollectionRuleManager, ProjectRuleManager, UserRuleManager,
     def __init__(self, client_user=None):
         BaseRuleManager.__init__(self, client_user)
 
+    def __del__(self):
+        # __del__ is a destructor method which is called as soon as all references of the object are deleted.
+        # i.e when an object is garbage collected.
+        # Session cleanup is not called after each rule execution anymore.
+        # So it needs to happen here.
+        self.session.cleanup()
+
     def check_irods_connection(self):
         """
         Check if an iRODS connection can be established

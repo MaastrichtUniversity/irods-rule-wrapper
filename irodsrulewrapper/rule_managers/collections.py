@@ -2,6 +2,8 @@ from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.utils import check_project_path_format, check_project_collection_path_format, \
     check_project_id_format, check_collection_id_format, BaseRuleManager, RuleInfo, RuleInputValidationError
 from irodsrulewrapper.dto.collections import Collections, Collection
+from irodsrulewrapper.dto.tape_estimate import TapeEstimate
+from irodsrulewrapper.dto.attribute_value import AttributeValue
 
 
 class CollectionRuleManager(BaseRuleManager):
@@ -117,3 +119,85 @@ class CollectionRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid value for *inherited: expected 'true' or 'false'")
 
         return RuleInfo(name="detailsProjectCollection", get_result=True, session=self.session, dto=Collection)
+
+    @rule_call
+    def get_project_collection_tape_estimate(self, project, collection):
+        """
+        The project collection tape status & the number and total bytes size of files eligible for tape
+
+        Parameters
+        ----------
+        project: str
+            The project's id; e.g P000000010
+        collection: str
+            The collection's id; e.g C000000001
+
+        Returns
+        -------
+        dict
+            The project collection tape status, above_threshold and archivable
+        """
+        if not check_project_id_format(project):
+            raise RuleInputValidationError("invalid project id; eg. P000000001")
+
+        if not check_collection_id_format(collection):
+            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+
+        return RuleInfo(name="get_project_collection_tape_estimate", get_result=True, session=self.session, dto=TapeEstimate)
+
+    @rule_call
+    def archive_project_collection(self, collection):
+        """
+        Archive all the eligible files from the collection to tape
+
+        Parameters
+        collection: str
+            The absolute collection path: e.g /nlmumc/projects/P000000010/C000000001
+
+        """
+        if not check_project_collection_path_format(collection):
+            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+
+        return RuleInfo(name="prepareTapeArchive", get_result=False, session=self.session, dto=None)
+
+    @rule_call
+    def unarchive_project_collection(self, path):
+        """
+        Un-archive a single file or entire collection from tape
+
+        Parameters
+        ----------
+        path: str
+            The absolute path of the collection or the single file to un-archive
+            e.g: /nlmumc/projects/P000000010/C000000001 or /nlmumc/projects/P000000010/C000000001/test.txt
+        """
+
+        return RuleInfo(name="prepareTapeUnArchive", get_result=False, session=self.session, dto=None)
+
+    @rule_call
+    def get_collection_attribute_value(self, path, attribute):
+        """
+        Get the attribute value of an iRODS collection
+
+        Parameters
+        ----------
+        path: str
+            The absolute path of the collection
+            e.g: /nlmumc/projects/P000000010/C000000001 or /nlmumc/ingest/zones/grieving-giant
+        attribute: str
+            The attribute to query
+
+        Returns
+        -------
+        AttributeValue
+            dto.AttributeValue object
+        """
+
+        if type(path) != str:
+            raise RuleInputValidationError("invalid type for *path: expected a string")
+
+        if type(attribute) != str:
+            raise RuleInputValidationError("invalid type for *attribute: expected a string")
+
+        return RuleInfo(name="get_collection_attribute_value", get_result=True, session=self.session, dto=AttributeValue)
+

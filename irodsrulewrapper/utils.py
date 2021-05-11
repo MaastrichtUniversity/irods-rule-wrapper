@@ -41,6 +41,7 @@ def check_file_path_format(path):
 
 def is_safe_full_path(full_path):
     split_path = full_path.split('/')
+    # basedir => "/nlmumc/projects/P[0-9]{9}/C[0-9]{9}"
     basedir = '/' + split_path[1] + '/' + split_path[2] + '/' + split_path[3] + '/' + split_path[4]
     return is_safe_path(basedir, full_path)
 

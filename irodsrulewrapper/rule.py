@@ -153,10 +153,14 @@ class RuleManager(CollectionRuleManager, ProjectRuleManager, UserRuleManager,
         file = None
         file_information = None
         path_prefix = '/nlmumc/projects/'
+        full_path = path_prefix + path
+
+        if check_file_path_format(full_path) is False or is_safe_full_path(full_path) is False:
+            return file, file_information
 
         try:
-            file_information = self.session.data_objects.get(path_prefix + path)
-            file = self.session.data_objects.open(path_prefix + path, 'r')
+            file_information = self.session.data_objects.get(full_path)
+            file = self.session.data_objects.open(full_path, 'r')
         except (CollectionDoesNotExist, DataObjectDoesNotExist) as error:
             print('File download request of "' + path + '" failed, file does not exist')
             print(error)

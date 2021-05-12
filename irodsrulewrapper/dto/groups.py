@@ -7,7 +7,7 @@ class Groups:
         self.groups: List['Group'] = groups
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> 'DataStewards':
+    def create_from_rule_result(cls, result: Dict) -> 'Groups':
         output = []
         for item in result:
             group = Group.create_from_rule_result(item)

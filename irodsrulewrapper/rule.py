@@ -19,6 +19,13 @@ class RuleManager(CollectionRuleManager, ProjectRuleManager, UserRuleManager,
     def __init__(self, client_user=None):
         BaseRuleManager.__init__(self, client_user)
 
+    def __del__(self):
+        # __del__ is a destructor method which is called as soon as all references of the object are deleted.
+        # i.e when an object is garbage collected.
+        # Session cleanup is not called after each rule execution anymore.
+        # So it needs to happen here.
+        self.session.cleanup()
+
     def check_irods_connection(self):
         """
         Check if an iRODS connection can be established
@@ -122,6 +129,7 @@ class RuleManager(CollectionRuleManager, ProjectRuleManager, UserRuleManager,
                 'type': 'file',
                 'size': data.size,
                 'rescname': data.resource_name,
+                'offlineResource': data.resource_name == 'arcRescSURF01',
                 'ctime': ctime.strftime('%Y-%m-%d %H:%M:%S')
             }
 
@@ -131,3 +139,30 @@ class RuleManager(CollectionRuleManager, ProjectRuleManager, UserRuleManager,
             self.session.cleanup()
 
         return output
+
+    def download_file(self, path):
+        """
+        Returns the file buffer of the path given, if the file exists
+
+        Parameters
+        ----------
+        path : str
+            The full path to the file
+            e.g. "P000000012/C000000001/metadata.xml"
+        """
+        file = None
+        file_information = None
+        path_prefix = '/nlmumc/projects/'
+        full_path = path_prefix + path
+
+        if check_file_path_format(full_path) is False or is_safe_full_path(full_path) is False:
+            return file, file_information
+
+        try:
+            file_information = self.session.data_objects.get(full_path)
+            file = self.session.data_objects.open(full_path, 'r')
+        except (CollectionDoesNotExist, DataObjectDoesNotExist) as error:
+            print('File download request of "' + path + '" failed, file does not exist')
+            print(error)
+
+        return file, file_information

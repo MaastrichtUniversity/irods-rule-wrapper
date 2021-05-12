@@ -1,6 +1,7 @@
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.utils import BaseRuleManager, RuleInfo, RuleInputValidationError
 from irodsrulewrapper.dto.groups import Groups
+from irodsrulewrapper.dto.users import Users
 
 
 class GroupRuleManager(BaseRuleManager):
@@ -50,3 +51,18 @@ class GroupRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid type for *username: expected a string")
 
         return RuleInfo(name="get_user_group_memberships", get_result=True, session=self.session, dto=Groups)
+
+    @rule_call
+    def get_users_in_group(self, group_id):
+        """
+        Get the list of users in a specific group
+        Parameters
+        ----------
+        group_id : str
+            Group id
+        Returns
+        -------
+        Users
+            dto.Users object
+        """
+        return RuleInfo(name="getUsersInGroup", get_result=True, session=self.session, dto=Users)

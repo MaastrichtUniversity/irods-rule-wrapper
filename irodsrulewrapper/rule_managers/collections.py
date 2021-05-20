@@ -201,3 +201,55 @@ class CollectionRuleManager(BaseRuleManager):
 
         return RuleInfo(name="get_collection_attribute_value", get_result=True, session=self.session, dto=AttributeValue)
 
+    def export_project_collection(self, project, collection, repository):
+        """
+        Starts the exporting process of a collection. Be sure to call this rule
+        as 'rodsadmin' because it will open a collection using admin-mode.
+
+        Parameters
+        ----------
+        project: str
+            The project ID e.g. P000000010
+        collection: str
+            The collection ID e.g. C000000001
+        repository: str
+            The repository to copy to e.g. Dataverse
+
+        Returns
+        -------
+        AttributeValue
+            dto.AttributeValue object
+        """
+        if not check_project_id_format(project):
+            raise RuleInputValidationError("invalid project id; eg. P000000001")
+
+        if not check_collection_id_format(collection):
+            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+
+        # This rule can only be executed by 'rodsadmin', so validating on that here
+        if self.session.username != "rods":
+            raise RuleInputValidationError("this function has to be run as 'rods'")
+
+        # Get the RabbitMQ settings from the Rule Manager
+        rabbitmq_host = self.env_settings["rabbitmq_host"]
+        rabbitmq_port = self.env_settings["rabbitmq_port"]
+        rabbitmq_user = self.env_settings["rabbitmq_user"]
+        rabbitmq_pass = self.env_settings["rabbitmq_pass"]
+
+        # Formatting the JSON manually, not using 'json.dumps' because
+        # the python-irods-client will complain about the double quotes it introduces.
+        # Single quotes are also valid in JSON
+        message = "{'project': '%s', 'collection': '%s'}" % (project, collection)
+
+        # Call the actual rule
+        return self.__export(message, project, collection, repository, rabbitmq_host, rabbitmq_port, rabbitmq_user,
+               rabbitmq_pass)
+
+    @rule_call
+    def __export(self, message, project, collection, repository, amqp_host, amqp_port, amqp_user, amqp_pass):
+        """
+        Calls the rule to start an export.
+        This method is private since it requires a lot of parameters and should not be called directly but
+        always via 'export_project_collection'
+        """
+        return RuleInfo(name="requestExportProjectCollection", get_result=False, session=self.session, dto=None)

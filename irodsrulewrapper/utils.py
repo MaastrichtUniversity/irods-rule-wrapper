@@ -61,6 +61,15 @@ class BaseRuleManager:
             self.session = iRODSSession(host=os.environ['IRODS_HOST'], port=1247, user=os.environ['IRODS_USER'],
                                         password=os.environ['IRODS_PASS'], zone='nlmumc', client_user=client_user)
 
+        # Getting the RabbitMQ settings from the environment variables
+        # and storing them in the Rule Manager class, accessible anywhere
+        self.env_settings = {
+            "rabbitmq_host": os.environ['RABBITMQ_HOST'],
+            "rabbitmq_port": os.environ['RABBITMQ_PORT'],
+            "rabbitmq_user": os.environ['RABBITMQ_USER'],
+            "rabbitmq_pass": os.environ['RABBITMQ_PASS']
+        }
+
 
 class RuleInputValidationError(Exception):
     """Exception raised for errors during the rule's validation of the input parameters.

@@ -24,5 +24,6 @@ setuptools.setup(
     ],
     tests_requires=[
         'pytest'
+        'pytest-dotenv'
     ],
 )

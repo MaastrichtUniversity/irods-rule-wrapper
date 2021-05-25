@@ -98,16 +98,9 @@ class IngestRuleManager(BaseRuleManager):
         self.save_metadata_xml(data)
         return token
 
-    def read_metadata_xml(self, **kwargs):
-        if 'token' in kwargs.keys():
-            return MetadataXML.read_metadata_xml_from_dropzone(self.session,
-                                                               kwargs['token'])
-        elif 'project_id' in kwargs.keys() and 'collection_id' in kwargs.keys():
-            return MetadataXML.read_metadata_xml_from_collection(self.session,
-                                                               kwargs['project_id'],
-                                                               kwargs['collection_id'])
-        else:
-            raise ValueError('missing keyword(s), required are [token] or [project_id] and [collection_id]')
+    def read_metadata_xml_from_dropzone(self, token):
+        xml_path = "/nlmumc/ingest/zones/" + token + "/" + "metadata.xml"
+        return MetadataXML.read_metadata_xml(self.session, xml_path, token)
 
     def save_metadata_xml(self, data):
         xml = MetadataXML.create_from_dict(data)

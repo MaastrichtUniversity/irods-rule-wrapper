@@ -57,17 +57,7 @@ class MetadataXML:
         os.remove("./metadata.xml")
 
     @classmethod
-    def read_metadata_xml_from_dropzone(cls, session, token):
-        xml_path = "/nlmumc/ingest/zones/" + token + "/" + "metadata.xml"
-        return cls.read_metadata_xml(session, xml_path)
-
-    @classmethod
-    def read_metadata_xml_from_collection(cls, session, project_id, collection_id):
-        xml_path = "/nlmumc/projects/" + project_id + "/" + collection_id + "/" + "metadata.xml"
-        return cls.read_metadata_xml(session, xml_path)
-
-    @classmethod
-    def read_metadata_xml(cls, session, xml_path):
+    def read_metadata_xml(cls, session, xml_path, token=''):
         try:
             with session.data_objects.open(xml_path, 'r') as f:
                 metadata_xml = f.read()

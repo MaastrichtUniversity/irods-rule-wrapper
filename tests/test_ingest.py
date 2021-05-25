@@ -54,20 +54,8 @@ def test_write_metadata_xml():
 @pytest.mark.skip(reason='excluded from overall testing because these need specific setup.')
 def test_read_metadata_xml_dropzone():
     token = "glorious-caterpillar"
-    xml = RuleManager().read_metadata_xml(token=token)
+    xml = RuleManager().read_metadata_xml_from_dropzone(token)
     assert xml is not None
-
-
-@pytest.mark.skip(reason='excluded from overall testing because these need specific setup.')
-def test_read_metadata_xml_collection():
-    xml = RuleManager().read_metadata_xml(project_id='P123456789', collection_id='C123456789')
-    assert xml is not None
-
-
-@pytest.mark.skip(reason='excluded from overall testing because these need specific setup.')
-def test_read_metadata_xml_invalid():
-    with pytest.raises(ValueError, match=r'.*missing keyword.*'):
-        RuleManager().read_metadata_xml(my_var='THIS WILL GENERATE AN ERROR')
 
 
 @pytest.mark.skip(reason='excluded from overall testing because these need specific setup.')

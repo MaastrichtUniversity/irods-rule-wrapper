@@ -74,11 +74,11 @@ class MetadataXML:
             technology = read_tag(root, "technology")
             organism = read_tag(root, "organism")
             data = {
-                "project": root.find("project").text,
-                "title": root.find("title").text,
-                "description": root.find("description").text,
-                "date": root.find("date").text,
-                "creator": root.find("creator").text,
+                "project": read_text(root, 'project'),
+                "title": read_text(root, 'title'),
+                "description": read_text(root, 'description'),
+                "date": read_text(root, "date"),
+                "creator": read_text(root, "creator"),
                 "token": token,
                 "articles": read_tag_list(root, "article"),
                 "organism_id": organism['id'],
@@ -160,6 +160,14 @@ def read_tag_list(root, tag):
             if i.text is not None:
                 concatenation += ',' + i.text.replace("https://doi.org/", "")
     return concatenation[1:]
+
+
+def read_text(root, tag):
+    text = root.find(tag).text
+    if text is None:
+        return ''
+    else:
+        return text
 
 
 def read_contacts(root):

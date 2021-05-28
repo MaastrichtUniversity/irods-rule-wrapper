@@ -1,8 +1,11 @@
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.utils import BaseRuleManager, RuleInfo, RuleInputValidationError
-from irodsrulewrapper.dto.users import Users
+from irodsrulewrapper.dto.users import Users, User
+from irodsrulewrapper.dto.group import Group
+from irodsrulewrapper.dto.user_or_group import UserOrGroup
 from irodsrulewrapper.dto.data_stewards import DataStewards
 from irodsrulewrapper.dto.attribute_value import AttributeValue
+from irodsrulewrapper.cache import CACHE_USERS, CACHE_GROUPS
 
 
 class UserRuleManager(BaseRuleManager):
@@ -87,3 +90,24 @@ class UserRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid type for *value: expected a string")
 
         return RuleInfo(name="set_username_attribute_value", get_result=False, session=self.session, dto=None)
+
+    def get_user_or_group(self, uid):
+        if uid not in CACHE_USERS:
+            item = self.get_user_or_group_by_id(uid)
+            if item is None:
+                return None
+            CACHE_USERS[uid] = item.result
+
+            if item.result["account_type"] == "rodsuser":
+                CACHE_USERS[uid] = User.create_from_rule_result(item.result)
+            elif item.result["account_type"] == "rodsgroup":
+                CACHE_USERS[uid] = Group.create_from_rule_result(item.result)
+
+        return CACHE_USERS[uid]
+
+    @rule_call
+    def get_user_or_group_by_id(self, uid):
+        if type(id) != str:
+            raise RuleInputValidationError("invalid type for *username: expected a string")
+
+        return RuleInfo(name="get_user_or_group_by_id", get_result=True, session=self.session, dto=UserOrGroup)

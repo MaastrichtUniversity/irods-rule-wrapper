@@ -1,0 +1,2 @@
+CACHE_USERS = {}
+CACHE_GROUPS = {}

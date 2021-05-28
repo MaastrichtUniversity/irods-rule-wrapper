@@ -107,7 +107,7 @@ class UserRuleManager(BaseRuleManager):
 
     @rule_call
     def get_user_or_group_by_id(self, uid):
-        if type(id) != str:
-            raise RuleInputValidationError("invalid type for *username: expected a string")
+        # if type(id) != str:
+        #     raise RuleInputValidationError("invalid type for *username: expected a string")
 
         return RuleInfo(name="get_user_or_group_by_id", get_result=True, session=self.session, dto=UserOrGroup)

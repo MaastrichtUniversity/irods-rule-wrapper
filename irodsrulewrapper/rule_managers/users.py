@@ -92,10 +92,8 @@ class UserRuleManager(BaseRuleManager):
         return RuleInfo(name="set_username_attribute_value", get_result=False, session=self.session, dto=None)
 
     def get_user_or_group(self, uid):
-        # TODO Find an another way, as performing, to skip rodsadmin & service-accounts than hard-coded values
-        if uid in CacheTTL.SERVICE_ACCOUNTS:
-            return None
         if uid not in CacheTTL.CACHE_USERS_GROUPS:
+            # TODO Find an another way, as performing, to skip rodsadmin & service-accounts than hard-coded values
             item = self.get_user_or_group_by_id(uid)
             if item.result["account_type"] == "rodsuser":
                 CacheTTL.CACHE_USERS_GROUPS[uid] = User.create_from_rule_result(item.result)

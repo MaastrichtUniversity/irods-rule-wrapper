@@ -1,11 +1,9 @@
 import time
-import os
 
 
 class CacheTTL:
     CACHE_TIME_STOMP = None
     CACHE_USERS_GROUPS = {}
-    SERVICE_ACCOUNTS = os.environ['SERVICE_ACCOUNTS'].split(',')
 
     @classmethod
     def set_time_stomp(cls):

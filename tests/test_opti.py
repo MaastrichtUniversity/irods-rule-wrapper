@@ -1,4 +1,5 @@
 from irodsrulewrapper.rule import RuleManager
+from irodsrulewrapper.cache import CacheTTL
 
 
 def test_rule_get_projects():
@@ -14,6 +15,17 @@ def test_rule_get_projects_overview():
 def test_rule_get_projects_overview_cached():
     result = RuleManager().get_projects_overview()
     assert result is not None
+
+
+def test_rule_get_projects_overview_cached_ttl_reset():
+    result = RuleManager().get_projects_overview()
+    assert result is not None
+
+
+def test_rule_get_projects_overview_cached_ttl_cached():
+    result = RuleManager().get_projects_overview()
+    assert result is not None
+
 
 
 # def test_create_multiple_projects():

@@ -67,11 +67,7 @@ def rule_call(func):
         result = myrule.execute()
         if rule_info.get_result:
             buf = result.MsParam_PI[0].inOutStruct.myStr
-            # buf_json = json.loads(buf)
-            try:
-                buf_json = json.loads(buf)
-            except:
-                buf_json = None
+            buf_json = json.loads(buf)
             result = rule_info.dto.create_from_rule_result(buf_json)
             return result
         return

@@ -1,17 +1,18 @@
 from .project_overview import ProjectOverview
 from typing import List, Dict
+from irodsrulewrapper.cache import CacheTTL
 
 
 class ProjectsOverview:
-    def __init__(self, projects: List['ProjectOverview'], has_financial_view_access: bool):
+    def __init__(self, projects: List['ProjectOverview']):
         self.projects: List['ProjectOverview'] = projects
-        self.has_financial_view_access: bool = has_financial_view_access
 
     @classmethod
     def create_from_rule_result(cls, result: Dict) -> 'ProjectsOverview':
+        CacheTTL.check_if_cache_expired()
         output = []
         for item in result:
-            project = ProjectOverview.create_from_rule_result(item)
+            project = ProjectOverview.create_from_rule_result(item, )
             output.append(project)
-        projects = cls(output, False) #result['has_financial_view_access']
+        projects = cls(output)
         return projects

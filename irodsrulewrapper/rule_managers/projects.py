@@ -333,4 +333,4 @@ class ProjectRuleManager(BaseRuleManager):
             dto.ProjectsOverview object
         """
 
-        return RuleInfo(name="opti", get_result=True, session=self.session, dto=ProjectsOverview)
+        return RuleInfo(name="optimized_list_projects", get_result=True, session=self.session, dto=ProjectsOverview)

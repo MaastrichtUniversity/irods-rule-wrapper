@@ -1,4 +1,5 @@
 import time
+import os
 
 
 class CacheTTL:
@@ -19,7 +20,7 @@ class CacheTTL:
 
     @classmethod
     def check_if_cache_expired(cls):
-        if time.time() >= cls.CACHE_TIME_STOMP + 2:
+        if time.time() >= cls.CACHE_TIME_STOMP + int(os.environ["CACHE_TTL_VALUE"]):
             cls.CACHE_USERS_GROUPS.clear()
             CacheTTL.reset_time_stomp()
 

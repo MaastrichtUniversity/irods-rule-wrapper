@@ -201,7 +201,7 @@ class CollectionRuleManager(BaseRuleManager):
 
         return RuleInfo(name="get_collection_attribute_value", get_result=True, session=self.session, dto=AttributeValue)
 
-    def export_project_collection(self, project, collection, repository):
+    def export_project_collection(self, project, collection, repository, message):
         """
         Starts the exporting process of a collection. Be sure to call this rule
         as 'rodsadmin' because it will open a collection using admin-mode.
@@ -214,6 +214,8 @@ class CollectionRuleManager(BaseRuleManager):
             The collection ID e.g. C000000001
         repository: str
             The repository to copy to e.g. Dataverse
+        message: dict
+            The json input to execute the export
 
         Returns
         -------
@@ -236,14 +238,9 @@ class CollectionRuleManager(BaseRuleManager):
         rabbitmq_user = self.env_settings["rabbitmq_user"]
         rabbitmq_pass = self.env_settings["rabbitmq_pass"]
 
-        # Formatting the JSON manually, not using 'json.dumps' because
-        # the python-irods-client will complain about the double quotes it introduces.
-        # Single quotes are also valid in JSON
-        message = "{'project': '%s', 'collection': '%s'}" % (project, collection)
-
         # Call the actual rule
         return self.__export(message, project, collection, repository, rabbitmq_host, rabbitmq_port, rabbitmq_user,
-               rabbitmq_pass)
+                             rabbitmq_pass)
 
     @rule_call
     def __export(self, message, project, collection, repository, amqp_host, amqp_port, amqp_user, amqp_pass):

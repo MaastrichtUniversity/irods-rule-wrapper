@@ -1,7 +1,8 @@
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.utils import check_project_path_format, check_project_collection_path_format, \
     check_project_id_format, check_collection_id_format, BaseRuleManager, RuleInfo, RuleInputValidationError
-from irodsrulewrapper.dto.collections import Collections, Collection
+from irodsrulewrapper.dto.collections import Collections
+from irodsrulewrapper.dto.collection_details import CollectionDetails
 from irodsrulewrapper.dto.tape_estimate import TapeEstimate
 from irodsrulewrapper.dto.attribute_value import AttributeValue
 
@@ -118,7 +119,7 @@ class CollectionRuleManager(BaseRuleManager):
         if inherited != "false" and inherited != "true":
             raise RuleInputValidationError("invalid value for *inherited: expected 'true' or 'false'")
 
-        return RuleInfo(name="detailsProjectCollection", get_result=True, session=self.session, dto=Collection)
+        return RuleInfo(name="detailsProjectCollection", get_result=True, session=self.session, dto=CollectionDetails)
 
     @rule_call
     def get_project_collection_tape_estimate(self, project, collection):

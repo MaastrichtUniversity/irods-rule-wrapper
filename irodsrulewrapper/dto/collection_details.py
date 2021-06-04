@@ -26,7 +26,7 @@ class CollectionDetails:
     @classmethod
     def create_from_rule_result(cls, result: Dict) -> 'CollectionDetails':
         external_pid_list = []
-        if "externals" in result:
+        if result["externals"] != "no-externalPID-set":
             for external in result["externals"]:
                 external_pid_list.append(ExternalPID.create_from_rule_result(external))
 

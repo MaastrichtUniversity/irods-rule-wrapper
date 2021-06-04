@@ -8,5 +8,6 @@ class ExternalPID:
 
     @classmethod
     def create_from_rule_result(cls, result: Dict) -> 'ExternalPID':
-        user = cls(result["value"], result["unit"])
+        pid = "https://doi.org/" + result["value"].split(":")[1]
+        user = cls(pid, result["unit"])
         return user

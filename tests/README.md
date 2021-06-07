@@ -11,6 +11,13 @@ Click on: Run > Edit configurations > Templates > Python tests > pytest
 
 There you can define the default "Environment variables" that will passed on for each new pytest run configuration
 
+Additionally, if you install pytest-dotenv you can set the environment variables creating a .env file in the tests folder.
+```shell script
+IRODS_HOST=0.0.0.0
+IRODS_USER=rods
+IRODS_PASS=irods
+```
+
 ### Run the tests in PyCarm
 
 * All the tests: Right click on the sub folder irods-rule-wrapper/tests and then "Run 'pytest in tests"

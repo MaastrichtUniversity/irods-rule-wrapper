@@ -2,6 +2,7 @@ from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.utils import check_project_path_format, check_project_id_format, BaseRuleManager, RuleInfo, \
     RuleInputValidationError
 from irodsrulewrapper.dto.projects import Projects, Project
+from irodsrulewrapper.dto.projects_overview import ProjectsOverview
 from irodsrulewrapper.dto.managing_projects import ManagingProjects
 from irodsrulewrapper.dto.contributing_projects import ContributingProjects
 from irodsrulewrapper.dto.projects_cost import ProjectsCost
@@ -320,3 +321,16 @@ class ProjectRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
 
         return RuleInfo(name="get_contributing_project", get_result=True, session=self.session, dto=ContributingProject)
+
+    @rule_call
+    def get_projects_overview(self):
+        """
+        Get the list of projects
+
+        Returns
+        -------
+        Projects
+            dto.ProjectsOverview object
+        """
+
+        return RuleInfo(name="optimized_list_projects", get_result=True, session=self.session, dto=ProjectsOverview)

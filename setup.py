@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="irods-rule-wrapper",
-    version="0.0.4",
+    version="0.0.5",
     author="DataHub",
     author_email="author@example.com",
     description="This repository contains the python code with the irods rule logic",
@@ -20,10 +20,10 @@ setuptools.setup(
     ],
     python_requires='>=3.6',
     install_requires=[
-        'python-irodsclient @ git+https://github.com/MaastrichtUniversity/python-irodsclient.git#egg=python-irodsclient'
+        'python-irodsclient @ git+https://github.com/MaastrichtUniversity/python-irodsclient.git#egg=python-irodsclient',
     ],
     tests_requires=[
-        'pytest'
+        'pytest',
         'pytest-dotenv'
     ],
 )

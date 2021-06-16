@@ -1,3 +1,5 @@
+import logging
+
 from irods.session import iRODSSession
 
 import re
@@ -53,14 +55,21 @@ def is_safe_path(basedir, path):
 
 
 class BaseRuleManager:
-    def __init__(self, client_user=None):
+    def __init__(self, client_user=None, config=None):
+        self.env_settings = {}
+        self.session = []
+        if config is None:
+            self.init_with_environ_conf(client_user)
+        else:
+            self.init_with_variable_config(client_user, config)
+
+    def init_with_environ_conf(self, client_user):
         if client_user is None:
             self.session = iRODSSession(host=os.environ['IRODS_HOST'], port=1247, user=os.environ['IRODS_USER'],
                                         password=os.environ['IRODS_PASS'], zone='nlmumc')
         else:
             self.session = iRODSSession(host=os.environ['IRODS_HOST'], port=1247, user=os.environ['IRODS_USER'],
                                         password=os.environ['IRODS_PASS'], zone='nlmumc', client_user=client_user)
-
         # Getting the RabbitMQ settings from the environment variables
         # and storing them in the Rule Manager class, accessible anywhere
         self.env_settings = {
@@ -68,6 +77,23 @@ class BaseRuleManager:
             "rabbitmq_port": os.environ['RABBITMQ_PORT'],
             "rabbitmq_user": os.environ['RABBITMQ_USER'],
             "rabbitmq_pass": os.environ['RABBITMQ_PASS']
+        }
+
+    def init_with_variable_config(self, client_user, config):
+        if client_user is None:
+            self.session = iRODSSession(host=config['IRODS_HOST'], port=1247, user=config['IRODS_USER'],
+                                        password=config['IRODS_PASS'], zone='nlmumc')
+        else:
+            self.session = iRODSSession(host=config['IRODS_HOST'], port=1247, user=config['IRODS_USER'],
+                                        password=config['IRODS_PASS'], zone='nlmumc', client_user=client_user)
+        if 'RABBITMQ_HOST' not in config:
+            logging.warning("no rabbit mq config provided, dataverse features will not work.")
+            return
+        self.env_settings = {
+            "rabbitmq_host": config['RABBITMQ_HOST'],
+            "rabbitmq_port": config['RABBITMQ_PORT'],
+            "rabbitmq_user": config['RABBITMQ_USER'],
+            "rabbitmq_pass": config['RABBITMQ_PASS']
         }
 
 

@@ -16,8 +16,8 @@ from .utils import *
 
 class RuleManager(CollectionRuleManager, ProjectRuleManager, UserRuleManager,
                   GroupRuleManager, ResourceRuleManager, IngestRuleManager):
-    def __init__(self, client_user=None):
-        BaseRuleManager.__init__(self, client_user)
+    def __init__(self, client_user=None, config=None):
+        BaseRuleManager.__init__(self, client_user, config)
 
     def __del__(self):
         # __del__ is a destructor method which is called as soon as all references of the object are deleted.

@@ -1,3 +1,5 @@
+import pytest
+
 from irodsrulewrapper.dto.collection import Collection
 from irodsrulewrapper.dto.collections import Collections
 from irodsrulewrapper.rule import RuleManager
@@ -31,6 +33,18 @@ def test_rule_get_project_collection_details():
 
 def test_rule_get_collections():
     result = RuleManager().get_collections("/nlmumc/projects/P000000011")
+    collections = result.collections
+    assert collections is not None
+    assert collections[0].creator == "irods_bootstrap@docker.dev"
+
+
+@pytest.mark.skip(reason='needs local setup first.')
+def test_rule_get_collections_var_config():
+    config = dict()
+    config['IRODS_HOST'] = '0.0.0.0'
+    config['IRODS_USER'] = 'rods'
+    config['IRODS_PASS'] = 'irods'
+    result = RuleManager(config=config).get_collections("/nlmumc/projects/P000000011")
     collections = result.collections
     assert collections is not None
     assert collections[0].creator == "irods_bootstrap@docker.dev"

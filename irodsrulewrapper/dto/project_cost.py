@@ -11,7 +11,7 @@ class ProjectCost:
 
     @classmethod
     def create_from_rule_result(cls, result):
-        user = cls(result["project_id"], result["project_cost_monthly"], result["project_cost_yearly"],
+        user = cls(result["project_id"], result["project_cost_yearly"], result["project_cost_monthly"],
                    result["project_size_gb"], result["project_size_gib"],
                    result["budget_number"], result["title"])
         return user

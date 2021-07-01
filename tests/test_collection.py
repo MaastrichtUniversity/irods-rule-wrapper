@@ -4,6 +4,7 @@ from irodsrulewrapper.dto.collection import Collection
 from irodsrulewrapper.dto.collections import Collections
 from irodsrulewrapper.rule import RuleManager
 import json
+from irods.exception import CAT_NO_ACCESS_PERMISSION
 
 
 def test_rule_get_collection_avu():
@@ -101,3 +102,26 @@ COLLECTIONS_JSON = '''
 ]
 '''
 
+
+@pytest.mark.skip()
+def test_rule_export():
+    result = False
+    try:
+        # RuleManager().export_project_collection("P000000016", "C000000001", "DataverseNL", {})
+        RuleManager("mcoonen").export_project_collection("P000000016", "C000000001", "DataverseNL", {})
+    except CAT_NO_ACCESS_PERMISSION:
+        result = True
+
+    assert result is True
+
+
+@pytest.mark.skip()
+def test_rule_archive():
+    result = False
+    try:
+        # RuleManager("service-surfarchive").archive_project_collection("/nlmumc/projects/P000000016/C000000001")
+        RuleManager("jmelius").archive_project_collection("/nlmumc/projects/P000000015/C000000001")
+    except CAT_NO_ACCESS_PERMISSION:
+        result = True
+
+    assert result is True

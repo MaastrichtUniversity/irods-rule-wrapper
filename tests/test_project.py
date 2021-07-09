@@ -1,7 +1,25 @@
 from irodsrulewrapper.dto.project import Project
 from irodsrulewrapper.dto.projects import Projects
-from irodsrulewrapper.rule import RuleManager
+from irodsrulewrapper.rule import RuleManager, RuleJSONManager
 import json
+
+
+def test_rule_details_project():
+    project = RuleJSONManager().details_project("P000000011", 'false')
+    assert project is not None
+    assert project["project"] is not None
+
+
+def test_rule_list_projects_by_user():
+    projects = RuleJSONManager().list_projects_by_user()
+    assert projects is not None
+    assert projects[0]["Projects"] is not None
+
+
+def test_rule_get_project_details_json():
+    project_details = RuleJSONManager().get_project_details("/nlmumc/projects/P000000011", 'true')
+    assert project_details is not None
+    assert project_details["title"] == '(HVC) Placeholder project'
 
 
 def test_rule_get_contributing_project():

@@ -68,8 +68,11 @@ def rule_call(func):
         if rule_info.get_result:
             buf = result.MsParam_PI[0].inOutStruct.myStr
             buf_json = json.loads(buf)
-            result = rule_info.dto.create_from_rule_result(buf_json)
-            return result
+            # Check if it will return the JSON rule's output or the DTO
+            if rule_info.dto_parsing:
+                return rule_info.dto.create_from_rule_result(buf_json)
+            else:
+                return buf_json
         return
 
     def wrapper_decorator(*args, **kwargs):

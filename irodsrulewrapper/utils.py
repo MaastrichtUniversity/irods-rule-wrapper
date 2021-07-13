@@ -58,6 +58,7 @@ class BaseRuleManager:
     def __init__(self, client_user=None, config=None):
         self.env_settings = {}
         self.session = []
+        self.parse_to_dto = True
         if config is None:
             self.init_with_environ_conf(client_user)
         else:
@@ -112,10 +113,11 @@ class RuleInputValidationError(Exception):
 
 
 class RuleInfo:
-    def __init__(self, name, get_result, session, dto, input_params=None, rule_body=None):
+    def __init__(self, name, get_result, session, dto, input_params=None, rule_body=None, parse_to_dto=True):
         self.name = name
         self.get_result = get_result
         self.session = session
         self.dto = dto
         self.input_params = input_params
         self.rule_body = rule_body
+        self.parse_to_dto = parse_to_dto

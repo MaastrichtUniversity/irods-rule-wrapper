@@ -166,3 +166,14 @@ class RuleManager(CollectionRuleManager, ProjectRuleManager, UserRuleManager,
             print(error)
 
         return file, file_information
+
+
+class RuleJSONManager(RuleManager):
+    """
+    RuleJSONManager inherit all RuleManager's rule methods. And set parse_to_dto as False.
+    Executing a rule with RuleJSONManager, will return a JSON instead of a DTO
+
+    """
+    def __init__(self, client_user=None, config=None):
+        BaseRuleManager.__init__(self, client_user, config)
+        self.parse_to_dto = False

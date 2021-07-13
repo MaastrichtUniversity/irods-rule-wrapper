@@ -66,3 +66,21 @@ class GroupRuleManager(BaseRuleManager):
             dto.Users object
         """
         return RuleInfo(name="getUsersInGroup", get_result=True, session=self.session, dto=Users)
+
+    @rule_call
+    def list_groups_users(self):
+        """
+        Get the list of users for each group
+
+        Returns
+        -------
+        dict
+            JSON rule output
+        """
+
+        # TODO Create the DTO
+
+        return RuleInfo(name="listGroupsByUser", get_result=True, session=self.session,
+                        dto=None, parse_to_dto=self.parse_to_dto)
+
+

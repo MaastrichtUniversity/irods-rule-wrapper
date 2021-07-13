@@ -40,7 +40,7 @@ class ProjectRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
 
         return RuleInfo(name="get_project_details", get_result=True,
-                        session=self.session, dto=Project, dto_parsing=self.dto_parsing)
+                        session=self.session, dto=Project, parse_to_dto=self.parse_to_dto)
 
     @rule_call
     def get_project_acl_for_manager(self, project_id, show_service_accounts):
@@ -350,7 +350,7 @@ class ProjectRuleManager(BaseRuleManager):
         """
 
         return RuleInfo(name="listProjectsByUser", get_result=True, session=self.session,
-                        dto=None, dto_parsing=self.dto_parsing)
+                        dto=None, parse_to_dto=self.parse_to_dto)
 
     @rule_call
     def details_project(self, project, inherited):
@@ -365,4 +365,4 @@ class ProjectRuleManager(BaseRuleManager):
         """
 
         return RuleInfo(name="detailsProject", get_result=True, session=self.session,
-                        dto=None, dto_parsing=self.dto_parsing)
+                        dto=None, parse_to_dto=self.parse_to_dto)

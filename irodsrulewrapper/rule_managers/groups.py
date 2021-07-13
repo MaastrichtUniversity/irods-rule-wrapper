@@ -81,6 +81,6 @@ class GroupRuleManager(BaseRuleManager):
         # TODO Create the DTO
 
         return RuleInfo(name="listGroupsByUser", get_result=True, session=self.session,
-                        dto=None, dto_parsing=self.dto_parsing)
+                        dto=None, parse_to_dto=self.parse_to_dto)
 
 

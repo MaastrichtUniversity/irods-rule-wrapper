@@ -170,10 +170,10 @@ class RuleManager(CollectionRuleManager, ProjectRuleManager, UserRuleManager,
 
 class RuleJSONManager(RuleManager):
     """
-    RuleJSONManager inherit all RuleManager's rule methods. And set dto_parsing as False.
+    RuleJSONManager inherit all RuleManager's rule methods. And set parse_to_dto as False.
     Executing a rule with RuleJSONManager, will return a JSON instead of a DTO
 
     """
     def __init__(self, client_user=None, config=None):
         BaseRuleManager.__init__(self, client_user, config)
-        self.dto_parsing = False
+        self.parse_to_dto = False

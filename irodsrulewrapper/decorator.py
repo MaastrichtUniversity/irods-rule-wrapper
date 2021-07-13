@@ -69,7 +69,7 @@ def rule_call(func):
             buf = result.MsParam_PI[0].inOutStruct.myStr
             buf_json = json.loads(buf)
             # Check if it will return the JSON rule's output or the DTO
-            if rule_info.dto_parsing:
+            if rule_info.parse_to_dto:
                 return rule_info.dto.create_from_rule_result(buf_json)
             else:
                 return buf_json

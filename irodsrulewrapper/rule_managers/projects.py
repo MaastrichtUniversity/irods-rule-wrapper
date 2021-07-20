@@ -2,6 +2,7 @@ from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.utils import check_project_path_format, check_project_id_format, BaseRuleManager, RuleInfo, \
     RuleInputValidationError
 from irodsrulewrapper.dto.projects import Projects, Project
+from irodsrulewrapper.dto.projects_overview import ProjectsOverview
 from irodsrulewrapper.dto.managing_projects import ManagingProjects
 from irodsrulewrapper.dto.contributing_projects import ContributingProjects
 from irodsrulewrapper.dto.projects_cost import ProjectsCost
@@ -29,15 +30,17 @@ class ProjectRuleManager(BaseRuleManager):
 
         Returns
         -------
-        Project
-            dto.Project object
+
+        dict || Project
+            JSON || dto.Project object
         """
         if not check_project_path_format(project_path):
             raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010")
         if show_service_accounts != "false" and show_service_accounts != "true":
             raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
 
-        return RuleInfo(name="get_project_details", get_result=True, session=self.session, dto=Project)
+        return RuleInfo(name="get_project_details", get_result=True,
+                        session=self.session, dto=Project, parse_to_dto=self.parse_to_dto)
 
     @rule_call
     def get_project_acl_for_manager(self, project_id, show_service_accounts):
@@ -320,3 +323,46 @@ class ProjectRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
 
         return RuleInfo(name="get_contributing_project", get_result=True, session=self.session, dto=ContributingProject)
+
+    @rule_call
+    def get_projects_overview(self):
+        """
+        Get the list of projects
+
+        Returns
+        -------
+        Projects
+            dto.ProjectsOverview object
+        """
+
+        return RuleInfo(name="optimized_list_projects", get_result=True, session=self.session, dto=ProjectsOverview)
+
+    @rule_call
+    def list_projects_by_user(self):
+        """
+        Get the list of projects that each user has access into.
+
+
+        Returns
+        -------
+        dict
+            JSON rule output
+        """
+
+        return RuleInfo(name="listProjectsByUser", get_result=True, session=self.session,
+                        dto=None, parse_to_dto=self.parse_to_dto)
+
+    @rule_call
+    def details_project(self, project, inherited):
+        """
+        Native iRODS language rule detailsProject.
+        Get the project AVUs and its collections details in one rule.
+
+        Returns
+        -------
+        dict
+            JSON rule output
+        """
+
+        return RuleInfo(name="detailsProject", get_result=True, session=self.session,
+                        dto=None, parse_to_dto=self.parse_to_dto)

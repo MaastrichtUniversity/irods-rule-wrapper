@@ -1,8 +1,13 @@
 from irodsrulewrapper.dto.group import Group
 from irodsrulewrapper.dto.groups import Groups
-from irodsrulewrapper.dto.users import Users
-from irodsrulewrapper.rule import RuleManager
+from irodsrulewrapper.rule import RuleManager, RuleJSONManager
 import json
+
+
+def test_rule_get_project_details_json():
+    groups = RuleJSONManager().list_groups_users()
+    assert groups is not None
+    assert groups[0]["users"] is not None
 
 
 def test_rule_get_groups():
@@ -24,6 +29,7 @@ def test_rule_get_users_in_group():
     assert users[0].user_id is not None
     assert users[0].display_name is not None
 
+
 def test_rule_get_users_in_group():
     result = RuleManager().get_users_in_group("10002")
     users = result.users
@@ -32,6 +38,7 @@ def test_rule_get_users_in_group():
     assert users[0].user_name is not None
     assert users[0].user_id is not None
     assert users[0].display_name is not None
+
 
 def test_dto_group():
     group = Group.create_from_rule_result(json.loads(GROUP))

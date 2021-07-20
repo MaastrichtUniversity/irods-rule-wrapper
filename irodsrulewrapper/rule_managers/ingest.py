@@ -98,9 +98,9 @@ class IngestRuleManager(BaseRuleManager):
         self.save_metadata_xml(data)
         return token
 
-    def read_metadata_xml(self, token):
-        xml = MetadataXML.read_metadata_xml(self.session, token)
-        return xml
+    def read_metadata_xml_from_dropzone(self, token):
+        xml_path = "/nlmumc/ingest/zones/" + token + "/" + "metadata.xml"
+        return MetadataXML.read_metadata_xml(self.session, xml_path, token)
 
     def save_metadata_xml(self, data):
         xml = MetadataXML.create_from_dict(data)

@@ -1,8 +1,11 @@
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.utils import BaseRuleManager, RuleInfo, RuleInputValidationError
-from irodsrulewrapper.dto.users import Users
+from irodsrulewrapper.dto.users import Users, User
+from irodsrulewrapper.dto.group import Group
+from irodsrulewrapper.dto.user_or_group import UserOrGroup
 from irodsrulewrapper.dto.data_stewards import DataStewards
 from irodsrulewrapper.dto.attribute_value import AttributeValue
+from irodsrulewrapper.cache import CacheTTL
 
 
 class UserRuleManager(BaseRuleManager):
@@ -87,3 +90,21 @@ class UserRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid type for *value: expected a string")
 
         return RuleInfo(name="set_username_attribute_value", get_result=False, session=self.session, dto=None)
+
+    def get_user_or_group(self, uid):
+        if uid not in CacheTTL.CACHE_USERS_GROUPS:
+            # TODO Find an another way, as performing, to skip rodsadmin & service-accounts than hard-coded values
+            item = self.get_user_or_group_by_id(uid)
+            if item.result["account_type"] == "rodsuser":
+                CacheTTL.CACHE_USERS_GROUPS[uid] = User.create_from_rule_result(item.result)
+            elif item.result["account_type"] == "rodsgroup":
+                CacheTTL.CACHE_USERS_GROUPS[uid] = Group.create_from_rule_result(item.result)
+
+        return CacheTTL.CACHE_USERS_GROUPS[uid]
+
+    @rule_call
+    def get_user_or_group_by_id(self, uid):
+        if type(uid) != str:
+            raise RuleInputValidationError("invalid type for *username: expected a string")
+
+        return RuleInfo(name="get_user_or_group_by_id", get_result=True, session=self.session, dto=UserOrGroup)

@@ -1,9 +1,12 @@
 from irodsrulewrapper.decorator import rule_call
+from irodsrulewrapper.dto.attribute_value import AttributeValue
+from irodsrulewrapper.dto.collections import Collections, Collection
+from irodsrulewrapper.dto.metadata_xml import MetadataXML
+from irodsrulewrapper.dto.collections import Collections
+from irodsrulewrapper.dto.collection_details import CollectionDetails
+from irodsrulewrapper.dto.tape_estimate import TapeEstimate
 from irodsrulewrapper.utils import check_project_path_format, check_project_collection_path_format, \
     check_project_id_format, check_collection_id_format, BaseRuleManager, RuleInfo, RuleInputValidationError
-from irodsrulewrapper.dto.collections import Collections, Collection
-from irodsrulewrapper.dto.tape_estimate import TapeEstimate
-from irodsrulewrapper.dto.attribute_value import AttributeValue
 
 
 class CollectionRuleManager(BaseRuleManager):
@@ -118,7 +121,7 @@ class CollectionRuleManager(BaseRuleManager):
         if inherited != "false" and inherited != "true":
             raise RuleInputValidationError("invalid value for *inherited: expected 'true' or 'false'")
 
-        return RuleInfo(name="detailsProjectCollection", get_result=True, session=self.session, dto=Collection)
+        return RuleInfo(name="detailsProjectCollection", get_result=True, session=self.session, dto=CollectionDetails)
 
     @rule_call
     def get_project_collection_tape_estimate(self, project, collection):
@@ -143,7 +146,8 @@ class CollectionRuleManager(BaseRuleManager):
         if not check_collection_id_format(collection):
             raise RuleInputValidationError("invalid collection id; eg. C000000001")
 
-        return RuleInfo(name="get_project_collection_tape_estimate", get_result=True, session=self.session, dto=TapeEstimate)
+        return RuleInfo(name="get_project_collection_tape_estimate", get_result=True, session=self.session,
+                        dto=TapeEstimate)
 
     @rule_call
     def archive_project_collection(self, collection):
@@ -199,5 +203,60 @@ class CollectionRuleManager(BaseRuleManager):
         if type(attribute) != str:
             raise RuleInputValidationError("invalid type for *attribute: expected a string")
 
-        return RuleInfo(name="get_collection_attribute_value", get_result=True, session=self.session, dto=AttributeValue)
+        return RuleInfo(name="get_collection_attribute_value", get_result=True, session=self.session,
+                        dto=AttributeValue)
+
+    def read_metadata_xml_from_collection(self, project_id, collection_id):
+        xml_path = "/nlmumc/projects/" + project_id + "/" + collection_id + "/" + "metadata.xml"
+        return MetadataXML.read_metadata_xml(self.session, xml_path)
+
+    def export_project_collection(self, project, collection, repository, message):
+        """
+        Starts the exporting process of a collection. Be sure to call this rule
+        as 'rodsadmin' because it will open a collection using admin-mode.
+
+        Parameters
+        ----------
+        project: str
+            The project ID e.g. P000000010
+        collection: str
+            The collection ID e.g. C000000001
+        repository: str
+            The repository to copy to e.g. Dataverse
+        message: dict
+            The json input to execute the export
+
+        Returns
+        -------
+        AttributeValue
+            dto.AttributeValue object
+        """
+        if not check_project_id_format(project):
+            raise RuleInputValidationError("invalid project id; eg. P000000001")
+
+        if not check_collection_id_format(collection):
+            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+
+        # This rule can only be executed by 'rodsadmin', so validating on that here
+        if self.session.username != "rods":
+            raise RuleInputValidationError("this function has to be run as 'rods'")
+
+        # Get the RabbitMQ settings from the Rule Manager
+        rabbitmq_host = self.env_settings["rabbitmq_host"]
+        rabbitmq_port = self.env_settings["rabbitmq_port"]
+        rabbitmq_user = self.env_settings["rabbitmq_user"]
+        rabbitmq_pass = self.env_settings["rabbitmq_pass"]
+
+        # Call the actual rule
+        return self.__export(message, project, collection, repository, rabbitmq_host, rabbitmq_port, rabbitmq_user,
+                             rabbitmq_pass)
+
+    @rule_call
+    def __export(self, message, project, collection, repository, amqp_host, amqp_port, amqp_user, amqp_pass):
+        """
+        Calls the rule to start an export.
+        This method is private since it requires a lot of parameters and should not be called directly but
+        always via 'export_project_collection'
+        """
+        return RuleInfo(name="requestExportProjectCollection", get_result=False, session=self.session, dto=None)
 

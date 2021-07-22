@@ -57,7 +57,6 @@ class IngestRuleManager(BaseRuleManager):
 
     @rule_call
     def start_ingest(self, user, token):
-
         input_params = {
             '*user': '"{}"'.format(user),
             '*token': '"{}"'.format(token)
@@ -90,6 +89,10 @@ class IngestRuleManager(BaseRuleManager):
 
         return RuleInfo(name="createIngest", get_result=False, session=self.session,
                         dto=None, input_params=input_params, rule_body=rule_body)
+
+    def ingest(self, user, token):
+        self.set_num_files_dropzone(token)
+        self.start_ingest(user, token)
 
     def create_drop_zone(self, data):
         token = self.generate_token().token
@@ -150,3 +153,20 @@ class IngestRuleManager(BaseRuleManager):
         """
 
         return RuleInfo(name="generate_token", get_result=True, session=self.session, dto=Token)
+
+
+    @rule_call
+    def set_num_files_dropzone(self, token):
+        """
+        Set an attribute value to the input user
+
+        Parameters
+        ----------
+        token : str
+            The dropzone token to be ingested
+
+        """
+        if type(token) != str:
+            raise RuleInputValidationError("invalid type for *token: expected a string")
+
+        return RuleInfo(name="set_dropzone_total_files_avu", get_result=False, session=self.session, dto=None)

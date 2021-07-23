@@ -58,6 +58,7 @@ def test_collection():
     assert collection.creator == "jonathan.melius@maastrichtuniversity.nl"
     assert collection.size == 2793.9677238464355
     assert collection.num_files == "1253"
+    assert collection.creation_timestamp == "01627030861"
 
 
 def test_collections():
@@ -76,7 +77,8 @@ COLLECTION_JSON = '''
     "id": "C000000001",
     "numFiles": "1253",
     "size": 2793.9677238464355,
-    "title": "Test Coll 1"
+    "title": "Test Coll 1",
+    "creationTimestamp": "01627030861"
 }
 '''
 

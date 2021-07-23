@@ -1,6 +1,5 @@
 from typing import Dict
 
-
 class Collection:
     def __init__(self, id: str,
                  creator: str,
@@ -8,6 +7,7 @@ class Collection:
                  title: str,
                  pid: str,
                  num_files: str,
+                 creation_timestamp: str,
                  enable_archive: bool,
                  enable_open_access_export: bool):
 
@@ -17,6 +17,7 @@ class Collection:
         self.title: str = title
         self.pid: str = pid
         self.num_files: str = num_files
+        self.creation_timestamp: str = creation_timestamp
         self.enable_archive: bool = enable_archive
         self.enable_open_access_export: bool = enable_open_access_export
 
@@ -34,10 +35,13 @@ class Collection:
         elif "byteSize" in result:
             size = result["byteSize"]
 
+        creation_timestamp = None
+        if "creationTimestamp" in result:
+            creation_timestamp = result["creationTimestamp"]
+
         enable_archive = None
         if "enableArchive" in result and result["enableArchive"] == "true":
             enable_archive = True
-
         elif "enableArchive" in result and result["enableArchive"] == "false":
             enable_archive = False
 
@@ -49,5 +53,5 @@ class Collection:
             enable_open_access_export = False
 
         collection = cls(id, result["creator"], size, result["title"], result["PID"],
-                         result["numFiles"], enable_archive, enable_open_access_export)
+                         result["numFiles"], creation_timestamp, enable_archive, enable_open_access_export)
         return collection

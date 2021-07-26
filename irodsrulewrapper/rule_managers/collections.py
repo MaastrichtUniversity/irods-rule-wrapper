@@ -5,8 +5,10 @@ from irodsrulewrapper.dto.metadata_xml import MetadataXML
 from irodsrulewrapper.dto.collections import Collections
 from irodsrulewrapper.dto.collection_details import CollectionDetails
 from irodsrulewrapper.dto.tape_estimate import TapeEstimate
-from irodsrulewrapper.utils import check_project_path_format, check_project_collection_path_format, \
+from irodsrulewrapper.utils import check_project_path_format, check_project_collection_path_format, publish_message,\
     check_project_id_format, check_collection_id_format, BaseRuleManager, RuleInfo, RuleInputValidationError
+
+import json
 
 
 class CollectionRuleManager(BaseRuleManager):
@@ -241,15 +243,8 @@ class CollectionRuleManager(BaseRuleManager):
         if self.session.username != "rods":
             raise RuleInputValidationError("this function has to be run as 'rods'")
 
-        # Get the RabbitMQ settings from the Rule Manager
-        rabbitmq_host = self.env_settings["rabbitmq_host"]
-        rabbitmq_port = self.env_settings["rabbitmq_port"]
-        rabbitmq_user = self.env_settings["rabbitmq_user"]
-        rabbitmq_pass = self.env_settings["rabbitmq_pass"]
-
-        # Call the actual rule
-        return self.__export(message, project, collection, repository, rabbitmq_host, rabbitmq_port, rabbitmq_user,
-                             rabbitmq_pass)
+        self.prepare_export(project, collection, repository)
+        publish_message("datahub.events_tx", "projectCollection.exporter.requested", json.dumps(message))
 
     @rule_call
     def __export(self, message, project, collection, repository, amqp_host, amqp_port, amqp_user, amqp_pass):
@@ -260,3 +255,11 @@ class CollectionRuleManager(BaseRuleManager):
         """
         return RuleInfo(name="requestExportProjectCollection", get_result=False, session=self.session, dto=None)
 
+    @rule_call
+    def prepare_export(self, project, collection, repository):
+        """
+        Calls the rule to prepare the project collection for the export:
+        * Open the project collection for modification
+        * Add the 'in-queue-for-export' AVU
+        """
+        return RuleInfo(name="prepareExportProjectCollection", get_result=False, session=self.session, dto=None)

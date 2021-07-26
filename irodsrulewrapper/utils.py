@@ -4,6 +4,7 @@ from irods.session import iRODSSession
 
 import re
 import os
+import pika
 
 
 def check_project_id_format(project):
@@ -56,7 +57,6 @@ def is_safe_path(basedir, path):
 
 class BaseRuleManager:
     def __init__(self, client_user=None, config=None):
-        self.env_settings = {}
         self.session = []
         self.parse_to_dto = True
         if config is None:
@@ -71,14 +71,6 @@ class BaseRuleManager:
         else:
             self.session = iRODSSession(host=os.environ['IRODS_HOST'], port=1247, user=os.environ['IRODS_USER'],
                                         password=os.environ['IRODS_PASS'], zone='nlmumc', client_user=client_user)
-        # Getting the RabbitMQ settings from the environment variables
-        # and storing them in the Rule Manager class, accessible anywhere
-        self.env_settings = {
-            "rabbitmq_host": os.environ['RABBITMQ_HOST'],
-            "rabbitmq_port": os.environ['RABBITMQ_PORT'],
-            "rabbitmq_user": os.environ['RABBITMQ_USER'],
-            "rabbitmq_pass": os.environ['RABBITMQ_PASS']
-        }
 
     def init_with_variable_config(self, client_user, config):
         if client_user is None:
@@ -87,15 +79,6 @@ class BaseRuleManager:
         else:
             self.session = iRODSSession(host=config['IRODS_HOST'], port=1247, user=config['IRODS_USER'],
                                         password=config['IRODS_PASS'], zone='nlmumc', client_user=client_user)
-        if 'RABBITMQ_HOST' not in config:
-            logging.warning("no rabbit mq config provided, dataverse features will not work.")
-            return
-        self.env_settings = {
-            "rabbitmq_host": config['RABBITMQ_HOST'],
-            "rabbitmq_port": config['RABBITMQ_PORT'],
-            "rabbitmq_user": config['RABBITMQ_USER'],
-            "rabbitmq_pass": config['RABBITMQ_PASS']
-        }
 
 
 class RuleInputValidationError(Exception):
@@ -121,3 +104,21 @@ class RuleInfo:
         self.input_params = input_params
         self.rule_body = rule_body
         self.parse_to_dto = parse_to_dto
+
+
+def publish_message(exchange, routing_key, message):
+    credentials = pika.PlainCredentials(os.environ['RABBITMQ_USER'], os.environ['RABBITMQ_PASS'])
+    parameters = pika.ConnectionParameters(host=os.environ['RABBITMQ_HOST'],
+                                           port=5672,
+                                           virtual_host='/',
+                                           credentials=credentials,
+                                           heartbeat_interval=600,
+                                           blocked_connection_timeout=300)
+    connection = pika.BlockingConnection(parameters)
+    channel = connection.channel()
+
+    channel.basic_publish(exchange=exchange,
+                          routing_key=routing_key,
+                          body=message)
+
+    connection.close()

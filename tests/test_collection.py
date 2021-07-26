@@ -15,7 +15,7 @@ def test_publish_message():
         'repository': 'Dataverse',
         'dataverse_alias': 'DataHub',
         'restrict': False,
-        'restrict_list': "P000000015/C000000002/specialchars_~!@#$%^&()-+=[]{};',.txt,P000000015/C000000002/test.log",
+        'restrict_list': "P000000015/C000000002/specialchars_~!@#$%^&()-+=[]{};',.txt,\tP000000015/C000000002/test.log",
         'data_export': False,
         'delete': False,
         'depositor': 'jonathan.melius@maastrichtuniversity.nl'
@@ -39,7 +39,7 @@ def test_export_project_collection_by_step():
         'repository': repository,
         'dataverse_alias': 'DataHub',
         'restrict': False,
-        'restrict_list': "P000000015/C000000002/specialchars_~!@#$%^&()-+=[]{};\"',.txt,P000000015/C000000002/test.log",
+        'restrict_list': "P000000015/C000000002/specialchars_~!@#$%^&()-+=[]{};\"',.txt,\tP000000015/C000000002/test.log",
         'data_export': False,
         'delete': False,
         'depositor': 'jonathan.melius@maastrichtuniversity.nl'
@@ -60,7 +60,7 @@ def test_rule_export_project_collection():
         'repository': repository,
         'dataverse_alias': 'DataHub',
         'restrict': False,
-        'restrict_list': "P000000015/C000000002/specialchars_~!@#$%^&()-+=[]{};\"',.txt,P000000015/C000000002/test.log",
+        'restrict_list': "P000000015/C000000002/specialchars_~!@#$%^&()-+=[]{};\"',.txt,\tP000000015/C000000002/test.log",
         'data_export': False,
         'delete': False,
         'depositor': 'jonathan.melius@maastrichtuniversity.nl'

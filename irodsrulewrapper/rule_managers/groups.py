@@ -25,7 +25,7 @@ class GroupRuleManager(BaseRuleManager):
         """
         if show_service_accounts != "false" and show_service_accounts != "true":
             raise RuleInputValidationError("invalid value for *showServiceAccounts: expected 'true' or 'false'")
-        return RuleInfo(name="getGroups", get_result=True, session=self.session, dto=Groups)
+        return RuleInfo(name="get_groups", get_result=True, session=self.session, dto=Groups)
 
     @rule_call
     def get_user_group_memberships(self, show_special_groups, username):

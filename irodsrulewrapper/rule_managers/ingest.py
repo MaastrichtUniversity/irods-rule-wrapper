@@ -91,7 +91,7 @@ class IngestRuleManager(BaseRuleManager):
                         dto=None, input_params=input_params, rule_body=rule_body)
 
     def ingest(self, user, token):
-        self.set_num_files_dropzone(token)
+        self.set_total_size_dropzone(token)
         self.start_ingest(user, token)
 
     def create_drop_zone(self, data):
@@ -156,7 +156,7 @@ class IngestRuleManager(BaseRuleManager):
 
 
     @rule_call
-    def set_num_files_dropzone(self, token):
+    def set_total_size_dropzone(self, token):
         """
         Set an attribute value to the input user
 
@@ -169,4 +169,4 @@ class IngestRuleManager(BaseRuleManager):
         if type(token) != str:
             raise RuleInputValidationError("invalid type for *token: expected a string")
 
-        return RuleInfo(name="set_dropzone_total_files_avu", get_result=False, session=self.session, dto=None)
+        return RuleInfo(name="set_dropzone_total_size_avu", get_result=False, session=self.session, dto=None)

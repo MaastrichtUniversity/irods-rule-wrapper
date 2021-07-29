@@ -4,7 +4,7 @@ from typing import Dict
 class DropZone:
     def __init__(self, date: str, project: str, project_title: str,
                  state: str, title: str, token: str, validate_msg: str, validate_state: str, resource_status: str,
-                 number_of_files: str, destination: str):
+                 total_size: str, destination: str):
         self.date: str = date
         self.project: str = project
         self.project_title: str = project_title
@@ -14,7 +14,7 @@ class DropZone:
         self.validate_msg: str = validate_msg
         self.validate_state: str = validate_state
         self.resource_status: str = resource_status
-        self.number_of_files: str = number_of_files
+        self.total_size: str = total_size
         self.destination: str = destination
 
     @classmethod
@@ -24,5 +24,5 @@ class DropZone:
 
         user = cls(result["date"], result["project"], result["projectTitle"], result["state"], result["title"],
                    result["token"], result["validateMsg"], result["validateState"], result["resourceStatus"],
-                   result["numFiles"], result["destination"])
+                   result["totalSize"], result["destination"])
         return user

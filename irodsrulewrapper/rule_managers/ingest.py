@@ -4,6 +4,8 @@ from irodsrulewrapper.dto.metadata_xml import MetadataXML
 from irodsrulewrapper.dto.drop_zones import DropZones, DropZone
 from irodsrulewrapper.dto.token import Token
 
+import logging
+
 
 class IngestRuleManager(BaseRuleManager):
     def __init__(self, client_user=None):
@@ -91,7 +93,11 @@ class IngestRuleManager(BaseRuleManager):
                         dto=None, input_params=input_params, rule_body=rule_body)
 
     def ingest(self, user, token):
-        self.set_total_size_dropzone(token)
+        logger = logging.getLogger(__name__)
+        try:
+            self.set_total_size_dropzone(token)
+        except Exception as e:
+            logger.warning("set_total_size_dropzone failed with error: {}".format(e))
         self.start_ingest(user, token)
 
     def create_drop_zone(self, data):

@@ -196,7 +196,7 @@ class ProjectRuleManager(BaseRuleManager):
     @rule_call
     def create_new_project(self, authorizationPeriodEndDate, dataRetentionPeriodEndDate,
                            ingestResource, resource, storageQuotaGb, title, principalInvestigator,
-                           dataSteward, respCostCenter, openAccess, tapeArchive):
+                           dataSteward, respCostCenter, openAccess, tapeArchive, tapeUnarchive):
         """
         Create a new iRODS project
 
@@ -223,6 +223,8 @@ class ProjectRuleManager(BaseRuleManager):
         openAccess : str
             'true'/'false' excepted values
         tapeArchive : str
+            'true'/'false' excepted values
+        tapeUnarchive : str
             'true'/'false' excepted values
 
         Returns
@@ -264,6 +266,9 @@ class ProjectRuleManager(BaseRuleManager):
 
         if tapeArchive != "false" and tapeArchive != "true":
             raise RuleInputValidationError("invalid value for *tapeArchive: expected 'true' or 'false'")
+
+        if tapeUnarchive != "false" and tapeUnarchive != "true":
+            raise RuleInputValidationError("invalid value for *tapeUnarchive: expected 'true' or 'false'")
 
         return RuleInfo(name="create_new_project", get_result=True, session=self.session, dto=CreateProject)
 

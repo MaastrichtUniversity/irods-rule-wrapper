@@ -21,16 +21,6 @@ def test_rule_get_groups():
 
 
 def test_rule_get_users_in_group():
-    result = RuleManager().get_users_in_group("10142")
-    users = result.users
-    assert users is not None
-    assert users.__len__() >= 2
-    assert users[0].user_name is not None
-    assert users[0].user_id is not None
-    assert users[0].display_name is not None
-
-
-def test_rule_get_users_in_group():
     result = RuleManager().get_users_in_group("10002")
     users = result.users
     assert users is not None

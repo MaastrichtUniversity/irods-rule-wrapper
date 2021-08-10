@@ -9,6 +9,7 @@ class Project:
                  title: str,
                  enable_open_access_export: bool,
                  enable_archive: bool,
+                 enable_unarchive: bool,
                  principal_investigator_display_name: str,
                  data_steward_display_name: str,
                  responsible_cost_center: str,
@@ -25,6 +26,7 @@ class Project:
         self.title: str = title
         self.enable_open_access_export: bool = enable_open_access_export
         self.enable_archive: bool = enable_archive
+        self.enable_unarchive: bool = enable_unarchive
         self.principal_investigator_display_name: str = principal_investigator_display_name
         self.data_steward_display_name: str = data_steward_display_name
         self.responsible_cost_center: str = responsible_cost_center
@@ -48,6 +50,7 @@ class Project:
                               result["title"],
                               result["enableOpenAccessExport"] == 'true',
                               result["enableArchive"] == 'true',
+                              result["enableUnarchive"] == 'true',
                               result["principalInvestigatorDisplayName"],
                               result["dataStewardDisplayName"],
                               result["respCostCenter"],

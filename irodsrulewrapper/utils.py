@@ -40,6 +40,13 @@ def check_file_path_format(path):
     else:
         return False
 
+# TODO: this is not nice. Knowledge about project and collection paths should be centralized.
+def get_project_from_collection_path(path):
+    m = re.search(r'^(/nlmumc/projects/)?(?P<project>P[0-9]{9})/C[0-9]{9}/?', path)
+    if m is not None:
+        return "/nlmumc/projects/" + m.group("project")
+    else:
+        return None
 
 def is_safe_full_path(full_path):
     split_path = full_path.split('/')

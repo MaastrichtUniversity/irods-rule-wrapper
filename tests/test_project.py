@@ -1,5 +1,6 @@
 from irodsrulewrapper.dto.project import Project
 from irodsrulewrapper.dto.projects import Projects
+from irodsrulewrapper.dto.projects_cost import ProjectsCost
 from irodsrulewrapper.rule import RuleManager, RuleJSONManager
 
 
@@ -65,6 +66,11 @@ def test_rule_get_project_acl_for_manager():
 
 def test_rule_get_projects_finance():
     project = RuleManager('opalmen').get_projects_finance()
+    assert project.projects_cost is not None
+
+
+def test_dto_projects_cost():
+    project = ProjectsCost.create_from_mock_result()
     assert project.projects_cost is not None
 
 

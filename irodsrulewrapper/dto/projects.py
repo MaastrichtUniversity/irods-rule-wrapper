@@ -18,7 +18,7 @@ class Projects:
         return projects
 
     @classmethod
-    def c(cls, projects_json=None) -> 'Projects':
+    def create_from_mock_result(cls, projects_json=None) -> 'Projects':
         if projects_json is None:
             projects_json = cls.PROJECTS_JSON
         return Projects.create_from_rule_result(json.loads(projects_json))

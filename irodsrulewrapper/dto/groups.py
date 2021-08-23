@@ -1,5 +1,6 @@
 from .group import Group
 from typing import List, Dict
+import json
 
 
 class Groups:
@@ -14,3 +15,45 @@ class Groups:
             output.append(group)
         groups = cls(output)
         return groups
+
+    @classmethod
+    def create_from_mock_result(cls, mock_json=None) -> 'Groups':
+        if mock_json is None:
+            mock_json = cls.MOCK_JSON
+        return cls.create_from_rule_result(json.loads(mock_json))
+
+    MOCK_JSON = """
+    [
+        {
+            "description": "CO for PhD project of P7000815",
+            "displayName": "Novel approach for smashing ions",
+            "groupId": "10199",
+            "name": "m4i-nanoscopy-phd0815"
+        },
+        {
+            "description": "CO for all of nanoscopy",
+            "displayName": "Nanoscopy",
+            "groupId": "10124",
+            "name": "m4i-nanoscopy"
+        },
+        {
+            "description": "UM-SCANNEXUS",
+            "displayName": "SCANNEXUS",
+            "groupId": "10133",
+            "name": "scannexus"
+        },
+        {
+            "description": "It's DataHub! The place to store your data.",
+            "displayName": "DataHub",
+            "groupId": "10127",
+            "name": "datahub"
+        },
+        {
+            "description": "",
+            "displayName": "m4i-massspec",
+            "groupId": "10192",
+            "name": "m4i-massspec"
+        }
+    ]
+
+    """

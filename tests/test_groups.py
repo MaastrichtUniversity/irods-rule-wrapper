@@ -39,11 +39,14 @@ def test_dto_group():
 
 
 def test_dto_groups():
-    result = Groups.create_from_rule_result(json.loads(GROUPS))
-    assert result is not None
-    assert result.groups.__len__() == 9
-    assert result.groups[0].name == "datahub"
-    assert result.groups[1].name == "public"
+    result = Groups.create_from_mock_result()
+    groups = result.groups
+    assert groups is not None
+    assert groups.__len__() >= 2
+    assert groups[0].name == "m4i-nanoscopy-phd0815"
+    assert groups[0].id == "10199"
+    assert groups[0].display_name == "Novel approach for smashing ions"
+    assert groups[0].description == "CO for PhD project of P7000815"
 
 
 GROUP = '''
@@ -53,63 +56,4 @@ GROUP = '''
     "userId": "10002",
     "userName": "public"
 }
-'''
-
-GROUPS = '''
-[
-    {
-        "description": "It's DataHub! The place to store your data.",
-        "displayName": "DataHub",
-        "userId": "10142",
-        "userName": "datahub"
-    },
-    {
-        "description": "",
-        "displayName": "public",
-        "userId": "10002",
-        "userName": "public"
-    },
-    {
-        "description": "",
-        "displayName": "rodsadmin",
-        "userId": "10001",
-        "userName": "rodsadmin"
-    },
-    {
-        "description": "",
-        "displayName": "DH-project-admins",
-        "userId": "10145",
-        "userName": "DH-project-admins"
-    },
-    {
-        "description": "CO for PhD project of P7000815",
-        "displayName": "Novel approach for smashing ions",
-        "userId": "10272",
-        "userName": "m4i-nanoscopy-phd0815"
-    },
-    {
-        "description": "",
-        "displayName": "DH-ingest",
-        "userId": "10025",
-        "userName": "DH-ingest"
-    },
-    {
-        "description": "UM-SCANNEXUS",
-        "displayName": "SCANNEXUS",
-        "userId": "10148",
-        "userName": "scannexus"
-    },
-    {
-        "description": "",
-        "displayName": "m4i-massspec",
-        "userId": "10265",
-        "userName": "m4i-massspec"
-    },
-    {
-        "description": "CO for all of nanoscopy",
-        "displayName": "Nanoscopy",
-        "userId": "10139",
-        "userName": "m4i-nanoscopy"
-    }
-]
 '''

@@ -43,11 +43,11 @@ def test_dto_user():
 
 
 def test_dto_users():
-    result = Users.create_from_rule_result(json.loads(PROJECT_USERS))
+    result = Users.create_from_mock_result()
     assert result is not None
-    assert result.users.__len__() == 10
+    assert result.users.__len__() == 20
     assert result.users[0].user_name == "jmelius"
-    assert result.users[1].user_name == "auser"
+    assert result.users[6].user_name == "auser"
 
 
 PROJECT_USER = '''
@@ -56,59 +56,4 @@ PROJECT_USER = '''
     "userId": "10068",
     "userName": "jmelius"
 }
-'''
-
-PROJECT_USERS = '''
-[
-    {
-        "displayName": "Jonathan Melius",
-        "userId": "10068",
-        "userName": "jmelius"
-    },
-    {
-        "displayName": "Additional User newly created in LDAP",
-        "userId": "10113",
-        "userName": "auser"
-    },
-    {
-        "displayName": "Paul van Schayck",
-        "userId": "10028",
-        "userName": "pvanschay2"
-    },
-    {
-        "displayName": "Maarten Coonen",
-        "userId": "10038",
-        "userName": "mcoonen"
-    },
-    {
-        "displayName": "service-dropzones",
-        "userId": "10123",
-        "userName": "service-dropzones"
-    },
-    {
-        "displayName": "Olav Palmen",
-        "userId": "10098",
-        "userName": "opalmen"
-    },
-    {
-        "displayName": "Daniel Theunissen",
-        "userId": "10048",
-        "userName": "dtheuniss"
-    },
-    {
-        "displayName": "Dr. Maarten Coonen (MUMC+)",
-        "userId": "10043",
-        "userName": "mcoonen2"
-    },
-    {
-        "displayName": "Dean Linssen",
-        "userId": "10118",
-        "userName": "dlinssen"
-    },
-    {
-        "displayName": "Pascal Suppers",
-        "userId": "10053",
-        "userName": "psuppers"
-    }
-]
 '''

@@ -65,7 +65,8 @@ class ProjectRuleManager(BaseRuleManager):
         if show_service_accounts != "false" and show_service_accounts != "true":
             raise RuleInputValidationError("invalid value for *showServiceAccounts: expected 'true' or 'false'")
 
-        return RuleInfo(name="get_project_acl_for_manager", get_result=True, session=self.session, dto=ManagingProjects)
+        return RuleInfo(name="get_project_acl_for_manager", get_result=True, session=self.session,
+                        dto=ManagingProjects, parse_to_dto=self.parse_to_dto)
 
     @rule_call
     def get_contributing_projects(self, show_service_accounts):

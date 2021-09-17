@@ -1,15 +1,14 @@
-from typing import List, Dict
+from typing import Dict
 
 
 class CollectionSize:
-    def __init__(self, collection: str, resource: str, resource_attr: str, size: str, relative_size: str):
-        self.collection: str = collection
+    def __init__(self, resource: str, size: float, relative_size: float):
         self.resource: str = resource
-        self.resource_attr: str = resource_attr
-        self.size: str = size
-        self.relative_size: str = relative_size
+        self.size: float = size
+        self.relative_size: float = relative_size
 
     @classmethod
     def create_from_rule_result(cls, result: Dict) -> 'CollectionSize':
-        collection_size = cls(result["collection"], result["resource"], result["resourceAttr"], result["size"], result["relative_size"])
+        collection_size = cls(result["resourceName"], float(result["size"]), float(result["relativeSize"]))
+
         return collection_size

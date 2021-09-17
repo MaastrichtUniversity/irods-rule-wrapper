@@ -4,11 +4,6 @@ from irodsrulewrapper.rule import RuleManager
 import json
 
 
-def test_rule_get_collection_size_per_resource():
-    result = RuleManager().get_collection_size_per_resource("P000000017")
-    assert result is not None
-
-
 def test_rule_get_ingest_resources():
     result = RuleManager().get_ingest_resources()
     resources = result.resources

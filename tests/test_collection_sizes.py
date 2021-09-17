@@ -1,6 +1,13 @@
 from irodsrulewrapper.dto.collection_sizes import CollectionSizes
+from irodsrulewrapper.rule import RuleManager
 
 import json
+
+
+def test_rule_get_collection_size_per_resource():
+    result = RuleManager().get_collection_size_per_resource("P000000017")
+    assert result is not None
+
 
 def test_dto_collection_sizes():
     result = CollectionSizes.create_from_rule_result(json.loads(COLLECTION_SIZE_PER_RESOURCE))

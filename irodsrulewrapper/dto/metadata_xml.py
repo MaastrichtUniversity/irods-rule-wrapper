@@ -139,7 +139,7 @@ class MetadataXML:
 
         contacts = json.loads(self.contacts)
         for contact in contacts:
-            if not is_invalid_contact(contact) or len(contacts) == 1:
+            if contact and (not is_invalid_contact(contact) or len(contacts) == 1):
                 contact_element = ET.SubElement(root, "contact")
                 ET.SubElement(contact_element, "lastName").text = contact["LastName"]
                 ET.SubElement(contact_element, "firstName").text = contact["FirstName"]

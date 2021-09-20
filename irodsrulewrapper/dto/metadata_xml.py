@@ -138,17 +138,14 @@ class MetadataXML:
             ET.SubElement(factors, "factor")
 
         contacts = json.loads(self.contacts)
+        num_of_valid_contacts = 0
         for contact in contacts:
-            if contact and (not is_invalid_contact(contact) or len(contacts) == 1):
-                contact_element = ET.SubElement(root, "contact")
-                ET.SubElement(contact_element, "lastName").text = contact["LastName"]
-                ET.SubElement(contact_element, "firstName").text = contact["FirstName"]
-                ET.SubElement(contact_element, "midInitials").text = contact["MidInitials"]
-                ET.SubElement(contact_element, "email").text = contact["Email"]
-                ET.SubElement(contact_element, "phone").text = contact["Phone"]
-                ET.SubElement(contact_element, "address").text = contact["Address"]
-                ET.SubElement(contact_element, "affiliation").text = contact["Affiliation"]
-                ET.SubElement(contact_element, "role").text = contact["Role"]
+            if contact and not is_invalid_contact(contact):
+                num_of_valid_contacts += 1
+                create_contact(root, contact)
+
+        if not num_of_valid_contacts:
+            create_contact(root)
 
         return ET.ElementTree(root)
 
@@ -186,6 +183,18 @@ def read_contacts(root):
     return json.dumps(contacts)
 
 
+def create_contact(root, contact=None):
+    contact_element = ET.SubElement(root, "contact")
+    ET.SubElement(contact_element, "lastName").text = contact["LastName"] if contact else ''
+    ET.SubElement(contact_element, "firstName").text = contact["FirstName"] if contact else ''
+    ET.SubElement(contact_element, "midInitials").text = contact["MidInitials"] if contact else ''
+    ET.SubElement(contact_element, "email").text = contact["Email"] if contact else ''
+    ET.SubElement(contact_element, "phone").text = contact["Phone"] if contact else ''
+    ET.SubElement(contact_element, "address").text = contact["Address"] if contact else ''
+    ET.SubElement(contact_element, "affiliation").text = contact["Affiliation"] if contact else ''
+    ET.SubElement(contact_element, "role").text = contact["Role"] if contact else ''
+
+
 def read_tag(root, tag):
     if root.find(tag).text is not None:
         # Check if the xml tag exist and if it contains an ontology class
@@ -207,6 +216,5 @@ def read_tag_node(root, tag):
 
 
 def is_invalid_contact(contact):
-    return contact["LastName"] is None and contact["FirstName"] is None and contact["MidInitials"] is None and contact[
-        "Email"] is None and contact["Phone"] is None and contact["Address"] is None and contact[
-               "Affiliation"] is None and contact["Role"] is None
+    return not contact["LastName"] and not contact["FirstName"] and not contact["MidInitials"] and not contact["Email"]\
+           and not contact["Phone"] and not contact["Address"] and not contact["Affiliation"] and not contact["Role"]

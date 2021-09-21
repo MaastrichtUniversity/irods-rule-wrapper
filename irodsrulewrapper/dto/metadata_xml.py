@@ -170,8 +170,8 @@ def read_text(root, tag):
 def read_contacts(root):
     contacts = []
     for contact in root.findall("contact"):
-        contact_object = {"FirstName": contact.find('firstName').text,
-                          "LastName": contact.find('lastName').text,
+        contact_object = {"LastName": contact.find('lastName').text,
+                          "FirstName": contact.find('firstName').text,
                           "MidInitials": contact.find('midInitials').text,
                           "Email": contact.find('email').text,
                           "Phone": contact.find('phone').text,

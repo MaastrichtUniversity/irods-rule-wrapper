@@ -1,6 +1,7 @@
 from .users import Users
 from .groups import Groups
-from typing import List, Dict
+from typing import Dict
+import json
 
 
 class Project:
@@ -64,3 +65,79 @@ class Project:
                               Groups.create_from_rule_result(result['viewers']['groupObjects']),
                               result["has_financial_view_access"])
         return project_details
+
+    @classmethod
+    def create_from_mock_result(cls, project_json=None) -> 'Project':
+        if project_json is None:
+            project_json = cls.PROJECT_JSON
+        return Project.create_from_rule_result(json.loads(project_json))
+
+    PROJECT_JSON = '''
+    {
+        "project": "test_project",
+        "title": "test_title",
+        "enableOpenAccessExport": false,
+        "enableArchive": true,
+        "enableUnarchive": true,
+        "principalInvestigatorDisplayName": "test_pi",
+        "dataStewardDisplayName": "test_datasteward",
+        "respCostCenter": "test_cost2",
+        "storageQuotaGiB": 11,
+        "dataSizeGiB": 99,
+        "has_financial_view_access": true,
+        "managers": {
+            "userObjects":
+            [
+                {
+                    "userName": "test_manager",
+                    "displayName": "test_manager",
+                    "userId": "0"
+                }
+            ],
+            "groupObjects": [
+                {
+                    "groupName": "test_manager_group",
+                    "groupId": "0",
+                    "displayName": "Suppers en co",
+                    "description": "some more details here"
+                }
+            ]
+        },
+        "contributors": {
+            "userObjects":
+            [
+                {
+                    "userName": "test_contributor",
+                    "displayName": "test_contributor",
+                    "userId": "1"
+                }
+            ],
+            "groupObjects": [
+                {
+                    "groupName": "test_contributor_group",
+                    "groupId": "1",
+                    "displayName": "Suppers en co",
+                    "description": "some more details here"
+                }
+            ]
+        },
+        "viewers": {
+            "userObjects":
+            [
+                {
+                    "userName": "test_viewer",
+                    "displayName": "test_viewer",
+                    "userId": "2"
+                }
+            ],
+            "groupObjects": [
+                {
+                    "groupName": "test_viewer_group",
+                    "groupId": "2",
+                    "displayName": "Suppers en co",
+                    "description": "some more details here"
+                }
+            ]
+        }
+    }
+    '''

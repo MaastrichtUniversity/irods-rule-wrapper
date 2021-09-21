@@ -1,7 +1,8 @@
 from irodsrulewrapper.dto.project import Project
 from irodsrulewrapper.dto.projects import Projects
+from irodsrulewrapper.dto.projects_cost import ProjectsCost
+from irodsrulewrapper.dto.managing_projects import ManagingProjects
 from irodsrulewrapper.rule import RuleManager, RuleJSONManager
-import json
 
 
 def test_rule_details_project():
@@ -64,8 +65,24 @@ def test_rule_get_project_acl_for_manager():
     assert project.data_steward is not None
 
 
+def test_json_get_project_acl_for_manager():
+    project = RuleJSONManager('opalmen').get_project_acl_for_manager('P000000010', "false")
+    assert project is not None
+
+
+def test_dto_managing_projects():
+    project = ManagingProjects.create_from_mock_result()
+    assert project.managers == ["psuppers", "opalmen"]
+    assert project.viewers == ["datahub"]
+
+
 def test_rule_get_projects_finance():
     project = RuleManager('opalmen').get_projects_finance()
+    assert project.projects_cost is not None
+
+
+def test_dto_projects_cost():
+    project = ProjectsCost.create_from_mock_result()
     assert project.projects_cost is not None
 
 
@@ -95,7 +112,7 @@ def test_rule_get_projects():
 
 
 def test_dto_project():
-    project_details = Project.create_from_rule_result(json.loads(PROJECT_JSON))
+    project_details = Project.create_from_mock_result()
     assert project_details is not None
     assert project_details.manager_users.users[0].display_name == 'test_manager'
     assert project_details.contributor_users.users[0].display_name == 'test_contributor'
@@ -108,214 +125,8 @@ def test_dto_project():
 
 
 def test_dto_projects():
-    projects = Projects.create_from_rule_result(json.loads(PROJECTS_JSON))
+    projects = Projects.create_from_mock_result()
     assert projects is not None
     assert projects.projects.__len__() == 2
     assert projects.projects[0].title == "test_title"
     assert projects.projects[1].title == "test_title2"
-
-
-PROJECT_JSON = '''
-{
-    "project": "test_project",
-    "title": "test_title",
-    "enableOpenAccessExport": false,
-    "enableArchive": true,
-    "principalInvestigatorDisplayName": "test_pi",
-    "dataStewardDisplayName": "test_datasteward",
-    "respCostCenter": "test_cost2",
-    "storageQuotaGiB": 11,
-    "dataSizeGiB": 99,
-    "has_financial_view_access": true,
-    "managers": {
-        "userObjects":
-        [
-            {
-                "userName": "test_manager",
-                "displayName": "test_manager",
-                "userId": "0"
-            }
-        ],
-        "groupObjects": [
-            {
-                "groupName": "test_manager_group",
-                "groupId": "0",
-                "displayName": "Suppers en co",
-                "description": "some more details here"
-            }
-        ]
-    },
-    "contributors": {
-        "userObjects":
-        [
-            {
-                "userName": "test_contributor",
-                "displayName": "test_contributor",
-                "userId": "1"
-            }
-        ],
-        "groupObjects": [
-            {
-                "groupName": "test_contributor_group",
-                "groupId": "1",
-                "displayName": "Suppers en co",
-                "description": "some more details here"
-            }
-        ]
-    },
-    "viewers": {
-        "userObjects":
-        [
-            {
-                "userName": "test_viewer",
-                "displayName": "test_viewer",
-                "userId": "2"
-            }
-        ],
-        "groupObjects": [
-            {
-                "groupName": "test_viewer_group",
-                "groupId": "2",
-                "displayName": "Suppers en co",
-                "description": "some more details here"
-            }
-        ]
-    }
-}
-'''
-
-PROJECTS_JSON = '''
-{
-  "has_financial_view_access": true,
-  "projects": [
-    {
-      "project": "test_project",
-      "title": "test_title",
-      "enableOpenAccessExport": false,
-      "enableArchive": true,
-      "principalInvestigatorDisplayName": "test_pi",
-      "dataStewardDisplayName": "test_datasteward",
-      "has_financial_view_access": true,
-      "respCostCenter": "test_cost2",
-      "storageQuotaGiB": 11,
-      "dataSizeGiB": 99,
-      "managers": {
-        "userObjects": [
-          {
-            "userName": "test_manager",
-            "displayName": "test_manager",
-            "userId": "0"
-          }
-        ],
-        "groupObjects": [
-          {
-            "groupName": "test_manager_group",
-            "groupId": "0",
-            "displayName": "Suppers en co",
-            "description": "some more details here"
-          }
-        ]
-      },
-      "contributors": {
-        "userObjects": [
-          {
-            "userName": "test_contributor",
-            "displayName": "test_contributor",
-            "userId": "1"
-          }
-        ],
-        "groupObjects": [
-          {
-            "groupName": "test_contributor_group",
-            "groupId": "1",
-            "displayName": "Suppers en co",
-            "description": "some more details here"
-          }
-        ]
-      },
-      "viewers": {
-        "userObjects": [
-          {
-            "userName": "test_viewer",
-            "displayName": "test_viewer",
-            "userId": "2"
-          }
-        ],
-        "groupObjects": [
-          {
-            "groupName": "test_viewer_group",
-            "groupId": "2",
-            "displayName": "Suppers en co",
-            "description": "some more details here"
-          }
-        ]
-      }
-    },
-    {
-      "project": "test_project2",
-      "title": "test_title2",
-      "enableOpenAccessExport": false,
-      "enableArchive": true,
-      "principalInvestigatorDisplayName": "test_pi2",
-      "dataStewardDisplayName": "test_datasteward2",
-      "has_financial_view_access": true,
-      "respCostCenter": "test_cost2",
-      "storageQuotaGiB": 11,
-      "dataSizeGiB": 99,
-      "managers": {
-        "userObjects": [
-          {
-            "userName": "test_manager",
-            "displayName": "test_manager",
-            "userId": "0"
-          }
-        ],
-        "groupObjects": [
-          {
-            "groupName": "test_manager_group",
-            "groupId": "0",
-            "displayName": "Suppers en co",
-            "description": "some more details here"
-          }
-        ]
-      },
-      "contributors": {
-        "userObjects": [
-          {
-            "userName": "test_contributor",
-            "displayName": "test_contributor",
-            "userId": "1"
-          }
-        ],
-        "groupObjects": [
-          {
-            "groupName": "test_contributor_group",
-            "groupId": "1",
-            "displayName": "Suppers en co",
-            "description": "some more details here"
-          }
-        ]
-      },
-      "viewers": {
-        "userObjects": [
-          {
-            "userName": "test_viewer",
-            "displayName": "test_viewer",
-            "userId": "2"
-          }
-        ],
-        "groupObjects": [
-          {
-            "groupName": "test_viewer_group",
-            "groupId": "2",
-            "displayName": "Suppers en co",
-            "description": "some more details here"
-          }
-        ]
-      }
-    }
-  ]
-}
-'''
-
-

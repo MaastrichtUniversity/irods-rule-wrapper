@@ -3,7 +3,72 @@ import pytest
 from irodsrulewrapper.dto.collection import Collection
 from irodsrulewrapper.dto.collections import Collections
 from irodsrulewrapper.rule import RuleManager
+from irodsrulewrapper.utils import publish_message
 import json
+from irods.exception import CAT_NO_ACCESS_PERMISSION
+
+
+@pytest.mark.skip(reason='needs local setup first.')
+def test_publish_message():
+    message = {
+        'project': 'P000000015',
+        'collection': 'C000000002',
+        'repository': 'Dataverse',
+        'dataverse_alias': 'DataHub',
+        'restrict': False,
+        'restrict_list': "P000000015/C000000002/specialchars_~!@#$%^&()-+=[]{};',.txt,\tP000000015/C000000002/test.log",
+        'data_export': False,
+        'delete': False,
+        'depositor': 'jonathan.melius@maastrichtuniversity.nl'
+    }
+    json_message = json.dumps(message)
+    publish_message("datahub.events_tx", "projectCollection.exporter.requested", json_message)
+    assert True is True
+
+
+@pytest.mark.skip(reason='needs local setup first.')
+def test_export_project_collection_by_step():
+    project = 'P000000015'
+    collection = 'C000000002'
+    repository = 'Dataverse'
+
+    RuleManager().prepare_export(project, collection, repository)
+
+    message = {
+        'project': project,
+        'collection': collection,
+        'repository': repository,
+        'dataverse_alias': 'DataHub',
+        'restrict': False,
+        'restrict_list': "P000000015/C000000002/specialchars_~!@#$%^&()-+=[]{};\"',.txt,\tP000000015/C000000002/test.log",
+        'data_export': False,
+        'delete': False,
+        'depositor': 'jonathan.melius@maastrichtuniversity.nl'
+    }
+    json_message = json.dumps(message)
+    publish_message("datahub.events_tx", "projectCollection.exporter.requested", json_message)
+    assert True is True
+
+
+@pytest.mark.skip(reason='needs local setup first.')
+def test_rule_export_project_collection():
+    project = 'P000000015'
+    collection = 'C000000002'
+    repository = 'Dataverse'
+    message = {
+        'project': project,
+        'collection': collection,
+        'repository': repository,
+        'dataverse_alias': 'DataHub',
+        'restrict': False,
+        'restrict_list': "P000000015/C000000002/specialchars_~!@#$%^&()-+=[]{};\"',.txt,\tP000000015/C000000002/test.log",
+        'data_export': False,
+        'delete': False,
+        'depositor': 'jonathan.melius@maastrichtuniversity.nl'
+    }
+    RuleManager().export_project_collection(project, collection, repository, message)
+
+    assert True is True
 
 
 def test_rule_get_collection_avu():
@@ -101,3 +166,26 @@ COLLECTIONS_JSON = '''
 ]
 '''
 
+
+@pytest.mark.skip()
+def test_rule_export():
+    result = False
+    try:
+        # RuleManager().export_project_collection("P000000016", "C000000001", "DataverseNL", {})
+        RuleManager("mcoonen").export_project_collection("P000000016", "C000000001", "DataverseNL", {})
+    except CAT_NO_ACCESS_PERMISSION:
+        result = True
+
+    assert result is True
+
+
+@pytest.mark.skip()
+def test_rule_archive():
+    result = False
+    try:
+        # RuleManager("service-surfarchive").archive_project_collection("/nlmumc/projects/P000000016/C000000001")
+        RuleManager("jmelius").archive_project_collection("/nlmumc/projects/P000000015/C000000001")
+    except CAT_NO_ACCESS_PERMISSION:
+        result = True
+
+    assert result is True

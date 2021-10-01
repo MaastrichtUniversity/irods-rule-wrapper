@@ -5,27 +5,27 @@ import json
 
 
 def test_rule_get_username_attribute_value():
-    result = RuleManager().get_username_attribute_value("jmelius", "eduPersonUniqueID")
+    result = RuleManager("rodsadmin").get_username_attribute_value("jmelius", "eduPersonUniqueID")
     value = result.value
     assert value is not None
     assert value == "jmelius@sram.surf.nl"
 
 
 def test_rule_set_username_attribute_value():
-    RuleManager().set_username_attribute_value("jmelius", "lastToSAcceptedTimestamp", "1618476697")
-    result = RuleManager().get_username_attribute_value("jmelius", "lastToSAcceptedTimestamp")
+    RuleManager("rodsadmin").set_username_attribute_value("jmelius", "lastToSAcceptedTimestamp", "1618476697")
+    result = RuleManager("rodsadmin").get_username_attribute_value("jmelius", "lastToSAcceptedTimestamp")
     value = result.value
     assert value is not None
     assert value == "1618476697"
 
 
 def test_rule_get_user_group_memberships():
-    result = RuleManager().get_user_group_memberships("true", "jmelius")
+    result = RuleManager("rodsadmin").get_user_group_memberships("true", "jmelius")
     assert result.groups is not None
 
 
 def test_rule_get_users():
-    result = RuleManager().get_users("true")
+    result = RuleManager("rodsadmin").get_users("true")
     users = result.users
     assert users is not None
     assert users.__len__() >= 2
@@ -50,10 +50,10 @@ def test_dto_users():
     assert result.users[6].user_name == "auser"
 
 
-PROJECT_USER = '''
+PROJECT_USER = """
 {
     "displayName": "Jonathan Melius",
     "userId": "10068",
     "userName": "jmelius"
 }
-'''
+"""

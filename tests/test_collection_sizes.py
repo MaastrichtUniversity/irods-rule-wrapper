@@ -5,18 +5,18 @@ import json
 
 
 def test_rule_get_collection_size_per_resource():
-    result = RuleManager().get_collection_size_per_resource("P000000017")
+    result = RuleManager("rodsadmin").get_collection_size_per_resource("P000000017")
     assert result is not None
 
 
 def test_dto_collection_sizes():
     result = CollectionSizes.create_from_rule_result(json.loads(COLLECTION_SIZE_PER_RESOURCE))
     assert result is not None
-    assert len(result.collection_sizes['C000000001']) == 2
+    assert len(result.collection_sizes["C000000001"]) == 2
     assert len(result.collection_sizes) == 3
-    assert result.collection_sizes['C000000001'][0].relative_size is not None
-    assert result.collection_sizes['C000000001'][0].resource is not None
-    assert result.collection_sizes['C000000001'][0].size is not None
+    assert result.collection_sizes["C000000001"][0].relative_size is not None
+    assert result.collection_sizes["C000000001"][0].resource is not None
+    assert result.collection_sizes["C000000001"][0].size is not None
 
 
 COLLECTION_SIZE_PER_RESOURCE = """

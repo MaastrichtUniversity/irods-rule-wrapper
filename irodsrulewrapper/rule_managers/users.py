@@ -9,8 +9,8 @@ from irodsrulewrapper.cache import CacheTTL
 
 
 class UserRuleManager(BaseRuleManager):
-    def __init__(self):
-        BaseRuleManager.__init__(self)
+    def __init__(self, client_user):
+        BaseRuleManager.__init__(self, client_user=client_user)
 
     @rule_call
     def get_users(self, show_service_accounts):

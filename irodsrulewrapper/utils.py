@@ -41,18 +41,20 @@ def check_file_path_format(path):
     else:
         return False
 
+
 # TODO: this is not nice. Knowledge about project and collection paths should be centralized.
 def get_project_from_collection_path(path):
-    m = re.search(r'^(/nlmumc/projects/)?(?P<project>P[0-9]{9})/C[0-9]{9}/?', path)
+    m = re.search(r"^(/nlmumc/projects/)?(?P<project>P[0-9]{9})/C[0-9]{9}/?", path)
     if m is not None:
         return "/nlmumc/projects/" + m.group("project")
     else:
         return None
 
+
 def is_safe_full_path(full_path):
-    split_path = full_path.split('/')
+    split_path = full_path.split("/")
     # basedir => "/nlmumc/projects/P[0-9]{9}/C[0-9]{9}"
-    basedir = '/' + split_path[1] + '/' + split_path[2] + '/' + split_path[3] + '/' + split_path[4]
+    basedir = "/" + split_path[1] + "/" + split_path[2] + "/" + split_path[3] + "/" + split_path[4]
     return is_safe_path(basedir, full_path)
 
 
@@ -73,19 +75,43 @@ class BaseRuleManager:
 
     def init_with_environ_conf(self, client_user):
         if client_user is None:
-            self.session = iRODSSession(host=os.environ['IRODS_HOST'], port=1247, user=os.environ['IRODS_USER'],
-                                        password=os.environ['IRODS_PASS'], zone='nlmumc')
+            raise Exception("No user to initialize RuleManager provided")
+        elif client_user == "rodsadmin":
+            self.session = iRODSSession(
+                host=os.environ["IRODS_HOST"],
+                port=1247,
+                user=os.environ["IRODS_USER"],
+                password=os.environ["IRODS_PASS"],
+                zone="nlmumc",
+            )
         else:
-            self.session = iRODSSession(host=os.environ['IRODS_HOST'], port=1247, user=os.environ['IRODS_USER'],
-                                        password=os.environ['IRODS_PASS'], zone='nlmumc', client_user=client_user)
+            self.session = iRODSSession(
+                host=os.environ["IRODS_HOST"],
+                port=1247,
+                user=os.environ["IRODS_USER"],
+                password=os.environ["IRODS_PASS"],
+                zone="nlmumc",
+                client_user=client_user,
+            )
 
     def init_with_variable_config(self, client_user, config):
         if client_user is None:
-            self.session = iRODSSession(host=config['IRODS_HOST'], port=1247, user=config['IRODS_USER'],
-                                        password=config['IRODS_PASS'], zone='nlmumc')
+            self.session = iRODSSession(
+                host=config["IRODS_HOST"],
+                port=1247,
+                user=config["IRODS_USER"],
+                password=config["IRODS_PASS"],
+                zone="nlmumc",
+            )
         else:
-            self.session = iRODSSession(host=config['IRODS_HOST'], port=1247, user=config['IRODS_USER'],
-                                        password=config['IRODS_PASS'], zone='nlmumc', client_user=client_user)
+            self.session = iRODSSession(
+                host=config["IRODS_HOST"],
+                port=1247,
+                user=config["IRODS_USER"],
+                password=config["IRODS_PASS"],
+                zone="nlmumc",
+                client_user=client_user,
+            )
 
 
 class RuleInputValidationError(Exception):
@@ -114,18 +140,18 @@ class RuleInfo:
 
 
 def publish_message(exchange, routing_key, message):
-    credentials = pika.PlainCredentials(os.environ['RABBITMQ_USER'], os.environ['RABBITMQ_PASS'])
-    parameters = pika.ConnectionParameters(host=os.environ['RABBITMQ_HOST'],
-                                           port=5672,
-                                           virtual_host='/',
-                                           credentials=credentials,
-                                           heartbeat_interval=600,
-                                           blocked_connection_timeout=300)
+    credentials = pika.PlainCredentials(os.environ["RABBITMQ_USER"], os.environ["RABBITMQ_PASS"])
+    parameters = pika.ConnectionParameters(
+        host=os.environ["RABBITMQ_HOST"],
+        port=5672,
+        virtual_host="/",
+        credentials=credentials,
+        heartbeat_interval=600,
+        blocked_connection_timeout=300,
+    )
     connection = pika.BlockingConnection(parameters)
     channel = connection.channel()
 
-    channel.basic_publish(exchange=exchange,
-                          routing_key=routing_key,
-                          body=message)
+    channel.basic_publish(exchange=exchange, routing_key=routing_key, body=message)
 
     connection.close()

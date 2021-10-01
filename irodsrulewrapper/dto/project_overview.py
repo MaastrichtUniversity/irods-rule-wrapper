@@ -5,17 +5,19 @@ from irodsrulewrapper.rule_managers.users import UserRuleManager
 
 
 class ProjectOverview:
-    def __init__(self,
-                 id: str,
-                 title: str,
-                 principal_investigator: str,
-                 data_steward: str,
-                 size: int,
-                 manager_users: List,
-                 contributor_users: List,
-                 contributor_groups: List,
-                 viewer_users: List,
-                 viewer_groups: List):
+    def __init__(
+        self,
+        id: str,
+        title: str,
+        principal_investigator: str,
+        data_steward: str,
+        size: int,
+        manager_users: List,
+        contributor_users: List,
+        contributor_groups: List,
+        viewer_users: List,
+        viewer_groups: List,
+    ):
         self.id: str = id
         self.title: str = title
         self.principal_investigator: str = principal_investigator
@@ -28,14 +30,14 @@ class ProjectOverview:
         self.viewer_groups: List = viewer_groups
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> 'Project':
+    def create_from_rule_result(cls, result: Dict) -> "Project":
         manager_users = []
         contributor_users = []
         contributor_groups = []
         viewer_users = []
         viewer_groups = []
 
-        rule_manager = UserRuleManager()
+        rule_manager = UserRuleManager("rodsadmin")
         for managers in result["managers"]:
             manager = rule_manager.get_user_or_group(managers)
             if isinstance(manager, User):
@@ -55,14 +57,16 @@ class ProjectOverview:
             elif isinstance(viewer, Group):
                 viewer_groups.append(viewer)
 
-        project_details = cls(result["path"],
-                              result["title"],
-                              result["OBI:0000103"],
-                              result["dataSteward"],
-                              result["dataSizeGiB"],
-                              manager_users,
-                              contributor_users,
-                              contributor_groups,
-                              viewer_users,
-                              viewer_groups)
+        project_details = cls(
+            result["path"],
+            result["title"],
+            result["OBI:0000103"],
+            result["dataSteward"],
+            result["dataSizeGiB"],
+            manager_users,
+            contributor_users,
+            contributor_groups,
+            viewer_users,
+            viewer_groups,
+        )
         return project_details

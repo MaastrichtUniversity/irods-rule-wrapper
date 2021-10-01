@@ -5,7 +5,7 @@ import json
 
 
 def test_rule_get_ingest_resources():
-    result = RuleManager().get_ingest_resources()
+    result = RuleManager("rodsadmin").get_ingest_resources()
     resources = result.resources
     assert resources is not None
     assert resources.__len__() >= 2
@@ -14,7 +14,7 @@ def test_rule_get_ingest_resources():
 
 
 def test_rule_get_destination_resources():
-    result = RuleManager().get_destination_resources()
+    result = RuleManager("rodsadmin").get_destination_resources()
     resources = result.resources
     assert resources is not None
     assert resources.__len__() >= 2
@@ -37,14 +37,14 @@ def test_dto_resources():
     assert result.resources[1].name == "replRescAZM01"
 
 
-RESOURCE = '''
+RESOURCE = """
 {
     "comment": "Replicated-resource-for-UM",
     "name": "replRescUM01"
 }
-'''
+"""
 
-RESOURCES = '''
+RESOURCES = """
 [
     {
         "comment": "Replicated-resource-for-UM",
@@ -56,4 +56,4 @@ RESOURCES = '''
     }
 ]
 
-'''
+"""

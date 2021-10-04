@@ -85,11 +85,11 @@ class RuleManager(
         output = []
         base_path = "/nlmumc/projects/" + base
         absolute_path = "/nlmumc/projects/" + path
-        collection = self.session.collections.get(absolute_path)
 
         if not is_safe_path(base_path, absolute_path):
             raise CAT_NO_ACCESS_PERMISSION
 
+        collection = self.session.collections.get(absolute_path)
         for coll in collection.subcollections:
             # query extra collection info: ctime
             query = self.session.query(iRODSCollection).filter(iRODSCollection.id == coll.id)

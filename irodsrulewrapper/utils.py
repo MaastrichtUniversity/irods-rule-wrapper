@@ -5,6 +5,7 @@ from irods.session import iRODSSession
 import re
 import os
 import pika
+import ssl
 
 
 def check_project_id_format(project):
@@ -41,7 +42,6 @@ def check_file_path_format(path):
     else:
         return False
 
-# TODO: this is not nice. Knowledge about project and collection paths should be centralized.
 def get_project_from_collection_path(path):
     m = re.search(r'^(/nlmumc/projects/)?(?P<project>P[0-9]{9})/C[0-9]{9}/?', path)
     if m is not None:
@@ -66,6 +66,17 @@ class BaseRuleManager:
     def __init__(self, client_user=None, config=None):
         self.session = []
         self.parse_to_dto = True
+        self.ssl_context = ssl.create_default_context(purpose=ssl.Purpose.SERVER_AUTH, cafile=None, capath=None, cadata=None)
+        self.ssl_settings = {
+            'irods_client_server_negotiation': 'request_server_negotiation',
+            'irods_client_server_policy': os.environ['IRODS_CLIENT_SERVER_POLICY'],
+            'irods_encryption_algorithm': 'AES-256-CBC',
+            'irods_encryption_key_size': 32,
+            'irods_encryption_num_hash_rounds': 16,
+            'irods_encryption_salt_size': 8,
+            'ssl_context': self.ssl_context
+        }
+
         if config is None:
             self.init_with_environ_conf(client_user)
         else:
@@ -74,18 +85,20 @@ class BaseRuleManager:
     def init_with_environ_conf(self, client_user):
         if client_user is None:
             self.session = iRODSSession(host=os.environ['IRODS_HOST'], port=1247, user=os.environ['IRODS_USER'],
-                                        password=os.environ['IRODS_PASS'], zone='nlmumc')
+                                        password=os.environ['IRODS_PASS'], zone='nlmumc', **self.ssl_settings)
         else:
             self.session = iRODSSession(host=os.environ['IRODS_HOST'], port=1247, user=os.environ['IRODS_USER'],
-                                        password=os.environ['IRODS_PASS'], zone='nlmumc', client_user=client_user)
+                                        password=os.environ['IRODS_PASS'], zone='nlmumc', client_user=client_user,
+                                        **self.ssl_settings)
 
     def init_with_variable_config(self, client_user, config):
         if client_user is None:
             self.session = iRODSSession(host=config['IRODS_HOST'], port=1247, user=config['IRODS_USER'],
-                                        password=config['IRODS_PASS'], zone='nlmumc')
+                                        password=config['IRODS_PASS'], zone='nlmumc', **self.ssl_settings)
         else:
             self.session = iRODSSession(host=config['IRODS_HOST'], port=1247, user=config['IRODS_USER'],
-                                        password=config['IRODS_PASS'], zone='nlmumc', client_user=client_user)
+                                        password=config['IRODS_PASS'], zone='nlmumc', client_user=client_user,
+                                        **self.ssl_settings)
 
 
 class RuleInputValidationError(Exception):

@@ -6,19 +6,19 @@ from irodsrulewrapper.rule import RuleManager, RuleJSONManager
 
 
 def test_rule_details_project():
-    project = RuleJSONManager().details_project("P000000011", "false")
+    project = RuleJSONManager(admin_mode=True).details_project("P000000011", "false")
     assert project is not None
     assert project["project"] is not None
 
 
 def test_rule_list_projects_by_user():
-    projects = RuleJSONManager().list_projects_by_user()
+    projects = RuleJSONManager(admin_mode=True).list_projects_by_user()
     assert projects is not None
     assert projects[0]["Projects"] is not None
 
 
 def test_rule_get_project_details_json():
-    project_details = RuleJSONManager().get_project_details("/nlmumc/projects/P000000011", "true")
+    project_details = RuleJSONManager(admin_mode=True).get_project_details("/nlmumc/projects/P000000011", "true")
     assert project_details is not None
     assert project_details["title"] == "(HVC) Placeholder project"
 
@@ -39,13 +39,13 @@ def test_rule_get_contributing_projects():
 
 
 def test_rule_get_project_migration_status():
-    result = RuleManager("rodsadmin").get_project_migration_status("/nlmumc/projects/P000000010")
+    result = RuleManager(admin_mode=True).get_project_migration_status("/nlmumc/projects/P000000010")
     cards = result.cards
     assert cards is not None
 
 
 def test_rule_create_new_project():
-    manager = RuleManager("rodsadmin")
+    manager = RuleManager(admin_mode=True)
     project = manager.create_new_project(
         "authorizationPeriodEndDate",
         "dataRetentionPeriodEndDate",
@@ -57,6 +57,7 @@ def test_rule_create_new_project():
         "opalmen",
         "XXXXXXXXX",
         "true",
+        "false",
         "false",
     )
     assert project.project_id is not None
@@ -97,7 +98,7 @@ def test_dto_projects_cost():
 
 
 def test_rule_get_project_details():
-    project_details = RuleManager("rodsadmin").get_project_details("/nlmumc/projects/P000000011", "true")
+    project_details = RuleManager(admin_mode=True).get_project_details("/nlmumc/projects/P000000011", "true")
     assert project_details is not None
     assert project_details.principal_investigator_display_name == "Pascal Suppers"
     assert project_details.data_steward_display_name == "Olav Palmen"
@@ -113,7 +114,7 @@ def test_rule_get_project_details():
 
 
 def test_rule_get_projects():
-    result = RuleManager("rodsadmin").get_projects("false")
+    result = RuleManager(admin_mode=True).get_projects("false")
     projects = result.projects
     assert projects is not None
     assert projects.__len__() >= 2

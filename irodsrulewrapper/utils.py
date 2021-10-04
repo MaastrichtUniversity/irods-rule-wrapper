@@ -65,18 +65,18 @@ def is_safe_path(basedir, path):
 
 
 class BaseRuleManager:
-    def __init__(self, client_user=None, config=None):
+    def __init__(self, client_user=None, config=None, admin_mode=False):
         self.session = []
         self.parse_to_dto = True
-        if config is None:
-            self.init_with_environ_conf(client_user)
-        else:
-            self.init_with_variable_config(client_user, config)
-
-    def init_with_environ_conf(self, client_user):
-        if client_user is None:
+        if not client_user and not admin_mode:
             raise Exception("No user to initialize RuleManager provided")
-        elif client_user == "rodsadmin":
+        if config is None:
+            self.init_with_environ_conf(client_user, admin_mode)
+        else:
+            self.init_with_variable_config(client_user, config, admin_mode)
+
+    def init_with_environ_conf(self, client_user, admin_mode):
+        if admin_mode:
             self.session = iRODSSession(
                 host=os.environ["IRODS_HOST"],
                 port=1247,
@@ -94,8 +94,8 @@ class BaseRuleManager:
                 client_user=client_user,
             )
 
-    def init_with_variable_config(self, client_user, config):
-        if client_user is None:
+    def init_with_variable_config(self, client_user, config, admin_mode):
+        if admin_mode:
             self.session = iRODSSession(
                 host=config["IRODS_HOST"],
                 port=1247,

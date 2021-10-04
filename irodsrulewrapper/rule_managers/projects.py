@@ -1,6 +1,11 @@
 from irodsrulewrapper.decorator import rule_call
-from irodsrulewrapper.utils import check_project_path_format, check_project_id_format, BaseRuleManager, RuleInfo, \
-    RuleInputValidationError
+from irodsrulewrapper.utils import (
+    check_project_path_format,
+    check_project_id_format,
+    BaseRuleManager,
+    RuleInfo,
+    RuleInputValidationError,
+)
 from irodsrulewrapper.dto.projects import Projects, Project
 from irodsrulewrapper.dto.projects_overview import ProjectsOverview
 from irodsrulewrapper.dto.managing_projects import ManagingProjects
@@ -13,8 +18,8 @@ from irodsrulewrapper.dto.contributing_project import ContributingProject
 
 
 class ProjectRuleManager(BaseRuleManager):
-    def __init__(self):
-        BaseRuleManager.__init__(self)
+    def __init__(self, client_user=None, admin_mode=False):
+        BaseRuleManager.__init__(self, client_user, admin_mode=admin_mode)
 
     @rule_call
     def get_project_details(self, project_path, show_service_accounts):
@@ -39,8 +44,13 @@ class ProjectRuleManager(BaseRuleManager):
         if show_service_accounts != "false" and show_service_accounts != "true":
             raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
 
-        return RuleInfo(name="get_project_details", get_result=True,
-                        session=self.session, dto=Project, parse_to_dto=self.parse_to_dto)
+        return RuleInfo(
+            name="get_project_details",
+            get_result=True,
+            session=self.session,
+            dto=Project,
+            parse_to_dto=self.parse_to_dto,
+        )
 
     @rule_call
     def get_project_acl_for_manager(self, project_id, show_service_accounts):
@@ -65,8 +75,13 @@ class ProjectRuleManager(BaseRuleManager):
         if show_service_accounts != "false" and show_service_accounts != "true":
             raise RuleInputValidationError("invalid value for *showServiceAccounts: expected 'true' or 'false'")
 
-        return RuleInfo(name="get_project_acl_for_manager", get_result=True, session=self.session,
-                        dto=ManagingProjects, parse_to_dto=self.parse_to_dto)
+        return RuleInfo(
+            name="get_project_acl_for_manager",
+            get_result=True,
+            session=self.session,
+            dto=ManagingProjects,
+            parse_to_dto=self.parse_to_dto,
+        )
 
     @rule_call
     def get_contributing_projects(self, show_service_accounts):
@@ -87,8 +102,9 @@ class ProjectRuleManager(BaseRuleManager):
         if show_service_accounts != "false" and show_service_accounts != "true":
             raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
 
-        return RuleInfo(name="list_contributing_projects", get_result=True, session=self.session,
-                        dto=ContributingProjects)
+        return RuleInfo(
+            name="list_contributing_projects", get_result=True, session=self.session, dto=ContributingProjects
+        )
 
     @rule_call
     def change_project_permissions(self, project_id, users):
@@ -195,9 +211,21 @@ class ProjectRuleManager(BaseRuleManager):
         return RuleInfo(name="get_project_migration_status", get_result=True, session=self.session, dto=MigrationCards)
 
     @rule_call
-    def create_new_project(self, authorizationPeriodEndDate, dataRetentionPeriodEndDate,
-                           ingestResource, resource, storageQuotaGb, title, principalInvestigator,
-                           dataSteward, respCostCenter, openAccess, tapeArchive, tapeUnarchive):
+    def create_new_project(
+        self,
+        authorizationPeriodEndDate,
+        dataRetentionPeriodEndDate,
+        ingestResource,
+        resource,
+        storageQuotaGb,
+        title,
+        principalInvestigator,
+        dataSteward,
+        respCostCenter,
+        openAccess,
+        tapeArchive,
+        tapeUnarchive,
+    ):
         """
         Create a new iRODS project
 
@@ -301,8 +329,9 @@ class ProjectRuleManager(BaseRuleManager):
         if show_service_accounts != "false" and show_service_accounts != "true":
             raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
 
-        return RuleInfo(name="list_project_contributors", get_result=True, session=self.session,
-                        dto=ProjectContributors)
+        return RuleInfo(
+            name="list_project_contributors", get_result=True, session=self.session, dto=ProjectContributors
+        )
 
     @rule_call
     def get_contributing_project(self, project_id, show_service_accounts):
@@ -355,8 +384,9 @@ class ProjectRuleManager(BaseRuleManager):
             JSON rule output
         """
 
-        return RuleInfo(name="listProjectsByUser", get_result=True, session=self.session,
-                        dto=None, parse_to_dto=self.parse_to_dto)
+        return RuleInfo(
+            name="listProjectsByUser", get_result=True, session=self.session, dto=None, parse_to_dto=self.parse_to_dto
+        )
 
     @rule_call
     def details_project(self, project, inherited):
@@ -370,5 +400,6 @@ class ProjectRuleManager(BaseRuleManager):
             JSON rule output
         """
 
-        return RuleInfo(name="detailsProject", get_result=True, session=self.session,
-                        dto=None, parse_to_dto=self.parse_to_dto)
+        return RuleInfo(
+            name="detailsProject", get_result=True, session=self.session, dto=None, parse_to_dto=self.parse_to_dto
+        )

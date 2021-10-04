@@ -32,7 +32,7 @@ def test_export_project_collection_by_step():
     collection = "C000000002"
     repository = "Dataverse"
 
-    RuleManager("rodsadmin").prepare_export(project, collection, repository)
+    RuleManager(admin_mode=True).prepare_export(project, collection, repository)
 
     message = {
         "project": project,
@@ -66,28 +66,28 @@ def test_rule_export_project_collection():
         "delete": False,
         "depositor": "jonathan.melius@maastrichtuniversity.nl",
     }
-    RuleManager("rodsadmin").export_project_collection(project, collection, repository, message)
+    RuleManager(admin_mode=True).export_project_collection(project, collection, repository, message)
 
     assert True is True
 
 
 def test_rule_get_collection_avu():
-    avu = RuleManager("rodsadmin").get_collection_attribute_value("/nlmumc/projects/P000000010/C000000001", "title")
+    avu = RuleManager(admin_mode=True).get_collection_attribute_value("/nlmumc/projects/P000000010/C000000001", "title")
     assert avu is not None
 
 
 def test_get_project_collection_tape_estimate():
-    collection = RuleManager("rodsadmin").get_project_collection_tape_estimate("P000000010", "C000000001")
+    collection = RuleManager(admin_mode=True).get_project_collection_tape_estimate("P000000010", "C000000001")
     assert collection is not None
 
 
 def test_rule_get_collection_tree():
-    collection = RuleManager("rodsadmin").get_collection_tree("P000000010/C000000001", "P000000010/C000000001")
+    collection = RuleManager(admin_mode=True).get_collection_tree("P000000010/C000000001", "P000000010/C000000001")
     assert collection is not None
 
 
 def test_rule_get_project_collection_details():
-    collection = RuleManager("rodsadmin").get_project_collection_details("P000000011", "C000000001", "false")
+    collection = RuleManager(admin_mode=True).get_project_collection_details("P000000011", "C000000001", "false")
     assert collection is not None
     assert collection.id == "C000000001"
     assert collection.creator == "irods_bootstrap@docker.dev"
@@ -97,7 +97,7 @@ def test_rule_get_project_collection_details():
 
 
 def test_rule_get_collections():
-    result = RuleManager("rodsadmin").get_collections("/nlmumc/projects/P000000011")
+    result = RuleManager(admin_mode=True).get_collections("/nlmumc/projects/P000000011")
     collections = result.collections
     assert collections is not None
     assert collections[0].creator == "irods_bootstrap@docker.dev"
@@ -171,7 +171,7 @@ COLLECTIONS_JSON = """
 def test_rule_export():
     result = False
     try:
-        # RuleManager("rodsadmin").export_project_collection("P000000016", "C000000001", "DataverseNL", {})
+        # RuleManager(admin_mode=True).export_project_collection("P000000016", "C000000001", "DataverseNL", {})
         RuleManager("mcoonen").export_project_collection("P000000016", "C000000001", "DataverseNL", {})
     except CAT_NO_ACCESS_PERMISSION:
         result = True

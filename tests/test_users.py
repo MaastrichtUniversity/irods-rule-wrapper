@@ -5,27 +5,27 @@ import json
 
 
 def test_rule_get_username_attribute_value():
-    result = RuleManager("rodsadmin").get_username_attribute_value("jmelius", "eduPersonUniqueID")
+    result = RuleManager(admin_mode=True).get_username_attribute_value("jmelius", "eduPersonUniqueID")
     value = result.value
     assert value is not None
     assert value == "jmelius@sram.surf.nl"
 
 
 def test_rule_set_username_attribute_value():
-    RuleManager("rodsadmin").set_username_attribute_value("jmelius", "lastToSAcceptedTimestamp", "1618476697")
-    result = RuleManager("rodsadmin").get_username_attribute_value("jmelius", "lastToSAcceptedTimestamp")
+    RuleManager(admin_mode=True).set_username_attribute_value("jmelius", "lastToSAcceptedTimestamp", "1618476697")
+    result = RuleManager(admin_mode=True).get_username_attribute_value("jmelius", "lastToSAcceptedTimestamp")
     value = result.value
     assert value is not None
     assert value == "1618476697"
 
 
 def test_rule_get_user_group_memberships():
-    result = RuleManager("rodsadmin").get_user_group_memberships("true", "jmelius")
+    result = RuleManager(admin_mode=True).get_user_group_memberships("true", "jmelius")
     assert result.groups is not None
 
 
 def test_rule_get_users():
-    result = RuleManager("rodsadmin").get_users("true")
+    result = RuleManager(admin_mode=True).get_users("true")
     users = result.users
     assert users is not None
     assert users.__len__() >= 2

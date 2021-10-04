@@ -49,7 +49,7 @@ from irodsrulewrapper.rule import *
 import json
 
 
-rule_manager = RuleManager("rodsadmin")
+rule_manager = RuleManager(admin_mode=True)
 
 print("Call iRODS rule getUsers")
 result = json.loads(rule_manager.get_users("false"))

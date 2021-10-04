@@ -5,7 +5,7 @@ import json
 
 
 def test_rule_get_ingest_resources():
-    result = RuleManager("rodsadmin").get_ingest_resources()
+    result = RuleManager(admin_mode=True).get_ingest_resources()
     resources = result.resources
     assert resources is not None
     assert resources.__len__() >= 2
@@ -14,7 +14,7 @@ def test_rule_get_ingest_resources():
 
 
 def test_rule_get_destination_resources():
-    result = RuleManager("rodsadmin").get_destination_resources()
+    result = RuleManager(admin_mode=True).get_destination_resources()
     resources = result.resources
     assert resources is not None
     assert resources.__len__() >= 2

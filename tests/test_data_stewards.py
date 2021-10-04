@@ -5,7 +5,7 @@ import json
 
 
 def test_rule_get_data_stewards():
-    result = RuleManager("rodsadmin").get_data_stewards()
+    result = RuleManager(admin_mode=True).get_data_stewards()
     data_stewards = result.data_stewards
     assert data_stewards is not None
     assert data_stewards.__len__() >= 2

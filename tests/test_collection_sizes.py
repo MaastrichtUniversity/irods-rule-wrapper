@@ -5,7 +5,7 @@ import json
 
 
 def test_rule_get_collection_size_per_resource():
-    result = RuleManager("rodsadmin").get_collection_size_per_resource("P000000017")
+    result = RuleManager(admin_mode=True).get_collection_size_per_resource("P000000017")
     assert result is not None
 
 

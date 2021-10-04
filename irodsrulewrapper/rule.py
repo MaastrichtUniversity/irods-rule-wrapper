@@ -14,10 +14,11 @@ from irodsrulewrapper.rule_managers.ingest import IngestRuleManager
 from .utils import *
 
 
-class RuleManager(CollectionRuleManager, ProjectRuleManager, UserRuleManager,
-                  GroupRuleManager, ResourceRuleManager, IngestRuleManager):
-    def __init__(self, client_user=None, config=None):
-        BaseRuleManager.__init__(self, client_user, config)
+class RuleManager(
+    CollectionRuleManager, ProjectRuleManager, UserRuleManager, GroupRuleManager, ResourceRuleManager, IngestRuleManager
+):
+    def __init__(self, client_user=None, config=None, admin_mode=False):
+        BaseRuleManager.__init__(self, client_user, config, admin_mode)
 
     def __del__(self):
         # __del__ is a destructor method which is called as soon as all references of the object are deleted.
@@ -102,12 +103,12 @@ class RuleManager(CollectionRuleManager, ProjectRuleManager, UserRuleManager,
             relative_path = path + "/" + name
 
             folder_node = {
-                'name': name,
-                'path': relative_path,
-                'type': 'folder',
-                'size': "--",
-                'rescname': "--",
-                'ctime': ctime.strftime('%Y-%m-%d %H:%M:%S')
+                "name": name,
+                "path": relative_path,
+                "type": "folder",
+                "size": "--",
+                "rescname": "--",
+                "ctime": ctime.strftime("%Y-%m-%d %H:%M:%S"),
             }
 
             output.append(folder_node)
@@ -124,13 +125,13 @@ class RuleManager(CollectionRuleManager, ProjectRuleManager, UserRuleManager,
             relative_path = path + "/" + data.name
 
             data_node = {
-                'name': data.name,
-                'path': relative_path,
-                'type': 'file',
-                'size': data.size,
-                'rescname': data.resource_name,
-                'offlineResource': data.resource_name == 'arcRescSURF01',
-                'ctime': ctime.strftime('%Y-%m-%d %H:%M:%S')
+                "name": data.name,
+                "path": relative_path,
+                "type": "file",
+                "size": data.size,
+                "rescname": data.resource_name,
+                "offlineResource": data.resource_name == "arcRescSURF01",
+                "ctime": ctime.strftime("%Y-%m-%d %H:%M:%S"),
             }
 
             output.append(data_node)
@@ -152,7 +153,7 @@ class RuleManager(CollectionRuleManager, ProjectRuleManager, UserRuleManager,
         """
         file = None
         file_information = None
-        path_prefix = '/nlmumc/projects/'
+        path_prefix = "/nlmumc/projects/"
         full_path = path_prefix + path
 
         if check_file_path_format(full_path) is False or is_safe_full_path(full_path) is False:
@@ -160,7 +161,7 @@ class RuleManager(CollectionRuleManager, ProjectRuleManager, UserRuleManager,
 
         try:
             file_information = self.session.data_objects.get(full_path)
-            file = self.session.data_objects.open(full_path, 'r')
+            file = self.session.data_objects.open(full_path, "r")
         except (CollectionDoesNotExist, DataObjectDoesNotExist) as error:
             print('File download request of "' + path + '" failed, file does not exist')
             print(error)
@@ -174,6 +175,7 @@ class RuleJSONManager(RuleManager):
     Executing a rule with RuleJSONManager, will return a JSON instead of a DTO
 
     """
-    def __init__(self, client_user=None, config=None):
-        BaseRuleManager.__init__(self, client_user, config)
+
+    def __init__(self, client_user=None, config=None, admin_mode=False):
+        BaseRuleManager.__init__(self, client_user, config, admin_mode)
         self.parse_to_dto = False

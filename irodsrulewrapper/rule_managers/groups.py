@@ -5,8 +5,8 @@ from irodsrulewrapper.dto.users import Users
 
 
 class GroupRuleManager(BaseRuleManager):
-    def __init__(self):
-        BaseRuleManager.__init__(self)
+    def __init__(self, client_user=None, admin_mode=False):
+        BaseRuleManager.__init__(self, client_user, admin_mode=admin_mode)
 
     @rule_call
     def get_groups(self, show_service_accounts):
@@ -80,7 +80,6 @@ class GroupRuleManager(BaseRuleManager):
 
         # TODO Create the DTO
 
-        return RuleInfo(name="listGroupsByUser", get_result=True, session=self.session,
-                        dto=None, parse_to_dto=self.parse_to_dto)
-
-
+        return RuleInfo(
+            name="listGroupsByUser", get_result=True, session=self.session, dto=None, parse_to_dto=self.parse_to_dto
+        )

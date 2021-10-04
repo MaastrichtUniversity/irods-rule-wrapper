@@ -37,7 +37,7 @@ class ProjectOverview:
         viewer_users = []
         viewer_groups = []
 
-        rule_manager = UserRuleManager("rodsadmin")
+        rule_manager = UserRuleManager(admin_mode=True)
         for managers in result["managers"]:
             manager = rule_manager.get_user_or_group(managers)
             if isinstance(manager, User):

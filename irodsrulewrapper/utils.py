@@ -5,6 +5,7 @@ from irods.session import iRODSSession
 import re
 import os
 import pika
+import ssl
 
 
 def check_project_id_format(project):
@@ -42,7 +43,6 @@ def check_file_path_format(path):
         return False
 
 
-# TODO: this is not nice. Knowledge about project and collection paths should be centralized.
 def get_project_from_collection_path(path):
     m = re.search(r"^(/nlmumc/projects/)?(?P<project>P[0-9]{9})/C[0-9]{9}/?", path)
     if m is not None:
@@ -70,6 +70,19 @@ class BaseRuleManager:
         self.parse_to_dto = True
         if not client_user and not admin_mode:
             raise Exception("No user to initialize RuleManager provided")
+        self.ssl_context = ssl.create_default_context(
+            purpose=ssl.Purpose.SERVER_AUTH, cafile=None, capath=None, cadata=None
+        )
+        self.ssl_settings = {
+            "irods_client_server_negotiation": "request_server_negotiation",
+            "irods_client_server_policy": os.environ["IRODS_CLIENT_SERVER_POLICY"],
+            "irods_encryption_algorithm": "AES-256-CBC",
+            "irods_encryption_key_size": 32,
+            "irods_encryption_num_hash_rounds": 16,
+            "irods_encryption_salt_size": 8,
+            "ssl_context": self.ssl_context,
+        }
+
         if config is None:
             self.init_with_environ_conf(client_user, admin_mode)
         else:
@@ -83,6 +96,7 @@ class BaseRuleManager:
                 user=os.environ["IRODS_USER"],
                 password=os.environ["IRODS_PASS"],
                 zone="nlmumc",
+                **self.ssl_settings
             )
         else:
             self.session = iRODSSession(
@@ -92,6 +106,7 @@ class BaseRuleManager:
                 password=os.environ["IRODS_PASS"],
                 zone="nlmumc",
                 client_user=client_user,
+                **self.ssl_settings
             )
 
     def init_with_variable_config(self, client_user, config, admin_mode):
@@ -102,6 +117,7 @@ class BaseRuleManager:
                 user=config["IRODS_USER"],
                 password=config["IRODS_PASS"],
                 zone="nlmumc",
+                **self.ssl_settings
             )
         else:
             self.session = iRODSSession(
@@ -111,6 +127,7 @@ class BaseRuleManager:
                 password=config["IRODS_PASS"],
                 zone="nlmumc",
                 client_user=client_user,
+                **self.ssl_settings
             )
 
 

@@ -3,34 +3,33 @@ from irodsrulewrapper.cache import CacheTTL
 
 
 def test_rule_get_projects():
-    result = RuleManager().get_projects('false')
+    result = RuleManager(admin_mode=True).get_projects("false")
     assert result is not None
 
 
 def test_rule_get_projects_overview():
-    result = RuleManager().get_projects_overview()
+    result = RuleManager(admin_mode=True).get_projects_overview()
     assert result is not None
 
 
 def test_rule_get_projects_overview_cached():
-    result = RuleManager().get_projects_overview()
+    result = RuleManager(admin_mode=True).get_projects_overview()
     assert result is not None
 
 
 def test_rule_get_projects_overview_cached_ttl_reset():
-    result = RuleManager().get_projects_overview()
+    result = RuleManager(admin_mode=True).get_projects_overview()
     assert result is not None
 
 
 def test_rule_get_projects_overview_cached_ttl_cached():
-    result = RuleManager().get_projects_overview()
+    result = RuleManager(admin_mode=True).get_projects_overview()
     assert result is not None
-
 
 
 # def test_create_multiple_projects():
 #     for x in range(100):
-#         manager = RuleManager()
+#         manager = RuleManager(admin_mode=True)
 #         project = manager.create_new_project("authorizationPeriodEndDate", "dataRetentionPeriodEndDate",
 #                                              "ingestResource", "resource", 42, "PyTest title", "jmelius",
 #                                              "opalmen", "XXXXXXXXX", "true", "false")

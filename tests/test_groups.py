@@ -5,13 +5,13 @@ import json
 
 
 def test_rule_get_project_details_json():
-    groups = RuleJSONManager().list_groups_users()
+    groups = RuleJSONManager(admin_mode=True).list_groups_users()
     assert groups is not None
     assert groups[0]["users"] is not None
 
 
 def test_rule_get_groups():
-    result = RuleManager().get_groups("true")
+    result = RuleManager(admin_mode=True).get_groups("true")
     groups = result.groups
     assert groups is not None
     assert groups.__len__() >= 2
@@ -21,7 +21,7 @@ def test_rule_get_groups():
 
 
 def test_rule_get_users_in_group():
-    result = RuleManager().get_users_in_group("10002")
+    result = RuleManager(admin_mode=True).get_users_in_group("10002")
     users = result.users
     assert users is not None
     assert users.__len__() >= 2
@@ -49,11 +49,11 @@ def test_dto_groups():
     assert groups[0].description == "CO for PhD project of P7000815"
 
 
-GROUP = '''
+GROUP = """
 {
     "description": "",
     "displayName": "public",
     "userId": "10002",
     "userName": "public"
 }
-'''
+"""

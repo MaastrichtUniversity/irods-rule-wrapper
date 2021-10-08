@@ -5,7 +5,7 @@ import json
 
 
 def test_rule_get_data_stewards():
-    result = RuleManager().get_data_stewards()
+    result = RuleManager(admin_mode=True).get_data_stewards()
     data_stewards = result.data_stewards
     assert data_stewards is not None
     assert data_stewards.__len__() >= 2
@@ -30,15 +30,15 @@ def test_dto_data_stewards():
     assert result.data_stewards[1].user_name == "pvanschay2"
 
 
-DATA_STEWARD = '''
+DATA_STEWARD = """
 {
     "displayName": "Olav Palmen",
     "userId": "10098",
     "userName": "opalmen"
 }
-'''
+"""
 
-DATA_STEWARDS = '''
+DATA_STEWARDS = """
 [
     {
         "displayName": "Olav Palmen",
@@ -56,4 +56,4 @@ DATA_STEWARDS = '''
         "userName": "jmelius"
     }
 ]
-'''
+"""

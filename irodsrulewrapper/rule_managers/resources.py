@@ -5,8 +5,8 @@ from irodsrulewrapper.dto.collection_sizes import CollectionSizes
 
 
 class ResourceRuleManager(BaseRuleManager):
-    def __init__(self, client_user=None):
-        BaseRuleManager.__init__(self, client_user)
+    def __init__(self, client_user=None, admin_mode=False):
+        BaseRuleManager.__init__(self, client_user, admin_mode=admin_mode)
 
     @rule_call
     def get_ingest_resources(self):
@@ -65,4 +65,6 @@ class ResourceRuleManager(BaseRuleManager):
         if not check_project_id_format(project):
             raise RuleInputValidationError("invalid project id; eg. P000000001")
 
-        return RuleInfo(name="get_collection_size_per_resource", get_result=True, session=self.session, dto=CollectionSizes)
+        return RuleInfo(
+            name="get_collection_size_per_resource", get_result=True, session=self.session, dto=CollectionSizes
+        )

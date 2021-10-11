@@ -8,86 +8,86 @@ import json
 from irods.exception import CAT_NO_ACCESS_PERMISSION
 
 
-@pytest.mark.skip(reason='needs local setup first.')
+@pytest.mark.skip(reason="needs local setup first.")
 def test_publish_message():
     message = {
-        'project': 'P000000015',
-        'collection': 'C000000002',
-        'repository': 'Dataverse',
-        'dataverse_alias': 'DataHub',
-        'restrict': False,
-        'restrict_list': "P000000015/C000000002/specialchars_~!@#$%^&()-+=[]{};',.txt,\tP000000015/C000000002/test.log",
-        'data_export': False,
-        'delete': False,
-        'depositor': 'jonathan.melius@maastrichtuniversity.nl'
+        "project": "P000000015",
+        "collection": "C000000002",
+        "repository": "Dataverse",
+        "dataverse_alias": "DataHub",
+        "restrict": False,
+        "restrict_list": "P000000015/C000000002/specialchars_~!@#$%^&()-+=[]{};',.txt,\tP000000015/C000000002/test.log",
+        "data_export": False,
+        "delete": False,
+        "depositor": "jonathan.melius@maastrichtuniversity.nl",
     }
     json_message = json.dumps(message)
     publish_message("datahub.events_tx", "projectCollection.exporter.requested", json_message)
     assert True is True
 
 
-@pytest.mark.skip(reason='needs local setup first.')
+@pytest.mark.skip(reason="needs local setup first.")
 def test_export_project_collection_by_step():
-    project = 'P000000015'
-    collection = 'C000000002'
-    repository = 'Dataverse'
+    project = "P000000015"
+    collection = "C000000002"
+    repository = "Dataverse"
 
-    RuleManager().prepare_export(project, collection, repository)
+    RuleManager(admin_mode=True).prepare_export(project, collection, repository)
 
     message = {
-        'project': project,
-        'collection': collection,
-        'repository': repository,
-        'dataverse_alias': 'DataHub',
-        'restrict': False,
-        'restrict_list': "P000000015/C000000002/specialchars_~!@#$%^&()-+=[]{};\"',.txt,\tP000000015/C000000002/test.log",
-        'data_export': False,
-        'delete': False,
-        'depositor': 'jonathan.melius@maastrichtuniversity.nl'
+        "project": project,
+        "collection": collection,
+        "repository": repository,
+        "dataverse_alias": "DataHub",
+        "restrict": False,
+        "restrict_list": "P000000015/C000000002/specialchars_~!@#$%^&()-+=[]{};\"',.txt,\tP000000015/C000000002/test.log",
+        "data_export": False,
+        "delete": False,
+        "depositor": "jonathan.melius@maastrichtuniversity.nl",
     }
     json_message = json.dumps(message)
     publish_message("datahub.events_tx", "projectCollection.exporter.requested", json_message)
     assert True is True
 
 
-@pytest.mark.skip(reason='needs local setup first.')
+@pytest.mark.skip(reason="needs local setup first.")
 def test_rule_export_project_collection():
-    project = 'P000000015'
-    collection = 'C000000002'
-    repository = 'Dataverse'
+    project = "P000000015"
+    collection = "C000000002"
+    repository = "Dataverse"
     message = {
-        'project': project,
-        'collection': collection,
-        'repository': repository,
-        'dataverse_alias': 'DataHub',
-        'restrict': False,
-        'restrict_list': "P000000015/C000000002/specialchars_~!@#$%^&()-+=[]{};\"',.txt,\tP000000015/C000000002/test.log",
-        'data_export': False,
-        'delete': False,
-        'depositor': 'jonathan.melius@maastrichtuniversity.nl'
+        "project": project,
+        "collection": collection,
+        "repository": repository,
+        "dataverse_alias": "DataHub",
+        "restrict": False,
+        "restrict_list": "P000000015/C000000002/specialchars_~!@#$%^&()-+=[]{};\"',.txt,\tP000000015/C000000002/test.log",
+        "data_export": False,
+        "delete": False,
+        "depositor": "jonathan.melius@maastrichtuniversity.nl",
     }
-    RuleManager().export_project_collection(project, collection, repository, message)
+    RuleManager(admin_mode=True).export_project_collection(project, collection, repository, message)
 
     assert True is True
 
 
 def test_rule_get_collection_avu():
-    avu = RuleManager().get_collection_attribute_value("/nlmumc/projects/P000000010/C000000001", "title")
+    avu = RuleManager(admin_mode=True).get_collection_attribute_value("/nlmumc/projects/P000000010/C000000001", "title")
     assert avu is not None
 
 
 def test_get_project_collection_tape_estimate():
-    collection = RuleManager().get_project_collection_tape_estimate("P000000010", "C000000001")
+    collection = RuleManager(admin_mode=True).get_project_collection_tape_estimate("P000000010", "C000000001")
     assert collection is not None
 
 
 def test_rule_get_collection_tree():
-    collection = RuleManager().get_collection_tree("P000000010/C000000001", "P000000010/C000000001")
+    collection = RuleManager(admin_mode=True).get_collection_tree("P000000010/C000000001", "P000000010/C000000001")
     assert collection is not None
 
 
 def test_rule_get_project_collection_details():
-    collection = RuleManager().get_project_collection_details("P000000011", "C000000001", "false")
+    collection = RuleManager(admin_mode=True).get_project_collection_details("P000000011", "C000000001", "false")
     assert collection is not None
     assert collection.id == "C000000001"
     assert collection.creator == "irods_bootstrap@docker.dev"
@@ -97,18 +97,18 @@ def test_rule_get_project_collection_details():
 
 
 def test_rule_get_collections():
-    result = RuleManager().get_collections("/nlmumc/projects/P000000011")
+    result = RuleManager(admin_mode=True).get_collections("/nlmumc/projects/P000000011")
     collections = result.collections
     assert collections is not None
     assert collections[0].creator == "irods_bootstrap@docker.dev"
 
 
-@pytest.mark.skip(reason='needs local setup first.')
+@pytest.mark.skip(reason="needs local setup first.")
 def test_rule_get_collections_var_config():
     config = dict()
-    config['IRODS_HOST'] = '0.0.0.0'
-    config['IRODS_USER'] = 'rods'
-    config['IRODS_PASS'] = 'irods'
+    config["IRODS_HOST"] = "0.0.0.0"
+    config["IRODS_USER"] = "rods"
+    config["IRODS_PASS"] = "irods"
     result = RuleManager(config=config).get_collections("/nlmumc/projects/P000000011")
     collections = result.collections
     assert collections is not None
@@ -134,7 +134,7 @@ def test_collections():
     assert collections[1].title == "Test Coll 2.0"
 
 
-COLLECTION_JSON = '''
+COLLECTION_JSON = """
 {
     "PID": "21.T12996/P000000010C000000001",
     "creator": "jonathan.melius@maastrichtuniversity.nl",
@@ -143,9 +143,9 @@ COLLECTION_JSON = '''
     "size": 2793.9677238464355,
     "title": "Test Coll 1"
 }
-'''
+"""
 
-COLLECTIONS_JSON = '''
+COLLECTIONS_JSON = """
 [
     {
         "PID": "21.T12996/P000000010C000000001",
@@ -164,14 +164,14 @@ COLLECTIONS_JSON = '''
         "title": "Test Coll 2.0"
     }
 ]
-'''
+"""
 
 
 @pytest.mark.skip()
 def test_rule_export():
     result = False
     try:
-        # RuleManager().export_project_collection("P000000016", "C000000001", "DataverseNL", {})
+        # RuleManager(admin_mode=True).export_project_collection("P000000016", "C000000001", "DataverseNL", {})
         RuleManager("mcoonen").export_project_collection("P000000016", "C000000001", "DataverseNL", {})
     except CAT_NO_ACCESS_PERMISSION:
         result = True

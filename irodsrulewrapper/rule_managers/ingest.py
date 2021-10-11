@@ -8,8 +8,8 @@ import logging
 
 
 class IngestRuleManager(BaseRuleManager):
-    def __init__(self, client_user=None):
-        BaseRuleManager.__init__(self, client_user)
+    def __init__(self, client_user=None, admin_mode=False):
+        BaseRuleManager.__init__(self, client_user, admin_mode=admin_mode)
 
     @rule_call
     def get_active_drop_zones(self, report):
@@ -53,16 +53,14 @@ class IngestRuleManager(BaseRuleManager):
 
         if check_ingest_resource_status != "false" and check_ingest_resource_status != "true":
             raise RuleInputValidationError(
-                "invalid value for *check_ingest_resource_status: expected 'true' or 'false'")
+                "invalid value for *check_ingest_resource_status: expected 'true' or 'false'"
+            )
 
         return RuleInfo(name="get_active_drop_zone", get_result=True, session=self.session, dto=DropZone)
 
     @rule_call
     def start_ingest(self, user, token):
-        input_params = {
-            '*user': '"{}"'.format(user),
-            '*token': '"{}"'.format(token)
-        }
+        input_params = {"*user": '"{}"'.format(user), "*token": '"{}"'.format(token)}
 
         rule_body = """
             execute_rule{
@@ -70,17 +68,23 @@ class IngestRuleManager(BaseRuleManager):
             }
             """
 
-        return RuleInfo(name="ingest", get_result=False, session=self.session,
-                        dto=None, input_params=input_params, rule_body=rule_body)
+        return RuleInfo(
+            name="ingest",
+            get_result=False,
+            session=self.session,
+            dto=None,
+            input_params=input_params,
+            rule_body=rule_body,
+        )
 
     @rule_call
     def create_ingest(self, user, token, project, title):
 
         input_params = {
-            '*user': '"{}"'.format(user),
-            '*token': '"{}"'.format(token),
-            '*project': '"{}"'.format(project),
-            '*title': '"{}"'.format(title)
+            "*user": '"{}"'.format(user),
+            "*token": '"{}"'.format(token),
+            "*project": '"{}"'.format(project),
+            "*title": '"{}"'.format(title),
         }
 
         rule_body = """
@@ -89,8 +93,14 @@ class IngestRuleManager(BaseRuleManager):
         }
         """
 
-        return RuleInfo(name="createIngest", get_result=False, session=self.session,
-                        dto=None, input_params=input_params, rule_body=rule_body)
+        return RuleInfo(
+            name="createIngest",
+            get_result=False,
+            session=self.session,
+            dto=None,
+            input_params=input_params,
+            rule_body=rule_body,
+        )
 
     def ingest(self, user, token):
         logger = logging.getLogger(__name__)
@@ -132,9 +142,9 @@ class IngestRuleManager(BaseRuleManager):
         """
 
         input_params = {
-            '*token': '"{}"'.format(token),
-            '*project': '"{}"'.format(project),
-            '*title': '"{}"'.format(title)
+            "*token": '"{}"'.format(token),
+            "*project": '"{}"'.format(project),
+            "*title": '"{}"'.format(title),
         }
 
         rule_body = """
@@ -143,8 +153,14 @@ class IngestRuleManager(BaseRuleManager):
                }
                """
 
-        return RuleInfo(name="editIngest", get_result=False, session=self.session, dto=None, input_params=input_params,
-                        rule_body=rule_body)
+        return RuleInfo(
+            name="editIngest",
+            get_result=False,
+            session=self.session,
+            dto=None,
+            input_params=input_params,
+            rule_body=rule_body,
+        )
 
     @rule_call
     def generate_token(self):
@@ -159,7 +175,6 @@ class IngestRuleManager(BaseRuleManager):
         """
 
         return RuleInfo(name="generate_token", get_result=True, session=self.session, dto=Token)
-
 
     @rule_call
     def set_total_size_dropzone(self, token):

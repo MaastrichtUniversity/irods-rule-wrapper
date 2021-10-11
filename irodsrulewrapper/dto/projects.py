@@ -4,26 +4,26 @@ import json
 
 
 class Projects:
-    def __init__(self, projects: List['Project'], has_financial_view_access: bool):
-        self.projects: List['Project'] = projects
+    def __init__(self, projects: List["Project"], has_financial_view_access: bool):
+        self.projects: List["Project"] = projects
         self.has_financial_view_access: bool = has_financial_view_access
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> 'Projects':
+    def create_from_rule_result(cls, result: Dict) -> "Projects":
         output = []
-        for item in result['projects']:
+        for item in result["projects"]:
             project = Project.create_from_rule_result(item)
             output.append(project)
-        projects = cls(output, result['has_financial_view_access'])
+        projects = cls(output, result["has_financial_view_access"])
         return projects
 
     @classmethod
-    def create_from_mock_result(cls, projects_json=None) -> 'Projects':
+    def create_from_mock_result(cls, projects_json=None) -> "Projects":
         if projects_json is None:
             projects_json = cls.PROJECTS_JSON
         return Projects.create_from_rule_result(json.loads(projects_json))
 
-    PROJECTS_JSON = '''
+    PROJECTS_JSON = """
     {
       "has_financial_view_access": true,
       "projects": [
@@ -157,4 +157,4 @@ class Projects:
         }
       ]
     }
-    '''
+    """

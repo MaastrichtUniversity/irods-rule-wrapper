@@ -6,6 +6,6 @@ class AttributeValue:
         self.value: str = value
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> 'AttributeValue':
+    def create_from_rule_result(cls, result: Dict) -> "AttributeValue":
         value = cls(result["value"])
         return value

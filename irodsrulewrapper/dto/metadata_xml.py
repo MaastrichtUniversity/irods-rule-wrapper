@@ -6,22 +6,24 @@ import json
 
 
 class MetadataXML:
-    def __init__(self,
-                 creator: str,
-                 token: str,
-                 project: str,
-                 title: str,
-                 description: str,
-                 date: str,
-                 articles: str,
-                 organism_id: str,
-                 organism_label: str,
-                 tissue_id: str,
-                 tissue_label: str,
-                 technology_id: str,
-                 technology_label: str,
-                 factors: str,
-                 contacts: str):
+    def __init__(
+        self,
+        creator: str,
+        token: str,
+        project: str,
+        title: str,
+        description: str,
+        date: str,
+        articles: str,
+        organism_id: str,
+        organism_label: str,
+        tissue_id: str,
+        tissue_label: str,
+        technology_id: str,
+        technology_label: str,
+        factors: str,
+        contacts: str,
+    ):
 
         self.creator: str = creator
         self.token: str = token
@@ -40,26 +42,37 @@ class MetadataXML:
         self.contacts: str = contacts
 
     @classmethod
-    def create_from_dict(cls, data: Dict) -> 'MetadataXML':
-        metadata = cls(data["creator"], data["token"],
-                       data["project"], data["title"], data["description"],
-                       data["date"], data["articles"],
-                       data["organism_id"], data["organism_label"],
-                       data["tissue_id"], data["tissue_label"],
-                       data["technology_id"], data["technology_label"], data["factors"], data['contacts'])
+    def create_from_dict(cls, data: Dict) -> "MetadataXML":
+        metadata = cls(
+            data["creator"],
+            data["token"],
+            data["project"],
+            data["title"],
+            data["description"],
+            data["date"],
+            data["articles"],
+            data["organism_id"],
+            data["organism_label"],
+            data["tissue_id"],
+            data["tissue_label"],
+            data["technology_id"],
+            data["technology_label"],
+            data["factors"],
+            data["contacts"],
+        )
         return metadata
 
     def write_metadata_xml(self, session):
         xml = self.build_metadata()
-        xml.write("./metadata.xml", encoding='UTF-8', xml_declaration=True)
+        xml.write("./metadata.xml", encoding="UTF-8", xml_declaration=True)
         ingest_zone = "/nlmumc/ingest/zones/" + self.token + "/" + "metadata.xml"
         session.data_objects.put("./metadata.xml", ingest_zone)
         os.remove("./metadata.xml")
 
     @classmethod
-    def read_metadata_xml(cls, session, xml_path, token=''):
+    def read_metadata_xml(cls, session, xml_path, token=""):
         try:
-            with session.data_objects.open(xml_path, 'r') as f:
+            with session.data_objects.open(xml_path, "r") as f:
                 metadata_xml = f.read()
         except exception.DataObjectDoesNotExist as e:
             metadata_xml = ""
@@ -74,29 +87,40 @@ class MetadataXML:
             technology = read_tag(root, "technology")
             organism = read_tag(root, "organism")
             data = {
-                "project": read_text(root, 'project'),
-                "title": read_text(root, 'title'),
-                "description": read_text(root, 'description'),
+                "project": read_text(root, "project"),
+                "title": read_text(root, "title"),
+                "description": read_text(root, "description"),
                 "date": read_text(root, "date"),
                 "creator": read_text(root, "creator"),
                 "token": token,
                 "articles": read_tag_list(root, "article"),
-                "organism_id": organism['id'],
-                "organism_label": organism['label'],
-                "tissue_id": tissue['id'],
-                "tissue_label": tissue['label'],
-                "technology_id": technology['id'],
-                "technology_label": technology['label'],
+                "organism_id": organism["id"],
+                "organism_label": organism["label"],
+                "tissue_id": tissue["id"],
+                "tissue_label": tissue["label"],
+                "technology_id": technology["id"],
+                "technology_label": technology["label"],
                 "factors": read_tag_node(root, "factors"),
-                "contacts": read_contacts(root)
+                "contacts": read_contacts(root),
             }
 
-            return cls(data["creator"], data["token"],
-                       data["project"], data["title"], data["description"],
-                       data["date"], data["articles"],
-                       data["organism_id"], data["organism_label"],
-                       data["tissue_id"], data["tissue_label"],
-                       data["technology_id"], data["technology_label"], data["factors"], data["contacts"])
+            return cls(
+                data["creator"],
+                data["token"],
+                data["project"],
+                data["title"],
+                data["description"],
+                data["date"],
+                data["articles"],
+                data["organism_id"],
+                data["organism_label"],
+                data["tissue_id"],
+                data["tissue_label"],
+                data["technology_id"],
+                data["technology_label"],
+                data["factors"],
+                data["contacts"],
+            )
 
         except ET.ParseError:
             # logger.warning("ProjectCollection %s/%s has invalid metadata.xml" % (project, collection))
@@ -110,21 +134,21 @@ class MetadataXML:
         ET.SubElement(root, "date").text = self.date
         ET.SubElement(root, "creator").text = self.creator
 
-        if self.organism_label != '':
+        if self.organism_label != "":
             ET.SubElement(root, "organism", id=self.organism_id).text = self.organism_label
         else:
             ET.SubElement(root, "organism", id="")
-        if self.tissue_label != '':
+        if self.tissue_label != "":
             ET.SubElement(root, "tissue", id=self.tissue_id).text = self.tissue_label
         else:
             ET.SubElement(root, "tissue", id="")
-        if self.technology_label != '':
+        if self.technology_label != "":
             ET.SubElement(root, "technology", id=self.technology_id).text = self.technology_label
         else:
             ET.SubElement(root, "technology", id="")
 
         for article in self.articles.split(","):
-            if article != '':
+            if article != "":
                 url = "https://doi.org/" + article
                 ET.SubElement(root, "article").text = url
             else:
@@ -151,18 +175,18 @@ class MetadataXML:
 
 
 def read_tag_list(root, tag):
-    concatenation = ''
+    concatenation = ""
     for k in root.findall(tag):
         for i in k.iter():
             if i.text is not None:
-                concatenation += ',' + i.text.replace("https://doi.org/", "")
+                concatenation += "," + i.text.replace("https://doi.org/", "")
     return concatenation[1:]
 
 
 def read_text(root, tag):
     text = root.find(tag).text
     if text is None:
-        return ''
+        return ""
     else:
         return text
 
@@ -170,14 +194,16 @@ def read_text(root, tag):
 def read_contacts(root):
     contacts = []
     for contact in root.findall("contact"):
-        contact_object = {"LastName": contact.find('lastName').text,
-                          "FirstName": contact.find('firstName').text,
-                          "MidInitials": contact.find('midInitials').text,
-                          "Email": contact.find('email').text,
-                          "Phone": contact.find('phone').text,
-                          "Address": contact.find('address').text,
-                          "Affiliation": contact.find('affiliation').text,
-                          "Role": contact.find('role').text}
+        contact_object = {
+            "LastName": contact.find("lastName").text,
+            "FirstName": contact.find("firstName").text,
+            "MidInitials": contact.find("midInitials").text,
+            "Email": contact.find("email").text,
+            "Phone": contact.find("phone").text,
+            "Address": contact.find("address").text,
+            "Affiliation": contact.find("affiliation").text,
+            "Role": contact.find("role").text,
+        }
         contacts.append(contact_object)
 
     return json.dumps(contacts)
@@ -185,14 +211,14 @@ def read_contacts(root):
 
 def create_contact(root, contact=None):
     contact_element = ET.SubElement(root, "contact")
-    ET.SubElement(contact_element, "lastName").text = contact["LastName"] if contact else ''
-    ET.SubElement(contact_element, "firstName").text = contact["FirstName"] if contact else ''
-    ET.SubElement(contact_element, "midInitials").text = contact["MidInitials"] if contact else ''
-    ET.SubElement(contact_element, "email").text = contact["Email"] if contact else ''
-    ET.SubElement(contact_element, "phone").text = contact["Phone"] if contact else ''
-    ET.SubElement(contact_element, "address").text = contact["Address"] if contact else ''
-    ET.SubElement(contact_element, "affiliation").text = contact["Affiliation"] if contact else ''
-    ET.SubElement(contact_element, "role").text = contact["Role"] if contact else ''
+    ET.SubElement(contact_element, "lastName").text = contact["LastName"] if contact else ""
+    ET.SubElement(contact_element, "firstName").text = contact["FirstName"] if contact else ""
+    ET.SubElement(contact_element, "midInitials").text = contact["MidInitials"] if contact else ""
+    ET.SubElement(contact_element, "email").text = contact["Email"] if contact else ""
+    ET.SubElement(contact_element, "phone").text = contact["Phone"] if contact else ""
+    ET.SubElement(contact_element, "address").text = contact["Address"] if contact else ""
+    ET.SubElement(contact_element, "affiliation").text = contact["Affiliation"] if contact else ""
+    ET.SubElement(contact_element, "role").text = contact["Role"] if contact else ""
 
 
 def read_tag(root, tag):
@@ -216,5 +242,13 @@ def read_tag_node(root, tag):
 
 
 def is_invalid_contact(contact):
-    return not contact["LastName"] and not contact["FirstName"] and not contact["MidInitials"] and not contact["Email"]\
-           and not contact["Phone"] and not contact["Address"] and not contact["Affiliation"] and not contact["Role"]
+    return (
+        not contact["LastName"]
+        and not contact["FirstName"]
+        and not contact["MidInitials"]
+        and not contact["Email"]
+        and not contact["Phone"]
+        and not contact["Address"]
+        and not contact["Affiliation"]
+        and not contact["Role"]
+    )

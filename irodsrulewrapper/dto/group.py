@@ -9,14 +9,14 @@ class Group:
         self.description: str = description
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> 'Group':
+    def create_from_rule_result(cls, result: Dict) -> "Group":
         # Backward compatibility
-        name = ''
+        name = ""
         if "userName" in result:
             name = result["userName"]
         elif "name" in result:
             name = result["name"]
-        group_id = ''
+        group_id = ""
         if "userId" in result:
             group_id = result["userId"]
         elif "groupId" in result:

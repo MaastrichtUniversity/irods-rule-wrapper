@@ -3,13 +3,12 @@ from typing import List, Dict
 import json
 
 
-
 class Users:
-    def __init__(self, users: List['User']):
-        self.users: List['User'] = users
+    def __init__(self, users: List["User"]):
+        self.users: List["User"] = users
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> 'Users':
+    def create_from_rule_result(cls, result: Dict) -> "Users":
         output = []
         for item in result:
             user = User.create_from_rule_result(item)
@@ -18,7 +17,7 @@ class Users:
         return users
 
     @classmethod
-    def create_from_mock_result(cls, mock_json=None) -> 'Users':
+    def create_from_mock_result(cls, mock_json=None) -> "Users":
         if mock_json is None:
             mock_json = cls.MOCK_JSON
         return cls.create_from_rule_result(json.loads(mock_json))

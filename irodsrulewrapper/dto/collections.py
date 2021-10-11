@@ -3,11 +3,11 @@ from typing import List, Dict
 
 
 class Collections:
-    def __init__(self, collections: List['Collection']):
-        self.collections: List['Collection'] = collections
+    def __init__(self, collections: List["Collection"]):
+        self.collections: List["Collection"] = collections
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> 'Collections':
+    def create_from_rule_result(cls, result: Dict) -> "Collections":
         collections = []
         for item in result:
             collection = Collection.create_from_rule_result(item)

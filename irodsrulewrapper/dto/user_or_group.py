@@ -6,7 +6,7 @@ class UserOrGroup:
         self.result: Dict = user
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> 'UserOrGroup':
+    def create_from_rule_result(cls, result: Dict) -> "UserOrGroup":
         if result is None:
             return None
         output = cls(result)

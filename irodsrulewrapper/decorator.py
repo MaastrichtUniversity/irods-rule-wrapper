@@ -18,7 +18,7 @@ def rule_call(func):
             }
             '''
         """
-        rule_info = kargs['rule_info']
+        rule_info = kargs["rule_info"]
         arguments_string = ""
         for n in range(2, len(args) + 1):
             arguments_string += "*arg" + str(n) + ","
@@ -32,7 +32,9 @@ def rule_call(func):
         execute_rule{{
         {rule_name}({arguments_string});
         }}
-        """.format(rule_name=rule_info.name, arguments_string=arguments_string)
+        """.format(
+            rule_name=rule_info.name, arguments_string=arguments_string
+        )
         return rule_body
 
     def create_rule_input(*args, **kargs):
@@ -50,7 +52,7 @@ def rule_call(func):
             }
             '''
         """
-        rule_info = kargs['rule_info']
+        rule_info = kargs["rule_info"]
         if rule_info.get_result:
             input_params = {"*result": '""'}
         else:
@@ -62,8 +64,7 @@ def rule_call(func):
         return input_params
 
     def execute_rule(rule_body, input_params, rule_info):
-        myrule = Rule(rule_info.session, body=rule_body,
-                      params=input_params, output='*result')
+        myrule = Rule(rule_info.session, body=rule_body, params=input_params, output="*result")
         result = myrule.execute()
         if rule_info.get_result:
             buf = result.MsParam_PI[0].inOutStruct.myStr
@@ -90,4 +91,5 @@ def rule_call(func):
 
         result = execute_rule(rule_body, input_params, rule_info)
         return result
+
     return wrapper_decorator

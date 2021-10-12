@@ -26,4 +26,3 @@ class CacheTTL:
 
 
 CacheTTL.set_time_stomp()
-

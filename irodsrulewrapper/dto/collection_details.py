@@ -3,16 +3,19 @@ from irodsrulewrapper.dto.external_pid import ExternalPID
 
 
 class CollectionDetails:
-    def __init__(self, id: str,
-                 creator: str,
-                 size: float,
-                 title: str,
-                 pid: str,
-                 num_files: str,
-                 enable_archive: bool,
-                 enable_unarchive: bool,
-                 enable_open_access_export: bool,
-                 external_pid_list: List):
+    def __init__(
+        self,
+        id: str,
+        creator: str,
+        size: float,
+        title: str,
+        pid: str,
+        num_files: str,
+        enable_archive: bool,
+        enable_unarchive: bool,
+        enable_open_access_export: bool,
+        external_pid_list: List,
+    ):
 
         self.id: str = id
         self.creator: str = creator
@@ -26,7 +29,7 @@ class CollectionDetails:
         self.external_pid_list: List = external_pid_list
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> 'CollectionDetails':
+    def create_from_rule_result(cls, result: Dict) -> "CollectionDetails":
         external_pid_list = []
         if result["externals"] != "no-externalPID-set":
             for external in result["externals"]:
@@ -50,7 +53,16 @@ class CollectionDetails:
         elif "enableOpenAccessExport" in result and result["enableOpenAccessExport"] == "false":
             enable_open_access_export = False
 
-        collection = cls(result["collection"], result["creator"], result["byteSize"], result["title"], result["PID"],
-                         result["numFiles"], enable_archive, enable_unarchive, enable_open_access_export,
-                         external_pid_list)
+        collection = cls(
+            result["collection"],
+            result["creator"],
+            result["byteSize"],
+            result["title"],
+            result["PID"],
+            result["numFiles"],
+            enable_archive,
+            enable_unarchive,
+            enable_open_access_export,
+            external_pid_list,
+        )
         return collection

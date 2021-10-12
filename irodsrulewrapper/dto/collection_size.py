@@ -8,7 +8,7 @@ class CollectionSize:
         self.relative_size: float = relative_size
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> 'CollectionSize':
+    def create_from_rule_result(cls, result: Dict) -> "CollectionSize":
         collection_size = cls(result["resourceName"], float(result["size"]), float(result["relativeSize"]))
 
         return collection_size

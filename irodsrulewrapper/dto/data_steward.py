@@ -8,6 +8,6 @@ class DataSteward:
         self.display_name: str = display_name
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> 'DataSteward':
+    def create_from_rule_result(cls, result: Dict) -> "DataSteward":
         data_steward = cls(result["userName"], result["userId"], result["displayName"])
         return data_steward

@@ -2,15 +2,18 @@ from typing import Dict
 
 
 class Collection:
-    def __init__(self, id: str,
-                 creator: str,
-                 size: float,
-                 title: str,
-                 pid: str,
-                 num_files: str,
-                 enable_archive: bool,
-                 enable_unarchive: bool,
-                 enable_open_access_export: bool):
+    def __init__(
+        self,
+        id: str,
+        creator: str,
+        size: float,
+        title: str,
+        pid: str,
+        num_files: str,
+        enable_archive: bool,
+        enable_unarchive: bool,
+        enable_open_access_export: bool,
+    ):
 
         self.id: str = id
         self.creator: str = creator
@@ -23,14 +26,14 @@ class Collection:
         self.enable_open_access_export: bool = enable_open_access_export
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> 'Collection':
-        id = ''
+    def create_from_rule_result(cls, result: Dict) -> "Collection":
+        id = ""
         if "id" in result:
             id = result["id"]
         elif "collection" in result:
             id = result["collection"]
 
-        size = ''
+        size = ""
         if "size" in result:
             size = result["size"]
         elif "byteSize" in result:
@@ -54,6 +57,15 @@ class Collection:
         elif "enableOpenAccessExport" in result and result["enableOpenAccessExport"] == "false":
             enable_open_access_export = False
 
-        collection = cls(id, result["creator"], size, result["title"], result["PID"],
-                         result["numFiles"], enable_archive, enable_unarchive, enable_open_access_export)
+        collection = cls(
+            id,
+            result["creator"],
+            size,
+            result["title"],
+            result["PID"],
+            result["numFiles"],
+            enable_archive,
+            enable_unarchive,
+            enable_open_access_export,
+        )
         return collection

@@ -1,3 +1,5 @@
+import datetime
+import logging
 from typing import List, Dict
 import os
 from irods import exception
@@ -184,11 +186,19 @@ def read_tag_list(root, tag):
 
 
 def read_text(root, tag):
-    text = root.find(tag).text
+    logger = logging.getLogger(__name__)
+    node = root.find(tag)
+    if node is None:
+        logger.warning(
+            "[%s] [WARNING] - Missing tag '%s' in metadata.xml",
+            datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S%z"),
+            tag,
+        )
+        return ""
+    text = node.text
     if text is None:
         return ""
-    else:
-        return text
+    return text
 
 
 def read_contacts(root):

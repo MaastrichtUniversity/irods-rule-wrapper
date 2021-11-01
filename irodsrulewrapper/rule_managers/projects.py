@@ -256,6 +256,8 @@ class ProjectRuleManager(BaseRuleManager):
             'true'/'false' excepted values
         tapeUnarchive : str
             'true'/'false' excepted values
+        metadata_schemas : str
+            csv string that contains the list of schema names
 
         Returns
         -------

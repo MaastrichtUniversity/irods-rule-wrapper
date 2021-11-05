@@ -1,14 +1,17 @@
 import time
 import os
 import json
+import logging
+
+from irods import exception
+from irods.session import iRODSSession
 
 
 class MetadataJSON:
-    def __init__(self, session, token: str):
+    def __init__(self, session: iRODSSession):
         self.session = session
-        self.token: str = token
 
-    def write_schema(self, schema_path):
+    def write_schema(self, schema_path: str, schema_irods_path: str):
         """
         Put the schema.json from the schema_path inside the drop-zone
 
@@ -16,11 +19,12 @@ class MetadataJSON:
         ----------
         schema_path: str
             The full path of the metadata schema
+        schema_irods_path: str
+            The iRODS full path of the metadata schema
         """
-        ingest_zone = "/nlmumc/ingest/zones/" + self.token + "/" + "schema.json"
-        self.session.data_objects.put(schema_path, ingest_zone)
+        self.session.data_objects.put(schema_path, schema_irods_path)
 
-    def write_instance(self, instance):
+    def write_instance(self, instance: dict, instance_irods_path: str):
         """
         Put the instance.json from the schema_path inside the drop-zone.
         data_objects.put seems to required that the input file is physically on disk.
@@ -30,12 +34,37 @@ class MetadataJSON:
         ----------
         instance: dict
             The instance.json as a dict
+        instance_irods_path: str
+            The iRODS full path of the metadata instance
         """
         timestamp = time.time_ns()
         # create a temporary file with the epoch timestamp in the filename to avoid collision
         instance_path = f"./instance_{timestamp}.json"
         with open(instance_path, "w", encoding="utf-8") as instance_file:
             json.dump(instance, instance_file, ensure_ascii=False, indent=4)
-        instance_irods_path = "/nlmumc/ingest/zones/" + self.token + "/" + "instance.json"
         self.session.data_objects.put(instance_path, instance_irods_path)
         os.remove(instance_path)
+
+    def read_irods_json_file(self, irods_file_path) -> dict:
+        """
+        Open the json file at the iRODS path and parse it JSON.
+
+        Parameters
+        ----------
+        irods_file_path: str
+            The iRODS full path of the metadata file
+
+        Returns
+        -------
+        dict
+            The json schema
+        """
+        try:
+            with self.session.data_objects.open(irods_file_path, "r") as irods_file:
+                json_string = irods_file.read()
+        except exception.DataObjectDoesNotExist:
+            json_string = ""
+            logger = logging.getLogger(__name__)
+            logger.warning("%s is missing" % irods_file_path)
+
+        return json.loads(json_string)

@@ -136,10 +136,10 @@ class IngestRuleManager(BaseRuleManager):
         token = self.generate_token().token
         self.create_ingest(data["user"], token, data["project"], data["title"])
         data["token"] = token
-        self.save_metadata_json(token, schema_path, instance)
+        self.save_metadata_json_to_dropzone(token, schema_path, instance)
         return token
 
-    def save_metadata_json(self, token: str, schema_path: str, instance: dict):
+    def save_metadata_json_to_dropzone(self, token: str, schema_path: str, instance: dict):
         """
         Save the schema.json & instance.json to the indicated drop-zone.
 
@@ -152,9 +152,39 @@ class IngestRuleManager(BaseRuleManager):
         instance: dict
             The instance.json as a dict
         """
-        xml = MetadataJSON(self.session, token)
-        xml.write_schema(schema_path)
-        xml.write_instance(instance)
+        metadata_json = MetadataJSON(self.session)
+        schema_irods_path = "/nlmumc/ingest/zones/" + token + "/" + "schema.json"
+        metadata_json.write_schema(schema_path, schema_irods_path)
+        instance_irods_path = "/nlmumc/ingest/zones/" + token + "/" + "instance.json"
+        metadata_json.write_instance(instance, instance_irods_path)
+
+    def save_instance(self, instance_irods_path: str, instance: dict):
+        """
+        Save the instance.json to the indicated iRODS path.
+
+        Parameters
+        ----------
+        instance_irods_path:
+            The iRODS full path of the metadata instance
+        instance: dict
+            The instance.json as a dict
+        """
+        metadata_json = MetadataJSON(self.session)
+        metadata_json.write_instance(instance, instance_irods_path)
+
+    def read_schema_from_dropzone(self, token):
+        metadata_json = MetadataJSON(self.session)
+        schema_irods_path = "/nlmumc/ingest/zones/" + token + "/" + "schema.json"
+        schema = metadata_json.read_irods_json_file(schema_irods_path)
+
+        return schema
+
+    def read_instance_from_dropzone(self, token):
+        metadata_json = MetadataJSON(self.session)
+        instance_irods_path = "/nlmumc/ingest/zones/" + token + "/" + "instance.json"
+        instance = metadata_json.read_irods_json_file(instance_irods_path)
+
+        return instance
 
     @rule_call
     def edit_drop_zone(self, token, project, title):

@@ -64,12 +64,12 @@ class IngestRuleManager(BaseRuleManager):
 
         rule_body = """
             execute_rule{
-                ingest;
+                startIngest;
             }
             """
 
         return RuleInfo(
-            name="ingest",
+            name="startIngest",
             get_result=False,
             session=self.session,
             dto=None,

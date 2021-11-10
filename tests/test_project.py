@@ -58,7 +58,8 @@ def test_rule_create_new_project():
         "XXXXXXXXX",
         "true",
         "false",
-        "false",
+        "true",
+        "DataHub_general_template",
     )
     assert project.project_id is not None
     assert project.project_path is not None

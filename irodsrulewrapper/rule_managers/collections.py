@@ -1,6 +1,7 @@
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.dto.attribute_value import AttributeValue
 from irodsrulewrapper.dto.collections import Collections, Collection
+from irodsrulewrapper.dto.metadata_json import MetadataJSON
 from irodsrulewrapper.dto.metadata_xml import MetadataXML
 from irodsrulewrapper.dto.collections import Collections
 from irodsrulewrapper.dto.collection_details import CollectionDetails
@@ -14,6 +15,8 @@ from irodsrulewrapper.utils import (
     BaseRuleManager,
     RuleInfo,
     RuleInputValidationError,
+    check_file_path_format,
+    is_safe_full_path,
 )
 
 import json
@@ -273,3 +276,17 @@ class CollectionRuleManager(BaseRuleManager):
         * Add the 'in-queue-for-export' AVU
         """
         return RuleInfo(name="prepareExportProjectCollection", get_result=False, session=self.session, dto=None)
+
+    def read_schema_from_collection(self, project, collection):
+        metadata_json = MetadataJSON(self.session)
+        schema_irods_path = "/nlmumc/projects/" + project + "/" + collection + "/" + "schema.json"
+        if check_file_path_format(schema_irods_path) and is_safe_full_path(schema_irods_path):
+            return metadata_json.read_irods_json_file(schema_irods_path)
+        raise RuleInputValidationError("invalid schema path provided")
+
+    def read_instance_from_collection(self, project, collection):
+        metadata_json = MetadataJSON(self.session)
+        instance_irods_path = "/nlmumc/projects/" + project + "/" + collection + "/" + "instance.json"
+        if check_file_path_format(instance_irods_path) and is_safe_full_path(instance_irods_path):
+            return metadata_json.read_irods_json_file(instance_irods_path)
+        raise RuleInputValidationError("invalid instance path provided") # Raise different error

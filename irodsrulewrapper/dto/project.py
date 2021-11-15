@@ -19,6 +19,7 @@ class Project:
         responsible_cost_center: str,
         storage_quota_gb: int,
         size: int,
+        collection_metadata_schemas: str,
         manager_users: Users,
         manager_groups: Groups,
         contributor_users: Users,
@@ -38,6 +39,7 @@ class Project:
         self.responsible_cost_center: str = responsible_cost_center
         self.storage_quota_gb: int = storage_quota_gb
         self.size: int = size
+        self.collection_metadata_schemas: str = collection_metadata_schemas
         self.manager_users: Users = manager_users
         self.manager_groups: Groups = manager_groups
         self.contributor_users: Users = contributor_users
@@ -64,6 +66,7 @@ class Project:
             result["respCostCenter"],
             result["storageQuotaGiB"],
             result["dataSizeGiB"],
+            result["collectionMetadataSchemas"],
             Users.create_from_rule_result(result["managers"]["userObjects"]),
             Groups.create_from_rule_result(result["managers"]["groupObjects"]),
             Users.create_from_rule_result(result["contributors"]["userObjects"]),

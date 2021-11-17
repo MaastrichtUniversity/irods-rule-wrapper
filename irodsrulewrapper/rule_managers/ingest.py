@@ -1,4 +1,5 @@
 from irodsrulewrapper.decorator import rule_call
+from irodsrulewrapper.dto.metadata_json import MetadataJSON
 from irodsrulewrapper.utils import BaseRuleManager, RuleInfo, RuleInputValidationError
 from irodsrulewrapper.dto.metadata_xml import MetadataXML
 from irodsrulewrapper.dto.drop_zones import DropZones, DropZone
@@ -110,20 +111,80 @@ class IngestRuleManager(BaseRuleManager):
             logger.warning("set_total_size_dropzone failed with error: {}".format(e))
         self.start_ingest(user, token)
 
-    def create_drop_zone(self, data):
-        token = self.generate_token().token
-        self.create_ingest(data["user"], token, data["project"], data["title"])
-        data["token"] = token
-        self.save_metadata_xml(data)
-        return token
-
     def read_metadata_xml_from_dropzone(self, token):
         xml_path = "/nlmumc/ingest/zones/" + token + "/" + "metadata.xml"
         return MetadataXML.read_metadata_xml(self.session, xml_path, token)
 
-    def save_metadata_xml(self, data):
-        xml = MetadataXML.create_from_dict(data)
-        xml.write_metadata_xml(self.session)
+    def create_drop_zone(self, data: dict, schema_path: str, instance: dict):
+        """
+        Calls the createIngest rule and then save the schema.json & instance.json to the newly created drop-zone.
+
+        Parameters
+        ----------
+        data: dict
+            The input parameters for the createIngest rule
+        schema_path: str
+            The full path of the metadata schema
+        instance: dict
+            The instance.json as a dict
+
+        Returns
+        -------
+        str
+            The drop-zone token
+        """
+        token = self.generate_token().token
+        self.create_ingest(data["user"], token, data["project"], data["title"])
+        data["token"] = token
+        self.save_metadata_json_to_dropzone(token, schema_path, instance)
+        return token
+
+    def save_metadata_json_to_dropzone(self, token: str, schema_path: str, instance: dict):
+        """
+        Save the schema.json & instance.json to the indicated drop-zone.
+
+        Parameters
+        ----------
+        token: str
+            The drop-zone token
+        schema_path: str
+            The full path of the metadata schema
+        instance: dict
+            The instance.json as a dict
+        """
+        metadata_json = MetadataJSON(self.session)
+        schema_irods_path = "/nlmumc/ingest/zones/" + token + "/" + "schema.json"
+        metadata_json.write_schema(schema_path, schema_irods_path)
+        instance_irods_path = "/nlmumc/ingest/zones/" + token + "/" + "instance.json"
+        metadata_json.write_instance(instance, instance_irods_path)
+
+    def save_instance(self, instance_irods_path: str, instance: dict):
+        """
+        Save the instance.json to the indicated iRODS path.
+
+        Parameters
+        ----------
+        instance_irods_path:
+            The iRODS full path of the metadata instance
+        instance: dict
+            The instance.json as a dict
+        """
+        metadata_json = MetadataJSON(self.session)
+        metadata_json.write_instance(instance, instance_irods_path)
+
+    def read_schema_from_dropzone(self, token):
+        metadata_json = MetadataJSON(self.session)
+        schema_irods_path = "/nlmumc/ingest/zones/" + token + "/" + "schema.json"
+        schema = metadata_json.read_irods_json_file(schema_irods_path)
+
+        return schema
+
+    def read_instance_from_dropzone(self, token):
+        metadata_json = MetadataJSON(self.session)
+        instance_irods_path = "/nlmumc/ingest/zones/" + token + "/" + "instance.json"
+        instance = metadata_json.read_irods_json_file(instance_irods_path)
+
+        return instance
 
     @rule_call
     def edit_drop_zone(self, token, project, title):

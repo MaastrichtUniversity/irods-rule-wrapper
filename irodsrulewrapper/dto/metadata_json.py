@@ -1,3 +1,4 @@
+import errno
 import time
 import os
 import json
@@ -63,8 +64,11 @@ class MetadataJSON:
             with self.session.data_objects.open(irods_file_path, "r") as irods_file:
                 json_string = irods_file.read()
         except exception.DataObjectDoesNotExist:
-            json_string = ""
             logger = logging.getLogger(__name__)
             logger.warning("%s is missing" % irods_file_path)
-
-        return json.loads(json_string)
+        except exception.SYS_FILE_DESC_OUT_OF_RANGE:
+            logger = logging.getLogger(__name__)
+            logger.warning("%s is missing" % irods_file_path)
+        else:
+            return json.loads(json_string)
+        raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), irods_file_path)

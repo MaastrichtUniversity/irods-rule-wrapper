@@ -61,22 +61,17 @@ class IngestRuleManager(BaseRuleManager):
 
     @rule_call
     def start_ingest(self, user, token):
-        input_params = {"*user": '"{}"'.format(user), "*token": '"{}"'.format(token)}
+        """
+        Start an ingest
 
-        rule_body = """
-            execute_rule{
-                startIngest;
-            }
-            """
-
-        return RuleInfo(
-            name="startIngest",
-            get_result=False,
-            session=self.session,
-            dto=None,
-            input_params=input_params,
-            rule_body=rule_body,
-        )
+        Parameters
+        ----------
+        user : str
+            The user making the ingestion request
+        token : str
+            The dropzone token
+        """
+        return RuleInfo(name="start_ingest", get_result=False, session=self.session, dto=None)
 
     @rule_call
     def create_ingest(self, user, token, project, title):

@@ -7,6 +7,6 @@ class CreateProject:
         self.project_id: str = project_id
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> 'CreateProject':
+    def create_from_rule_result(cls, result: Dict) -> "CreateProject":
         project = cls(result["project_path"], result["project_id"])
         return project

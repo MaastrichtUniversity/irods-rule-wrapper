@@ -6,6 +6,6 @@ class Token:
         self.token: str = token
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> 'Token':
+    def create_from_rule_result(cls, result: Dict) -> "Token":
         token = cls(result)
         return token

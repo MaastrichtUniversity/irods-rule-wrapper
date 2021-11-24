@@ -4,11 +4,11 @@ import json
 
 
 class ProjectsCost:
-    def __init__(self, projects_cost: List['ProjectCost']):
-        self.projects_cost: List['ProjectCost'] = projects_cost
+    def __init__(self, projects_cost: List["ProjectCost"]):
+        self.projects_cost: List["ProjectCost"] = projects_cost
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> 'ProjectsCost':
+    def create_from_rule_result(cls, result: Dict) -> "ProjectsCost":
         # get_projects_finance returns an empty list, if the user is not the PI or data steward of the project
         if len(result) == 0:
             return None
@@ -21,7 +21,7 @@ class ProjectsCost:
         return projects
 
     @classmethod
-    def create_from_mock_result(cls, projects_cost_json=None) -> 'ProjectsCost':
+    def create_from_mock_result(cls, projects_cost_json=None) -> "ProjectsCost":
         if projects_cost_json is None:
             projects_cost_json = cls.PROJECTS_COST_JSON
         return ProjectsCost.create_from_rule_result(json.loads(projects_cost_json))

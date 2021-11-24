@@ -4,11 +4,11 @@ import json
 
 
 class Groups:
-    def __init__(self, groups: List['Group']):
-        self.groups: List['Group'] = groups
+    def __init__(self, groups: List["Group"]):
+        self.groups: List["Group"] = groups
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> 'Groups':
+    def create_from_rule_result(cls, result: Dict) -> "Groups":
         output = []
         for item in result:
             group = Group.create_from_rule_result(item)
@@ -17,7 +17,7 @@ class Groups:
         return groups
 
     @classmethod
-    def create_from_mock_result(cls, mock_json=None) -> 'Groups':
+    def create_from_mock_result(cls, mock_json=None) -> "Groups":
         if mock_json is None:
             mock_json = cls.MOCK_JSON
         return cls.create_from_rule_result(json.loads(mock_json))

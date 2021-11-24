@@ -9,6 +9,6 @@ class MigrationCard:
         self.title: str = title
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> 'MigrationCard':
+    def create_from_rule_result(cls, result: Dict) -> "MigrationCard":
         user = cls(result["collection"], result["repository"], result["status"], result["title"])
         return user

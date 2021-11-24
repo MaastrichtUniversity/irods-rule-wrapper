@@ -5,24 +5,26 @@ import json
 
 
 class Project:
-    def __init__(self,
-                 id: str,
-                 title: str,
-                 enable_open_access_export: bool,
-                 enable_archive: bool,
-                 enable_unarchive: bool,
-                 principal_investigator_display_name: str,
-                 data_steward_display_name: str,
-                 responsible_cost_center: str,
-                 storage_quota_gb: int,
-                 size: int,
-                 manager_users: Users,
-                 manager_groups: Groups,
-                 contributor_users: Users,
-                 contributor_groups: Groups,
-                 viewer_users: Users,
-                 viewer_groups: Groups,
-                 has_financial_view_access: bool):
+    def __init__(
+        self,
+        id: str,
+        title: str,
+        enable_open_access_export: bool,
+        enable_archive: bool,
+        enable_unarchive: bool,
+        principal_investigator_display_name: str,
+        data_steward_display_name: str,
+        responsible_cost_center: str,
+        storage_quota_gb: int,
+        size: int,
+        manager_users: Users,
+        manager_groups: Groups,
+        contributor_users: Users,
+        contributor_groups: Groups,
+        viewer_users: Users,
+        viewer_groups: Groups,
+        has_financial_view_access: bool,
+    ):
         self.id: str = id
         self.title: str = title
         self.enable_open_access_export: bool = enable_open_access_export
@@ -42,37 +44,39 @@ class Project:
         self.has_financial_view_access = has_financial_view_access
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> 'Project':
+    def create_from_rule_result(cls, result: Dict) -> "Project":
         if "principalInvestigatorDisplayName" not in result:
-            result["principalInvestigatorDisplayName"] = ''
+            result["principalInvestigatorDisplayName"] = ""
         if "dataStewardDisplayName" not in result:
-            result["dataStewardDisplayName"] = ''
-        project_details = cls(result["project"],
-                              result["title"],
-                              result["enableOpenAccessExport"] == 'true',
-                              result["enableArchive"] == 'true',
-                              result["enableUnarchive"] == 'true',
-                              result["principalInvestigatorDisplayName"],
-                              result["dataStewardDisplayName"],
-                              result["respCostCenter"],
-                              result["storageQuotaGiB"],
-                              result["dataSizeGiB"],
-                              Users.create_from_rule_result(result['managers']['userObjects']),
-                              Groups.create_from_rule_result(result['managers']['groupObjects']),
-                              Users.create_from_rule_result(result['contributors']['userObjects']),
-                              Groups.create_from_rule_result(result['contributors']['groupObjects']),
-                              Users.create_from_rule_result(result['viewers']['userObjects']),
-                              Groups.create_from_rule_result(result['viewers']['groupObjects']),
-                              result["has_financial_view_access"])
+            result["dataStewardDisplayName"] = ""
+        project_details = cls(
+            result["project"],
+            result["title"],
+            result["enableOpenAccessExport"] == "true",
+            result["enableArchive"] == "true",
+            result["enableUnarchive"] == "true",
+            result["principalInvestigatorDisplayName"],
+            result["dataStewardDisplayName"],
+            result["respCostCenter"],
+            result["storageQuotaGiB"],
+            result["dataSizeGiB"],
+            Users.create_from_rule_result(result["managers"]["userObjects"]),
+            Groups.create_from_rule_result(result["managers"]["groupObjects"]),
+            Users.create_from_rule_result(result["contributors"]["userObjects"]),
+            Groups.create_from_rule_result(result["contributors"]["groupObjects"]),
+            Users.create_from_rule_result(result["viewers"]["userObjects"]),
+            Groups.create_from_rule_result(result["viewers"]["groupObjects"]),
+            result["has_financial_view_access"],
+        )
         return project_details
 
     @classmethod
-    def create_from_mock_result(cls, project_json=None) -> 'Project':
+    def create_from_mock_result(cls, project_json=None) -> "Project":
         if project_json is None:
             project_json = cls.PROJECT_JSON
         return Project.create_from_rule_result(json.loads(project_json))
 
-    PROJECT_JSON = '''
+    PROJECT_JSON = """
     {
         "project": "test_project",
         "title": "test_title",
@@ -140,4 +144,4 @@ class Project:
             ]
         }
     }
-    '''
+    """

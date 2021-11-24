@@ -8,7 +8,7 @@ class CollectionSizes:
         self.resources_set: Set = resources_set
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> 'CollectionSizes':
+    def create_from_rule_result(cls, result: Dict) -> "CollectionSizes":
         collection_sizes: Dict[str, List[CollectionSize]] = {}
         resources_set = set()
         for collection_id, size_per_resource in result.items():

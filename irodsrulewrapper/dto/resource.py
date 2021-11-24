@@ -8,8 +8,8 @@ class Resource:
         self.available: bool = available
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> 'Resource':
-        if 'available' not in result:
-            result['available'] = False
+    def create_from_rule_result(cls, result: Dict) -> "Resource":
+        if "available" not in result:
+            result["available"] = False
         resource = cls(result["name"], result["comment"], result["available"])
         return resource

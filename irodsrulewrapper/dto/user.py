@@ -8,6 +8,6 @@ class User:
         self.display_name: str = display_name
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> 'User':
+    def create_from_rule_result(cls, result: Dict) -> "User":
         user = cls(result["userName"], result["userId"], result["displayName"])
         return user

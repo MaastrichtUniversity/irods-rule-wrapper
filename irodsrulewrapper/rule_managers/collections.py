@@ -277,16 +277,44 @@ class CollectionRuleManager(BaseRuleManager):
         """
         return RuleInfo(name="prepareExportProjectCollection", get_result=False, session=self.session, dto=None)
 
-    def read_schema_from_collection(self, project, collection):
+    def read_schema_from_collection(self, project_id: str, collection_id: str) -> MetadataJSON:
+        """
+        Returns the object version of the schema.json on the collections root
+
+        Parameters
+        ----------
+        project_id: str
+            The project ID ie P000000001
+        collection_id: str
+            The collection ID ie C000000001
+
+        Returns
+        -------
+        The schema as an object
+        """
         metadata_json = MetadataJSON(self.session)
-        schema_irods_path = "/nlmumc/projects/" + project + "/" + collection + "/" + "schema.json"
+        schema_irods_path = f"/nlmumc/projects/{project_id}/{collection_id}/schema.json"
         if check_file_path_format(schema_irods_path) and is_safe_full_path(schema_irods_path):
             return metadata_json.read_irods_json_file(schema_irods_path)
         raise RuleInputValidationError("invalid schema path provided")
 
-    def read_instance_from_collection(self, project, collection):
+    def read_instance_from_collection(self, project_id: str, collection_id: str) -> MetadataJSON:
+        """
+        Returns the object version of the instance.json on the collections root
+
+        Parameters
+        ----------
+        project_id: str
+            The project ID ie P000000001
+        collection_id: str
+            The collection ID ie C000000001
+
+        Returns
+        -------
+        The instance as an object
+        """
         metadata_json = MetadataJSON(self.session)
-        instance_irods_path = "/nlmumc/projects/" + project + "/" + collection + "/" + "instance.json"
+        instance_irods_path = f"/nlmumc/projects/{project_id}/{collection_id}/instance.json"
         if check_file_path_format(instance_irods_path) and is_safe_full_path(instance_irods_path):
             return metadata_json.read_irods_json_file(instance_irods_path)
-        raise RuleInputValidationError("invalid instance path provided") # Raise different error
+        raise RuleInputValidationError("invalid instance path provided")  # Raise different error

@@ -284,9 +284,27 @@ class CollectionRuleManager(BaseRuleManager):
             return metadata_json.read_irods_json_file(schema_irods_path)
         raise RuleInputValidationError("invalid schema path provided")
 
+    def read_schema_version_from_collection(self, project, collection, timestamp):
+        metadata_json = MetadataJSON(self.session)
+        schema_irods_path = (
+            "/nlmumc/projects/" + project + "/" + collection + "/.metadata_versions/" + "schema_" + timestamp + ".json"
+        )
+        if check_file_path_format(schema_irods_path) and is_safe_full_path(schema_irods_path):
+            return metadata_json.read_irods_json_file(schema_irods_path)
+        raise RuleInputValidationError("invalid schema path provided")
+
     def read_instance_from_collection(self, project, collection):
         metadata_json = MetadataJSON(self.session)
         instance_irods_path = "/nlmumc/projects/" + project + "/" + collection + "/" + "instance.json"
         if check_file_path_format(instance_irods_path) and is_safe_full_path(instance_irods_path):
             return metadata_json.read_irods_json_file(instance_irods_path)
-        raise RuleInputValidationError("invalid instance path provided") # Raise different error
+        raise RuleInputValidationError("invalid instance path provided")
+
+    def read_instance_version_from_collection(self, project, collection, timestamp):
+        metadata_json = MetadataJSON(self.session)
+        instance_irods_path = (
+            "/nlmumc/projects/" + project + "/" + collection + "/.metadata_versions/" + "instance_" + timestamp + ".json"
+        )
+        if check_file_path_format(instance_irods_path) and is_safe_full_path(instance_irods_path):
+            return metadata_json.read_irods_json_file(instance_irods_path)
+        raise RuleInputValidationError("invalid instance path provided")

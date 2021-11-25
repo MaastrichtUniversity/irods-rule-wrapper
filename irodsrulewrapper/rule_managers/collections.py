@@ -298,11 +298,25 @@ class CollectionRuleManager(BaseRuleManager):
             return metadata_json.read_irods_json_file(schema_irods_path)
         raise RuleInputValidationError("invalid schema path provided")
 
-    def read_schema_version_from_collection(self, project_id, collection_id, timestamp):
+    def read_schema_version_from_collection(self, project_id: str, collection_id: str, timestamp: str) -> MetadataJSON:
+        """
+        Returns the timestamped object version of the schema.json in the '.metadata_versions/' directory
+
+        Parameters
+        ----------
+        project_id: str
+            The project ID ie P000000001
+        collection_id: str
+            The collection ID ie C000000001
+        timestamp: str
+            The timestamp of the schema to retrieve
+
+        Returns
+        -------
+        The instance as an object
+        """
         metadata_json = MetadataJSON(self.session)
-        schema_irods_path = (
-            "/nlmumc/projects/" + project_id + "/" + collection_id + "/.metadata_versions/" + "schema_" + timestamp + ".json"
-        )
+        schema_irods_path = f"/nlmumc/projects/{project_id}/{collection_id}/.metadata_versions/schema_{timestamp}.json"
         if check_file_path_format(schema_irods_path) and is_safe_full_path(schema_irods_path):
             return metadata_json.read_irods_json_file(schema_irods_path)
         raise RuleInputValidationError("invalid schema path provided")
@@ -328,10 +342,28 @@ class CollectionRuleManager(BaseRuleManager):
             return metadata_json.read_irods_json_file(instance_irods_path)
         raise RuleInputValidationError("invalid instance path provided")
 
-    def read_instance_version_from_collection(self, project_id, collection_id, timestamp):
+    def read_instance_version_from_collection(
+        self, project_id: str, collection_id: str, timestamp: str
+    ) -> MetadataJSON:
+        """
+        Returns the timestamped object version of the instance.json in the '.metadata_versions/' directory
+
+        Parameters
+        ----------
+        project_id: str
+            The project ID ie P000000001
+        collection_id: str
+            The collection ID ie C000000001
+        timestamp: str
+            The timestamp of the instance to retrieve
+
+        Returns
+        -------
+        The instance as an object
+        """
         metadata_json = MetadataJSON(self.session)
         instance_irods_path = (
-            "/nlmumc/projects/" + project_id + "/" + collection_id + "/.metadata_versions/" + "instance_" + timestamp + ".json"
+            f"/nlmumc/projects/{project_id}/{collection_id}/.metadata_versions/instance_{timestamp}.json"
         )
         if check_file_path_format(instance_irods_path) and is_safe_full_path(instance_irods_path):
             return metadata_json.read_irods_json_file(instance_irods_path)

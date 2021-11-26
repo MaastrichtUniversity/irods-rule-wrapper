@@ -61,22 +61,17 @@ class IngestRuleManager(BaseRuleManager):
 
     @rule_call
     def start_ingest(self, user, token):
-        input_params = {"*user": '"{}"'.format(user), "*token": '"{}"'.format(token)}
+        """
+        Start an ingest
 
-        rule_body = """
-            execute_rule{
-                startIngest;
-            }
-            """
-
-        return RuleInfo(
-            name="startIngest",
-            get_result=False,
-            session=self.session,
-            dto=None,
-            input_params=input_params,
-            rule_body=rule_body,
-        )
+        Parameters
+        ----------
+        user : str
+            The user making the ingestion request
+        token : str
+            The dropzone token
+        """
+        return RuleInfo(name="start_ingest", get_result=False, session=self.session, dto=None)
 
     @rule_call
     def create_ingest(self, user, token, project, title, schema_name: str, schema_version: str):
@@ -106,6 +101,19 @@ class IngestRuleManager(BaseRuleManager):
         )
 
     def ingest(self, user, token):
+        """
+        Ingest the requested dropzone
+        NOTE: We do the 'set_total_size_dropzone' here. This allows for the progress bar to be visible in the frontend.
+        However, this call can fail and the ingest will still continue. This is by design, because we do not know
+        the duration the call will take for huge dropzones.
+
+        Parameters
+        ----------
+        user: str
+            The user requesting the ingest
+        token: str
+            The dropzone token to be ingested
+        """
         logger = logging.getLogger(__name__)
         try:
             self.set_total_size_dropzone(token)

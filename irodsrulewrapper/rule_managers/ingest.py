@@ -193,7 +193,7 @@ class IngestRuleManager(BaseRuleManager):
         return instance
 
     @rule_call
-    def edit_drop_zone(self, token, project, title, schema_name, schema_version):
+    def edit_drop_zone(self, token, project, title):
         """
         Edits the dropzone's project and title AVUs
 
@@ -205,15 +205,12 @@ class IngestRuleManager(BaseRuleManager):
             the new project number (ex. P000000001)
         title : str
             the new title (ex. bar)
-
         """
 
         input_params = {
             "*token": '"{}"'.format(token),
             "*project": '"{}"'.format(project),
             "*title": '"{}"'.format(title),
-            "*schema_name": '"{}"'.format(schema_name),
-            "*schema_version": '"{}"'.format(schema_version),
         }
 
         rule_body = """

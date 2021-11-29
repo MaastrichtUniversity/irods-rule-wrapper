@@ -1,10 +1,13 @@
+import json
+import os
+
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.dto.attribute_value import AttributeValue
-from irodsrulewrapper.dto.collections import Collections, Collection
+from irodsrulewrapper.dto.collection_details import CollectionDetails
+from irodsrulewrapper.dto.collections import Collection
+from irodsrulewrapper.dto.collections import Collections
 from irodsrulewrapper.dto.metadata_json import MetadataJSON
 from irodsrulewrapper.dto.metadata_xml import MetadataXML
-from irodsrulewrapper.dto.collections import Collections
-from irodsrulewrapper.dto.collection_details import CollectionDetails
 from irodsrulewrapper.dto.tape_estimate import TapeEstimate
 from irodsrulewrapper.utils import (
     check_project_path_format,
@@ -18,8 +21,6 @@ from irodsrulewrapper.utils import (
     check_file_path_format,
     is_safe_full_path,
 )
-
-import json
 
 
 class CollectionRuleManager(BaseRuleManager):
@@ -368,3 +369,128 @@ class CollectionRuleManager(BaseRuleManager):
         if check_file_path_format(instance_irods_path) and is_safe_full_path(instance_irods_path):
             return metadata_json.read_irods_json_file(instance_irods_path)
         raise RuleInputValidationError("invalid instance path provided")  # Raise different error
+
+    @rule_call
+    def set_collection_size(self, project_id, collection_id, open_collection, close_collection):
+        """
+        Recalculates the collection size and number of files.
+
+        Parameters
+        ----------
+        project_id: str
+            The project ID ie P000000001
+        collection_id: str
+            The collection ID ie C000000001
+        open_collection: str
+            'true'/'false' expected; If true, open the collection ACL for the current user
+        close_collection: str
+            'true'/'false' expected; If true, close the collection ACL.
+        """
+        if not check_project_id_format(project_id):
+            raise RuleInputValidationError("invalid project id; eg. P000000001")
+
+        if not check_collection_id_format(collection_id):
+            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+
+        expected_values = ["false", "true"]
+        if open_collection not in expected_values and close_collection not in expected_values:
+            raise RuleInputValidationError("invalid value for *inherited: expected 'true' or 'false'")
+        return RuleInfo(name="setCollectionSize", get_result=False, session=self.session, dto=None)
+
+    @rule_call
+    def create_collection_metadata_snapshot(self, project_id, collection_id):
+        """
+
+        Parameters
+        ----------
+        project_id: str
+            The project ID ie P000000001
+        collection_id: str
+            The collection ID ie C000000001
+        """
+        if not check_project_id_format(project_id):
+            raise RuleInputValidationError("invalid project id; eg. P000000001")
+
+        if not check_collection_id_format(collection_id):
+            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+        return RuleInfo(name="create_collection_metadata_snapshot", get_result=False, session=self.session, dto=None)
+
+    def save_metadata_json_to_collection(self, project_id, collection_id, instance, schema_dict):
+        """
+        After a user edits the collection metadata, this method takes care of metadata saving workflow:
+            * Create a snapshot of the current collection metadata
+            * Check if the snapshot rule exited correctly
+            * Open the collection ACL
+            * Overwrite the current instance with the new one
+            * Check if we need to overwrite the schema, if yes do it
+            * Update collection-AVUs: 'schemaVersion' & 'schemaName'
+            * Run the rule that recalculates the collection size and number of files
+            * Close the collection ACL
+
+        Parameters
+        ----------
+        project_id: str
+            The project ID ie P000000001
+        collection_id: str
+            The collection ID ie C000000001
+        schema_dict: dict
+            Contains the following key-value pairs: overwrite, title, schema_path, schema_version, schema_file_name
+        instance: dict
+            The json formatted instance data
+        """
+        if not check_project_id_format(project_id):
+            raise RuleInputValidationError("invalid project id; eg. P000000001")
+
+        if not check_collection_id_format(collection_id):
+            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+
+        try:
+            self.create_collection_metadata_snapshot(project_id, collection_id)
+        except KeyError:
+            self.close_project_collection(project_id, collection_id)
+
+        self.update_edit_instance(instance, project_id, collection_id)
+
+        collection_path = f"/nlmumc/projects/{project_id}/{collection_id}"
+        schema_irods_path = f"{collection_path}/schema.json"
+        instance_irods_path = f"{collection_path}/instance.json"
+
+        metadata_json = MetadataJSON(self.session)
+        metadata_json.write_instance(instance, instance_irods_path)
+        if schema_dict["overwrite"]:
+            metadata_json.write_schema(schema_dict["schema_path"], schema_irods_path)
+
+        self.set_collection_avu(collection_path, "schemaVersion", schema_dict["schema_version"])
+        self.set_collection_avu(collection_path, "schemaName", schema_dict["schema_file_name"])
+        self.set_collection_avu(collection_path, "title", schema_dict["title"])
+
+        # Re-calculate the collection, update the size AVU and close the project collection ACL.
+        self.set_collection_size(project_id, collection_id, "false", "true")
+
+    def update_edit_instance(self, instance, project_id, collection_id):
+        """
+        Some instance values need to be update after an edit
+
+        Parameters
+        ----------
+        instance: dict
+            The json formatted instance data to update
+        project_id: str
+            The project ID ie P000000001
+        collection_id: str
+            The collection ID ie C000000001
+        """
+        collection_path = f"/nlmumc/projects/{project_id}/{collection_id}"
+        handle = self.get_collection_attribute_value(collection_path, "PID").value
+        if handle != "":
+            handle_url = "https://hdl.handle.net/" + handle
+            instance["1_Identifier"]["datasetIdentifier"]["@value"] = handle_url
+            instance["@id"] = handle_url
+
+        # Set identifier type to "handle"
+        instance["1_Identifier"]["datasetIdentifierType"]["rdfs:label"] = "Handle"
+        instance["1_Identifier"]["datasetIdentifierType"]["@id"] = "http://vocab.fairdatacollective.org/gdmt/Handle"
+
+        # Overwriting the schema:isBasedOn with the MDR schema handle URL
+        schema_url = f"{os.environ['VIRTUAL_HOST']}/hdl/{project_id}/{collection_id}/schema"
+        instance["schema:isBasedOn"] = schema_url

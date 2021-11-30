@@ -15,7 +15,7 @@ from irodsrulewrapper.dto.create_project import CreateProject
 from irodsrulewrapper.dto.migration_cards import MigrationCards
 from irodsrulewrapper.dto.project_contributors import ProjectContributors
 from irodsrulewrapper.dto.contributing_project import ContributingProject
-from irodsrulewrapper.dto.token import Token
+from irodsrulewrapper.dto.boolean import Boolean
 
 class ProjectRuleManager(BaseRuleManager):
     def __init__(self, client_user=None, admin_mode=False):
@@ -163,7 +163,7 @@ class ProjectRuleManager(BaseRuleManager):
         path : str
             The absolute path of the project
         """
-        return RuleInfo(name="metadata_edit_allowed", get_result=True, session=self.session, dto=Token)
+        return RuleInfo(name="metadata_edit_allowed", get_result=True, session=self.session, dto=Boolean)
 
 
     @rule_call

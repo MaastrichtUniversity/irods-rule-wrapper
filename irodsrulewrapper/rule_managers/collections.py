@@ -394,7 +394,9 @@ class CollectionRuleManager(BaseRuleManager):
 
         expected_values = ["false", "true"]
         if open_collection not in expected_values and close_collection not in expected_values:
-            raise RuleInputValidationError("invalid value for *inherited: expected 'true' or 'false'")
+            raise RuleInputValidationError(
+                "invalid value for *open_collection/close_collection: expected 'true' or 'false'"
+            )
         return RuleInfo(name="setCollectionSize", get_result=False, session=self.session, dto=None)
 
     @rule_call
@@ -419,13 +421,10 @@ class CollectionRuleManager(BaseRuleManager):
         """
         After a user edits the collection metadata, this method takes care of metadata saving workflow:
             * Create a snapshot of the current collection metadata
-            * Check if the snapshot rule exited correctly
-            * Open the collection ACL
             * Overwrite the current instance with the new one
             * Check if we need to overwrite the schema, if yes do it
-            * Update collection-AVUs: 'schemaVersion' & 'schemaName'
+            * Update collection-AVUs: 'schemaVersion', 'schemaName' & 'title'
             * Run the rule that recalculates the collection size and number of files
-            * Close the collection ACL
 
         Parameters
         ----------
@@ -444,11 +443,7 @@ class CollectionRuleManager(BaseRuleManager):
         if not check_collection_id_format(collection_id):
             raise RuleInputValidationError("invalid collection id; eg. C000000001")
 
-        try:
-            self.create_collection_metadata_snapshot(project_id, collection_id)
-        except KeyError:
-            self.close_project_collection(project_id, collection_id)
-
+        self.create_collection_metadata_snapshot(project_id, collection_id)
         self.update_edit_instance(instance, project_id, collection_id)
 
         collection_path = f"/nlmumc/projects/{project_id}/{collection_id}"
@@ -465,7 +460,7 @@ class CollectionRuleManager(BaseRuleManager):
         self.set_collection_avu(collection_path, "title", schema_dict["title"])
 
         # Re-calculate the collection, update the size AVU and close the project collection ACL.
-        self.set_collection_size(project_id, collection_id, "false", "true")
+        self.set_collection_size(project_id, collection_id, "false", "false")
 
     def update_edit_instance(self, instance, project_id, collection_id):
         """
@@ -494,3 +489,38 @@ class CollectionRuleManager(BaseRuleManager):
         # Overwriting the schema:isBasedOn with the MDR schema handle URL
         schema_url = f"{os.environ['VIRTUAL_HOST']}/hdl/{project_id}/{collection_id}/schema"
         instance["schema:isBasedOn"] = schema_url
+
+    @rule_call
+    def set_acl_for_metadata_snapshot(
+        self, project_id: str, collection_id: str, user: str, open_acl: str, close_acl: str
+    ):
+        """
+        Modify the ACL of the given project collection for the given user to be able to create the metadata snapshot.
+
+        Parameters
+        ----------
+        project_id: str
+            The project ID ie P000000001
+        collection_id: str
+            The collection ID ie C000000001
+        user: str
+            The username
+        open_acl: str
+            'true'/'false' expected; If true, open the collection ACL for the current user
+        close_acl: str
+            'true'/'false' expected; If true, open the collection ACL for the current user
+        """
+        if not check_project_id_format(project_id):
+            raise RuleInputValidationError("invalid project id; eg. P000000001")
+
+        if not check_collection_id_format(collection_id):
+            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+
+        if not isinstance(user, str):
+            raise RuleInputValidationError("invalid type for *user: expected a string")
+
+        expected_values = ["false", "true"]
+        if open_acl not in expected_values and close_acl not in expected_values:
+            raise RuleInputValidationError("invalid value for *open_acl/close_acl: expected 'true' or 'false'")
+
+        return RuleInfo(name="set_acl_for_metadata_snapshot", get_result=False, session=self.session, dto=None)

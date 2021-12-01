@@ -17,6 +17,7 @@ from irodsrulewrapper.dto.project_contributors import ProjectContributors
 from irodsrulewrapper.dto.contributing_project import ContributingProject
 from irodsrulewrapper.dto.boolean import Boolean
 
+
 class ProjectRuleManager(BaseRuleManager):
     def __init__(self, client_user=None, admin_mode=False):
         BaseRuleManager.__init__(self, client_user, admin_mode=admin_mode)
@@ -164,7 +165,6 @@ class ProjectRuleManager(BaseRuleManager):
             The absolute path of the project
         """
         return RuleInfo(name="metadata_edit_allowed", get_result=True, session=self.session, dto=Boolean)
-
 
     @rule_call
     def get_projects_finance(self):

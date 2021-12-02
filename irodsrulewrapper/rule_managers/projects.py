@@ -157,13 +157,13 @@ class ProjectRuleManager(BaseRuleManager):
         return RuleInfo(name="set_acl", get_result=False, session=self.session, dto=None)
 
     @rule_call
-    def metadata_edit_allowed(self, path):
+    def check_edit_metadata_permission(self, path):
         """
         Return boolean if the current user is allowed to edit metadata for a given project
         path : str
             The absolute path of the project
         """
-        return RuleInfo(name="metadata_edit_allowed", get_result=True, session=self.session, dto=Boolean)
+        return RuleInfo(name="check_edit_metadata_permission", get_result=True, session=self.session, dto=Boolean)
 
 
     @rule_call

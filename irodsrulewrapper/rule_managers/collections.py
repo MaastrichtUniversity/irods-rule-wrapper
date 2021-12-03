@@ -278,7 +278,7 @@ class CollectionRuleManager(BaseRuleManager):
         """
         return RuleInfo(name="prepareExportProjectCollection", get_result=False, session=self.session, dto=None)
 
-    def read_schema_from_collection(self, project_id: str, collection_id: str) -> MetadataJSON:
+    def read_schema_from_collection(self, project_id: str, collection_id: str) -> dict:
         """
         Returns the object version of the schema.json on the collections root
 
@@ -291,7 +291,8 @@ class CollectionRuleManager(BaseRuleManager):
 
         Returns
         -------
-        The schema as an object
+        dict
+            The schema json
         """
         metadata_json = MetadataJSON(self.session)
         schema_irods_path = f"/nlmumc/projects/{project_id}/{collection_id}/schema.json"
@@ -299,7 +300,7 @@ class CollectionRuleManager(BaseRuleManager):
             return metadata_json.read_irods_json_file(schema_irods_path)
         raise RuleInputValidationError("invalid schema path provided")
 
-    def read_schema_version_from_collection(self, project_id: str, collection_id: str, timestamp: str) -> MetadataJSON:
+    def read_schema_version_from_collection(self, project_id: str, collection_id: str, timestamp: str) -> dict:
         """
         Returns the timestamped object version of the schema.json in the '.metadata_versions/' directory
 
@@ -314,7 +315,8 @@ class CollectionRuleManager(BaseRuleManager):
 
         Returns
         -------
-        The instance as an object
+        dict
+            The schema json
         """
         metadata_json = MetadataJSON(self.session)
         schema_irods_path = f"/nlmumc/projects/{project_id}/{collection_id}/.metadata_versions/schema_{timestamp}.json"
@@ -322,7 +324,7 @@ class CollectionRuleManager(BaseRuleManager):
             return metadata_json.read_irods_json_file(schema_irods_path)
         raise RuleInputValidationError("invalid schema path provided")
 
-    def read_instance_from_collection(self, project_id: str, collection_id: str) -> MetadataJSON:
+    def read_instance_from_collection(self, project_id: str, collection_id: str) -> dict:
         """
         Returns the object version of the instance.json on the collections root
 
@@ -335,7 +337,8 @@ class CollectionRuleManager(BaseRuleManager):
 
         Returns
         -------
-        The instance as an object
+        dict
+            The instance json
         """
         metadata_json = MetadataJSON(self.session)
         instance_irods_path = f"/nlmumc/projects/{project_id}/{collection_id}/instance.json"
@@ -343,9 +346,7 @@ class CollectionRuleManager(BaseRuleManager):
             return metadata_json.read_irods_json_file(instance_irods_path)
         raise RuleInputValidationError("invalid instance path provided")
 
-    def read_instance_version_from_collection(
-        self, project_id: str, collection_id: str, timestamp: str
-    ) -> MetadataJSON:
+    def read_instance_version_from_collection(self, project_id: str, collection_id: str, timestamp: str) -> dict:
         """
         Returns the timestamped object version of the instance.json in the '.metadata_versions/' directory
 
@@ -360,7 +361,8 @@ class CollectionRuleManager(BaseRuleManager):
 
         Returns
         -------
-        The instance as an object
+        dict
+            The instance json
         """
         metadata_json = MetadataJSON(self.session)
         instance_irods_path = (

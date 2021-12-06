@@ -1,4 +1,5 @@
 from irodsrulewrapper.decorator import rule_call
+from irodsrulewrapper.dto.project_contributors_metadata import ProjectContributorsMetadata
 from irodsrulewrapper.utils import (
     check_project_path_format,
     check_project_id_format,
@@ -357,7 +358,7 @@ class ProjectRuleManager(BaseRuleManager):
         Parameters
         ----------
         project_id : str
-            The project's id path; eg. 000000010
+            The project's id path; eg. P000000010
         show_service_accounts: str
             'true'/'false' expected; If true, hide the service accounts in the result
 
@@ -405,10 +406,19 @@ class ProjectRuleManager(BaseRuleManager):
         )
 
     @rule_call
-    def details_project(self, project, inherited):
+    def details_project(self, project_id, inherited):
         """
         Native iRODS language rule detailsProject.
         Get the project AVUs and its collections details in one rule.
+
+        Parameters
+        ----------
+        project_id : str
+            The project's id path; eg. P000000010.
+        inherited : str
+            Role inheritance
+            * inherited='true' cumulates authorizations to designate the role. i.e. A contributor has OWN or WRITE access
+            * inherited='false' only shows explicit contributors. i.e. A contributor only has WRITE access
 
         Returns
         -------
@@ -416,6 +426,38 @@ class ProjectRuleManager(BaseRuleManager):
             JSON rule output
         """
 
+        if not check_project_id_format(project_id):
+            raise RuleInputValidationError("invalid project id; eg. P000000001")
+        if inherited != "false" and inherited != "true":
+            raise RuleInputValidationError("invalid value for *inherited: expected 'true' or 'false'")
+
         return RuleInfo(
             name="detailsProject", get_result=True, session=self.session, dto=None, parse_to_dto=self.parse_to_dto
+        )
+
+    @rule_call
+    def get_project_contributors_metadata(self, project_id):
+        """
+        Get the contributors(PI, data-steward, etc) metadata of the given project.
+
+        Parameters
+        ----------
+        project_id : str
+            The project's id path; eg. P000000010.
+
+        Returns
+        -------
+        ProjectContributorsMetadata
+            The contributors(PI, data-steward, etc) metadata.
+
+        """
+
+        if not check_project_id_format(project_id):
+            raise RuleInputValidationError("invalid project id; eg. P000000001")
+
+        return RuleInfo(
+            name="get_project_contributors_metadata",
+            get_result=True,
+            session=self.session,
+            dto=ProjectContributorsMetadata,
         )

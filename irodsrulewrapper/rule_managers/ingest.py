@@ -74,13 +74,15 @@ class IngestRuleManager(BaseRuleManager):
         return RuleInfo(name="start_ingest", get_result=False, session=self.session, dto=None)
 
     @rule_call
-    def create_ingest(self, user, token, project, title):
+    def create_ingest(self, user, token, project, title, schema_name: str, schema_version: str):
 
         input_params = {
             "*user": '"{}"'.format(user),
             "*token": '"{}"'.format(token),
             "*project": '"{}"'.format(project),
             "*title": '"{}"'.format(title),
+            "*schema_name": '"{}"'.format(schema_name),
+            "*schema_version": '"{}"'.format(schema_version),
         }
 
         rule_body = """
@@ -123,7 +125,7 @@ class IngestRuleManager(BaseRuleManager):
         xml_path = "/nlmumc/ingest/zones/" + token + "/" + "metadata.xml"
         return MetadataXML.read_metadata_xml(self.session, xml_path, token)
 
-    def create_drop_zone(self, data: dict, schema_path: str, instance: dict):
+    def create_drop_zone(self, data: dict, schema_path: str, instance: dict, schema_name: str, schema_version: str):
         """
         Calls the createIngest rule and then save the schema.json & instance.json to the newly created drop-zone.
 
@@ -135,6 +137,10 @@ class IngestRuleManager(BaseRuleManager):
             The full path of the metadata schema
         instance: dict
             The instance.json as a dict
+        schema_name: str
+            The filename of the schema used for this dropzone (without the extension)
+        schema_version: str
+           The version of the schema used for this dropzone
 
         Returns
         -------
@@ -142,7 +148,7 @@ class IngestRuleManager(BaseRuleManager):
             The drop-zone token
         """
         token = self.generate_token().token
-        self.create_ingest(data["user"], token, data["project"], data["title"])
+        self.create_ingest(data["user"], token, data["project"], data["title"], schema_name, schema_version)
         data["token"] = token
         self.save_metadata_json_to_dropzone(token, schema_path, instance)
         return token
@@ -207,7 +213,6 @@ class IngestRuleManager(BaseRuleManager):
             the new project number (ex. P000000001)
         title : str
             the new title (ex. bar)
-
         """
 
         input_params = {

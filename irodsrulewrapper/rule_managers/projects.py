@@ -15,6 +15,7 @@ from irodsrulewrapper.dto.create_project import CreateProject
 from irodsrulewrapper.dto.migration_cards import MigrationCards
 from irodsrulewrapper.dto.project_contributors import ProjectContributors
 from irodsrulewrapper.dto.contributing_project import ContributingProject
+from irodsrulewrapper.dto.boolean import Boolean
 
 
 class ProjectRuleManager(BaseRuleManager):
@@ -155,6 +156,15 @@ class ProjectRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid type for *path: expected a string")
 
         return RuleInfo(name="set_acl", get_result=False, session=self.session, dto=None)
+
+    @rule_call
+    def check_edit_metadata_permission(self, path):
+        """
+        Return boolean if the current user is allowed to edit metadata for a given project
+        path : str
+            The absolute path of the project
+        """
+        return RuleInfo(name="check_edit_metadata_permission", get_result=True, session=self.session, dto=Boolean)
 
     @rule_call
     def get_projects_finance(self):

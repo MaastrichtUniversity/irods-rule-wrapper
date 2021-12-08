@@ -110,7 +110,7 @@ class RuleManager(
                 "size": "--",
                 "rescname": "--",
                 "ctime": ctime.strftime("%Y-%m-%d %H:%M:%S"),
-                "mtime": mtime.strftime("%Y-%m-%d %H:%M:%S") if mtime != ctime else "--",
+                "mtime": mtime.strftime("%Y-%m-%d %H:%M:%S"),
             }
 
             output.append(folder_node)
@@ -135,7 +135,7 @@ class RuleManager(
                 "rescname": data.resource_name,
                 "offlineResource": data.resource_name == "arcRescSURF01",
                 "ctime": ctime.strftime("%Y-%m-%d %H:%M:%S"),
-                "mtime": mtime.strftime("%Y-%m-%d %H:%M:%S") if mtime != ctime else "--",
+                "mtime": mtime.strftime("%Y-%m-%d %H:%M:%S"),
             }
 
             output.append(data_node)

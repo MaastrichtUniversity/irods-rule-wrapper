@@ -1,4 +1,5 @@
 from irodsrulewrapper.dto.user import User
+from irodsrulewrapper.dto.user_extended import UserExtended
 from irodsrulewrapper.dto.users import Users
 from irodsrulewrapper.rule import RuleManager
 import json
@@ -48,6 +49,13 @@ def test_dto_users():
     assert result.users.__len__() == 20
     assert result.users[0].user_name == "jmelius"
     assert result.users[6].user_name == "auser"
+
+
+def test_dto_user_extended():
+    result = UserExtended.create_from_mock_result()
+    assert result is not None
+    assert result.display_name == "Olav Palmen"
+    assert result.username == "opalmen"
 
 
 PROJECT_USER = """

@@ -1,4 +1,5 @@
 from irodsrulewrapper.dto.project import Project
+from irodsrulewrapper.dto.project_contributors_metadata import ProjectContributorsMetadata
 from irodsrulewrapper.dto.projects import Projects
 from irodsrulewrapper.dto.projects_cost import ProjectsCost
 from irodsrulewrapper.dto.managing_projects import ManagingProjects
@@ -142,3 +143,17 @@ def test_dto_projects():
     assert projects.projects.__len__() == 2
     assert projects.projects[0].title == "test_title"
     assert projects.projects[1].title == "test_title2"
+
+
+def test_rule_get_project_contributors_metadata():
+    result = RuleManager(admin_mode=True).get_project_contributors_metadata("P000000011")
+    assert result is not None
+    assert result.principal_investigator.display_name == "Pascal Suppers"
+    assert result.data_steward.display_name == "Olav Palmen"
+
+
+def test_dto_project_contributors_metadata():
+    result = ProjectContributorsMetadata.create_from_mock_result()
+    assert result is not None
+    assert result.principal_investigator.display_name == "Pascal Suppers"
+    assert result.data_steward.display_name == "Olav Palmen"

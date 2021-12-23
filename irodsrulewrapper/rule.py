@@ -100,6 +100,7 @@ class RuleManager(
 
             name = irods_basename(result[iRODSCollection.name])
             ctime = result[iRODSCollection.create_time]
+            mtime = result[iRODSCollection.modify_time]
             relative_path = path + "/" + name
 
             folder_node = {
@@ -109,6 +110,7 @@ class RuleManager(
                 "size": "--",
                 "rescname": "--",
                 "ctime": ctime.strftime("%Y-%m-%d %H:%M:%S"),
+                "mtime": mtime.strftime("%Y-%m-%d %H:%M:%S"),
             }
 
             output.append(folder_node)
@@ -122,6 +124,7 @@ class RuleManager(
                 raise DataObjectDoesNotExist()
 
             ctime = result[DataObject.create_time]
+            mtime = result[DataObject.modify_time]
             relative_path = path + "/" + data.name
 
             data_node = {
@@ -132,6 +135,7 @@ class RuleManager(
                 "rescname": data.resource_name,
                 "offlineResource": data.resource_name == "arcRescSURF01",
                 "ctime": ctime.strftime("%Y-%m-%d %H:%M:%S"),
+                "mtime": mtime.strftime("%Y-%m-%d %H:%M:%S"),
             }
 
             output.append(data_node)

@@ -5,6 +5,8 @@ from irods.session import iRODSSession
 import re
 import os
 import pika
+import pytz
+import datetime
 import ssl
 
 
@@ -62,6 +64,14 @@ def is_safe_full_path(full_path):
 def is_safe_path(basedir, path):
     match_path = os.path.abspath(path)
     return basedir == os.path.commonpath((basedir, match_path))
+
+
+def convert_to_current_timezone(date, date_format="%Y-%m-%d %H:%M:%S"):
+    old_timezone = pytz.timezone("UTC")
+    new_timezone = pytz.timezone("Europe/Amsterdam")
+    if isinstance(date, str):
+        date = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+    return old_timezone.localize(date).astimezone(new_timezone).strftime(date_format)
 
 
 class BaseRuleManager:

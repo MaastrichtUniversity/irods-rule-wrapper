@@ -445,7 +445,6 @@ class CollectionRuleManager(BaseRuleManager):
         if not check_collection_id_format(collection_id):
             raise RuleInputValidationError("invalid collection id; eg. C000000001")
 
-        self.create_collection_metadata_snapshot(project_id, collection_id)
         self.update_edit_instance(instance, project_id, collection_id)
 
         collection_path = f"/nlmumc/projects/{project_id}/{collection_id}"
@@ -460,6 +459,7 @@ class CollectionRuleManager(BaseRuleManager):
         self.set_collection_avu(collection_path, "schemaVersion", schema_dict["schema_version"])
         self.set_collection_avu(collection_path, "schemaName", schema_dict["schema_file_name"])
         self.set_collection_avu(collection_path, "title", schema_dict["title"])
+        self.create_collection_metadata_snapshot(project_id, collection_id)
 
         # Re-calculate the collection, update the size AVU and close the project collection ACL.
         self.set_collection_size(project_id, collection_id, "false", "false")

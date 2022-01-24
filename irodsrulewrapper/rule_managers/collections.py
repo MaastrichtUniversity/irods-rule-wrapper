@@ -300,9 +300,9 @@ class CollectionRuleManager(BaseRuleManager):
             return metadata_json.read_irods_json_file(schema_irods_path)
         raise RuleInputValidationError("invalid schema path provided")
 
-    def read_schema_version_from_collection(self, project_id: str, collection_id: str, timestamp: str) -> dict:
+    def read_schema_version_from_collection(self, project_id: str, collection_id: str, version: str) -> dict:
         """
-        Returns the timestamped object version of the schema.json in the '.metadata_versions/' directory
+        Returns the version stamped object version of the schema.json in the '.metadata_versions/' directory
 
         Parameters
         ----------
@@ -310,8 +310,8 @@ class CollectionRuleManager(BaseRuleManager):
             The project ID ie P000000001
         collection_id: str
             The collection ID ie C000000001
-        timestamp: str
-            The timestamp of the schema to retrieve
+        version: str
+            The verion of the schema to retrieve
 
         Returns
         -------
@@ -319,7 +319,7 @@ class CollectionRuleManager(BaseRuleManager):
             The schema json
         """
         metadata_json = MetadataJSON(self.session)
-        schema_irods_path = f"/nlmumc/projects/{project_id}/{collection_id}/.metadata_versions/schema_{timestamp}.json"
+        schema_irods_path = f"/nlmumc/projects/{project_id}/{collection_id}/.metadata_versions/schema.{version}.json"
         if check_file_path_format(schema_irods_path) and is_safe_full_path(schema_irods_path):
             return metadata_json.read_irods_json_file(schema_irods_path)
         raise RuleInputValidationError("invalid schema path provided")
@@ -346,9 +346,9 @@ class CollectionRuleManager(BaseRuleManager):
             return metadata_json.read_irods_json_file(instance_irods_path)
         raise RuleInputValidationError("invalid instance path provided")
 
-    def read_instance_version_from_collection(self, project_id: str, collection_id: str, timestamp: str) -> dict:
+    def read_instance_version_from_collection(self, project_id: str, collection_id: str, version: str) -> dict:
         """
-        Returns the timestamped object version of the instance.json in the '.metadata_versions/' directory
+        Returns the version stamped object version of the instance.json in the '.metadata_versions/' directory
 
         Parameters
         ----------
@@ -356,8 +356,8 @@ class CollectionRuleManager(BaseRuleManager):
             The project ID ie P000000001
         collection_id: str
             The collection ID ie C000000001
-        timestamp: str
-            The timestamp of the instance to retrieve
+        version: str
+            The verion of the instance to retrieve
 
         Returns
         -------
@@ -366,7 +366,7 @@ class CollectionRuleManager(BaseRuleManager):
         """
         metadata_json = MetadataJSON(self.session)
         instance_irods_path = (
-            f"/nlmumc/projects/{project_id}/{collection_id}/.metadata_versions/instance_{timestamp}.json"
+            f"/nlmumc/projects/{project_id}/{collection_id}/.metadata_versions/instance.{version}.json"
         )
         if check_file_path_format(instance_irods_path) and is_safe_full_path(instance_irods_path):
             return metadata_json.read_irods_json_file(instance_irods_path)
@@ -445,7 +445,6 @@ class CollectionRuleManager(BaseRuleManager):
         if not check_collection_id_format(collection_id):
             raise RuleInputValidationError("invalid collection id; eg. C000000001")
 
-        self.create_collection_metadata_snapshot(project_id, collection_id)
         self.update_edit_instance(instance, project_id, collection_id)
 
         collection_path = f"/nlmumc/projects/{project_id}/{collection_id}"
@@ -460,6 +459,7 @@ class CollectionRuleManager(BaseRuleManager):
         self.set_collection_avu(collection_path, "schemaVersion", schema_dict["schema_version"])
         self.set_collection_avu(collection_path, "schemaName", schema_dict["schema_file_name"])
         self.set_collection_avu(collection_path, "title", schema_dict["title"])
+        self.create_collection_metadata_snapshot(project_id, collection_id)
 
         # Re-calculate the collection, update the size AVU and close the project collection ACL.
         self.set_collection_size(project_id, collection_id, "false", "false")

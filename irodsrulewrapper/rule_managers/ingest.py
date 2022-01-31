@@ -1,11 +1,18 @@
-from irodsrulewrapper.decorator import rule_call
-from irodsrulewrapper.dto.metadata_json import MetadataJSON
-from irodsrulewrapper.utils import BaseRuleManager, RuleInfo, RuleInputValidationError
-from irodsrulewrapper.dto.metadata_xml import MetadataXML
-from irodsrulewrapper.dto.drop_zones import DropZones, DropZone
-from irodsrulewrapper.dto.token import Token
-
 import logging
+
+from irodsrulewrapper.decorator import rule_call
+from irodsrulewrapper.dto.drop_zones import DropZones, DropZone
+from irodsrulewrapper.dto.metadata_json import MetadataJSON
+from irodsrulewrapper.dto.metadata_pid import MetadataPID
+from irodsrulewrapper.dto.metadata_xml import MetadataXML
+from irodsrulewrapper.dto.token import Token
+from irodsrulewrapper.utils import (
+    BaseRuleManager,
+    RuleInfo,
+    RuleInputValidationError,
+    check_collection_id_format,
+    check_project_id_format,
+)
 
 
 class IngestRuleManager(BaseRuleManager):
@@ -265,3 +272,45 @@ class IngestRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid type for *token: expected a string")
 
         return RuleInfo(name="set_dropzone_total_size_avu", get_result=False, session=self.session, dto=None)
+
+    @rule_call
+    def get_versioned_pids(self, project_id, collection_id, version):
+        """
+        Request a PID via epicpid
+
+        Parameters
+        ----------
+        project_id : str
+            The project to request and set a pid for (ie. P000000010)
+        collection_id : str
+            The collection to request and set a PID for (ie. C000000002)
+        version : str
+            The version number of collection,schema and instance that PID are requested for
+        """
+        if not check_project_id_format(project_id):
+            raise RuleInputValidationError("invalid project's path format: e.g P000000010")
+        if not check_collection_id_format(collection_id):
+            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+
+        return RuleInfo(name="get_versioned_pids", get_result=True, session=self.session, dto=MetadataPID)
+
+    @rule_call
+    def create_ingest_metadata_versions(self, project_id, collection_id):
+        """
+        Create a snapshot of the collection metadata files (schema & instance):
+            * Check if the snapshot folder (.metadata_versions) already exists, if not create it
+            * Copy the current metadata files to .metadata_versions and add a version 1 in the filename
+
+        Parameters
+        ----------
+        project_id : str
+            The project where the instance.json is to fill (ie. P000000010)
+        collection_id : str
+            The collection where the instance.json is to fill (ie. C000000002)
+        """
+        if not check_project_id_format(project_id):
+            raise RuleInputValidationError("invalid project's path format: e.g P000000010")
+        if not check_collection_id_format(collection_id):
+            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+
+        return RuleInfo(name="create_ingest_metadata_versions", get_result=False, session=self.session, dto=None)

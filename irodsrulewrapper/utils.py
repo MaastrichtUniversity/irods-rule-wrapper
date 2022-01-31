@@ -83,9 +83,9 @@ class BaseRuleManager:
         self.ssl_context = ssl.create_default_context(
             purpose=ssl.Purpose.SERVER_AUTH, cafile=None, capath=None, cadata=None
         )
+
         self.ssl_settings = {
             "irods_client_server_negotiation": "request_server_negotiation",
-            "irods_client_server_policy": os.environ["IRODS_CLIENT_SERVER_POLICY"],
             "irods_encryption_algorithm": "AES-256-CBC",
             "irods_encryption_key_size": 32,
             "irods_encryption_num_hash_rounds": 16,
@@ -99,6 +99,7 @@ class BaseRuleManager:
             self.init_with_variable_config(client_user, config, admin_mode)
 
     def init_with_environ_conf(self, client_user, admin_mode):
+        self.ssl_settings["irods_client_server_policy"] = os.environ["IRODS_CLIENT_SERVER_POLICY"]
         if admin_mode:
             self.session = iRODSSession(
                 host=os.environ["IRODS_HOST"],
@@ -120,6 +121,7 @@ class BaseRuleManager:
             )
 
     def init_with_variable_config(self, client_user, config, admin_mode):
+        self.ssl_settings["irods_client_server_policy"] = config["IRODS_CLIENT_SERVER_POLICY"]
         if admin_mode:
             self.session = iRODSSession(
                 host=config["IRODS_HOST"],

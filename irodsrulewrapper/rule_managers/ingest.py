@@ -1,5 +1,3 @@
-import logging
-
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.dto.drop_zones import DropZones, DropZone
 from irodsrulewrapper.dto.metadata_json import MetadataJSON
@@ -12,6 +10,7 @@ from irodsrulewrapper.utils import (
     RuleInputValidationError,
     check_collection_id_format,
     check_project_id_format,
+    log_warning_message,
 )
 
 
@@ -121,11 +120,10 @@ class IngestRuleManager(BaseRuleManager):
         token: str
             The dropzone token to be ingested
         """
-        logger = logging.getLogger(__name__)
         try:
             self.set_total_size_dropzone(token)
         except Exception as e:
-            logger.warning("set_total_size_dropzone failed with error: {}".format(e))
+            log_warning_message(user, f"set_total_size_dropzone failed with error: {e}")
         self.start_ingest(user, token)
 
     def read_metadata_xml_from_dropzone(self, token):

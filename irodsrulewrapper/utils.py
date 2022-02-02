@@ -9,6 +9,8 @@ import pytz
 import datetime
 import ssl
 
+logger = logging.getLogger(__name__)
+
 
 def check_project_id_format(project):
     if re.search("^P[0-9]{9}$", project) is not None:
@@ -184,3 +186,21 @@ def publish_message(exchange, routing_key, message):
     channel.basic_publish(exchange=exchange, routing_key=routing_key, body=message)
 
     connection.close()
+
+
+def log_error_message(user, message):
+    logger.error(
+        "[%s] [ERROR] %s - %s",
+        datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S%z"),
+        user,
+        message,
+    )
+
+
+def log_warning_message(user, message):
+    logger.warning(
+        "[%s] [WARNING] %s - %s",
+        datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S%z"),
+        user,
+        message,
+    )

@@ -88,6 +88,14 @@ class BaseRuleManager:
         else:
             self.init_with_variable_config(client_user, config, admin_mode)
 
+    def __del__(self):
+        # __del__() is a finalizer that is called when the object is garbage
+        # collected. And this happens *after* all the references to the object
+        # have been deleted. This is what CPython does, however it is not
+        # guranteed behavior by Python. Ideally we do the cleanup() after using
+        # this object to execute a rule/s. Perhaps with a try/finally.
+        self.session.cleanup()
+
     def init_with_environ_conf(self, client_user, admin_mode):
         if admin_mode:
             self.session = iRODSSession(

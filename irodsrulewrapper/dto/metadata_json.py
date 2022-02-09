@@ -2,10 +2,11 @@ import errno
 import time
 import os
 import json
-import logging
 
 from irods import exception
 from irods.session import iRODSSession
+
+from irodsrulewrapper.utils import log_error_message
 
 
 class MetadataJSON:
@@ -63,12 +64,8 @@ class MetadataJSON:
         try:
             with self.session.data_objects.open(irods_file_path, "r") as irods_file:
                 json_string = irods_file.read()
-        except exception.DataObjectDoesNotExist:
-            logger = logging.getLogger(__name__)
-            logger.warning("%s is missing" % irods_file_path)
-        except exception.SYS_FILE_DESC_OUT_OF_RANGE:
-            logger = logging.getLogger(__name__)
-            logger.warning("%s is missing" % irods_file_path)
+        except (exception.DataObjectDoesNotExist, exception.SYS_FILE_DESC_OUT_OF_RANGE):
+            log_error_message(self.session.username, f"{irods_file_path} is missing")
         else:
             return json.loads(json_string)
         raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), irods_file_path)

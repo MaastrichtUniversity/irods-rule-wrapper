@@ -204,3 +204,25 @@ def log_warning_message(user, message):
         user,
         message,
     )
+
+
+def log_audit_trail_message(user_id: int, event: str):
+    """
+    Log an entry with AUDIT_TRAIL tag and user ID
+
+    Parameters
+    ----------
+    user_id: int
+        The user identifier number
+    event: str
+        The event you want to be logged
+
+    """
+    if type(user_id) != int:
+        user_id = ""
+    logger.warning(
+        "[%s][AUDIT_TRAIL][USER_ID %s] - %s",
+        datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S%z"),
+        str(user_id),
+        event,
+    )

@@ -445,11 +445,16 @@ class CollectionRuleManager(BaseRuleManager):
         if not check_collection_id_format(collection_id):
             raise RuleInputValidationError("invalid collection id; eg. C000000001")
 
-        self.update_edit_instance(instance, project_id, collection_id)
-
         collection_path = f"/nlmumc/projects/{project_id}/{collection_id}"
         schema_irods_path = f"{collection_path}/schema.json"
         instance_irods_path = f"{collection_path}/instance.json"
+
+        latest_version_number = self.get_collection_attribute_value(collection_path, "latest_version_number").value
+        if not latest_version_number.isdigit():
+            raise RuleInputValidationError(
+                f"The AVU 'latest_version_number' for {collection_path} is incorrect: {latest_version_number}"
+            )
+        self.update_edit_instance(instance, project_id, collection_id)
 
         metadata_json = MetadataJSON(self.session)
         metadata_json.write_instance(instance, instance_irods_path)

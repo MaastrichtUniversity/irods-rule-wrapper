@@ -422,9 +422,10 @@ class CollectionRuleManager(BaseRuleManager):
     def save_metadata_json_to_collection(self, project_id, collection_id, instance, schema_dict):
         """
         After a user edits the collection metadata, this method takes care of metadata saving workflow:
-            * Create a snapshot of the current collection metadata
+            * Check if the AVU latest_version_number exists and is an integer
             * Overwrite the current instance with the new one
             * Check if we need to overwrite the schema, if yes do it
+            * Create a snapshot of the new collection metadata
             * Update collection-AVUs: 'schemaVersion', 'schemaName' & 'title'
             * Run the rule that recalculates the collection size and number of files
 
@@ -454,7 +455,6 @@ class CollectionRuleManager(BaseRuleManager):
             raise RuleInputValidationError(
                 f"The AVU 'latest_version_number' for {collection_path} is incorrect: {latest_version_number}"
             )
-        self.update_edit_instance(instance, project_id, collection_id)
 
         metadata_json = MetadataJSON(self.session)
         metadata_json.write_instance(instance, instance_irods_path)
@@ -468,34 +468,6 @@ class CollectionRuleManager(BaseRuleManager):
 
         # Re-calculate the collection, update the size AVU and close the project collection ACL.
         self.set_collection_size(project_id, collection_id, "false", "false")
-
-    def update_edit_instance(self, instance, project_id, collection_id):
-        """
-        Some instance values need to be update after an edit
-
-        Parameters
-        ----------
-        instance: dict
-            The json formatted instance data to update
-        project_id: str
-            The project ID ie P000000001
-        collection_id: str
-            The collection ID ie C000000001
-        """
-        collection_path = f"/nlmumc/projects/{project_id}/{collection_id}"
-        handle = self.get_collection_attribute_value(collection_path, "PID").value
-        if handle != "":
-            handle_url = "https://hdl.handle.net/" + handle
-            instance["1_Identifier"]["datasetIdentifier"]["@value"] = handle_url
-            instance["@id"] = handle_url
-
-        # Set identifier type to "handle"
-        instance["1_Identifier"]["datasetIdentifierType"]["rdfs:label"] = "Handle"
-        instance["1_Identifier"]["datasetIdentifierType"]["@id"] = "http://vocab.fairdatacollective.org/gdmt/Handle"
-
-        # Overwriting the schema:isBasedOn with the MDR schema handle URL
-        schema_url = f"{os.environ['VIRTUAL_HOST']}/hdl/{project_id}/{collection_id}/schema"
-        instance["schema:isBasedOn"] = schema_url
 
     @rule_call
     def set_acl_for_metadata_snapshot(

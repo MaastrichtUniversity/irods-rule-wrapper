@@ -293,7 +293,7 @@ class IngestRuleManager(BaseRuleManager):
         return RuleInfo(name="get_versioned_pids", get_result=True, session=self.session, dto=MetadataPID)
 
     @rule_call
-    def create_ingest_metadata_versions(self, project_id, collection_id):
+    def create_ingest_metadata_snapshot(self, project_id, collection_id, source_collection, overwrite_flag):
         """
         Create a snapshot of the collection metadata files (schema & instance):
             * Check if the snapshot folder (.metadata_versions) already exists, if not create it
@@ -302,13 +302,21 @@ class IngestRuleManager(BaseRuleManager):
         Parameters
         ----------
         project_id : str
-            The project where the instance.json is to fill (ie. P000000010)
+            The project where the instance.json is to fill (e.g: P000000010)
         collection_id : str
-            The collection where the instance.json is to fill (ie. C000000002)
+            The collection where the instance.json is to fill (e.g: C000000002)
+        source_collection: str
+            The drop-zone absolute path (e.g: /nlmumc/ingest/zones/crazy-frog)
+        overwrite_flag: str
+            'true'/'false' expected; If true, the copy overwrites possible existing schema.1.json & instance.1.json files
         """
         if not check_project_id_format(project_id):
             raise RuleInputValidationError("invalid project's path format: e.g P000000010")
         if not check_collection_id_format(collection_id):
             raise RuleInputValidationError("invalid collection id; eg. C000000001")
+        if not isinstance(source_collection, str):
+            raise RuleInputValidationError("invalid type for *source_collection: expected a string")
+        if overwrite_flag != "false" and overwrite_flag != "true":
+            raise RuleInputValidationError("invalid value for *overwrite_flag: expected 'true' or 'false'")
 
-        return RuleInfo(name="create_ingest_metadata_versions", get_result=False, session=self.session, dto=None)
+        return RuleInfo(name="create_ingest_metadata_snapshot", get_result=False, session=self.session, dto=None)

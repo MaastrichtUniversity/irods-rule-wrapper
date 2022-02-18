@@ -1,6 +1,3 @@
-from typing import Dict
-
-
 class Boolean:
     def __init__(self, boolean: bool):
         self.boolean: bool = boolean

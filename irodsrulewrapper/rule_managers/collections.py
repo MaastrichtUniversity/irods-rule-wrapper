@@ -1,8 +1,8 @@
 import json
-import os
 
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.dto.attribute_value import AttributeValue
+from irodsrulewrapper.dto.boolean import Boolean
 from irodsrulewrapper.dto.collection_details import CollectionDetails
 from irodsrulewrapper.dto.collections import Collection
 from irodsrulewrapper.dto.collections import Collections
@@ -404,20 +404,32 @@ class CollectionRuleManager(BaseRuleManager):
     @rule_call
     def create_collection_metadata_snapshot(self, project_id, collection_id):
         """
+        Create a snapshot of the collection metadata files (schema & instance):
+            * Check user edit metadata permission
+            * Check if the snapshot folder (.metadata_versions) already exists, if not create it
+            * Request the new versions handle PIDs
+            * Update instance.json and schema.json properties
+            * Copy the current metadata files to .metadata_versions and add the version number in the filename
+            * Increment the AVU latest_version_number
 
         Parameters
         ----------
-        project_id: str
-            The project ID ie P000000001
-        collection_id: str
-            The collection ID ie C000000001
+        project_id : str
+            The project where the instance.json is to fill (e.g: P000000010)
+        collection_id : str
+            The collection where the instance.json is to fill (e.g: C000000002)
+
+        Returns
+        -------
+        bool
+            PIDs request status; If true, the handle PIDs were successfully requested.
         """
         if not check_project_id_format(project_id):
             raise RuleInputValidationError("invalid project id; eg. P000000001")
 
         if not check_collection_id_format(collection_id):
             raise RuleInputValidationError("invalid collection id; eg. C000000001")
-        return RuleInfo(name="create_collection_metadata_snapshot", get_result=False, session=self.session, dto=None)
+        return RuleInfo(name="create_collection_metadata_snapshot", get_result=True, session=self.session, dto=Boolean)
 
     def save_metadata_json_to_collection(self, project_id, collection_id, instance, schema_dict):
         """
@@ -439,6 +451,11 @@ class CollectionRuleManager(BaseRuleManager):
             Contains the following key-value pairs: overwrite, title, schema_path, schema_version, schema_file_name
         instance: dict
             The json formatted instance data
+
+        Returns
+        -------
+        bool
+            PIDs request status; If true, the handle PIDs were successfully requested.
         """
         if not check_project_id_format(project_id):
             raise RuleInputValidationError("invalid project id; eg. P000000001")
@@ -464,10 +481,12 @@ class CollectionRuleManager(BaseRuleManager):
         self.set_collection_avu(collection_path, "schemaVersion", schema_dict["schema_version"])
         self.set_collection_avu(collection_path, "schemaName", schema_dict["schema_file_name"])
         self.set_collection_avu(collection_path, "title", schema_dict["title"])
-        self.create_collection_metadata_snapshot(project_id, collection_id)
+        pid_request_status = self.create_collection_metadata_snapshot(project_id, collection_id)
 
         # Re-calculate the collection, update the size AVU and close the project collection ACL.
         self.set_collection_size(project_id, collection_id, "false", "false")
+
+        return pid_request_status
 
     @rule_call
     def set_acl_for_metadata_snapshot(

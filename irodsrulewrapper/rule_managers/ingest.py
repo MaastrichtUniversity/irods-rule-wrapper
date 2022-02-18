@@ -293,7 +293,7 @@ class IngestRuleManager(BaseRuleManager):
         return RuleInfo(name="get_versioned_pids", get_result=True, session=self.session, dto=MetadataPID)
 
     @rule_call
-    def create_ingest_metadata_versions(self, project_id, collection_id, source_collection, overwrite_flag):
+    def create_ingest_metadata_snapshot(self, project_id, collection_id, source_collection, overwrite_flag):
         """
         Create a snapshot of the collection metadata files (schema & instance):
             * Check if the snapshot folder (.metadata_versions) already exists, if not create it
@@ -319,4 +319,4 @@ class IngestRuleManager(BaseRuleManager):
         if overwrite_flag != "false" and overwrite_flag != "true":
             raise RuleInputValidationError("invalid value for *overwrite_flag: expected 'true' or 'false'")
 
-        return RuleInfo(name="create_ingest_metadata_versions", get_result=False, session=self.session, dto=None)
+        return RuleInfo(name="create_ingest_metadata_snapshot", get_result=False, session=self.session, dto=None)

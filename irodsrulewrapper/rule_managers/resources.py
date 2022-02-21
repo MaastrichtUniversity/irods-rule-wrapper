@@ -1,6 +1,7 @@
 from irodsrulewrapper.decorator import rule_call
-from irodsrulewrapper.utils import BaseRuleManager, RuleInfo, check_project_id_format
+from irodsrulewrapper.utils import BaseRuleManager, RuleInfo, check_project_id_format, RuleInputValidationError
 from irodsrulewrapper.dto.resources import Resources
+from irodsrulewrapper.dto.boolean import Boolean
 from irodsrulewrapper.dto.collection_sizes import CollectionSizes
 
 
@@ -68,3 +69,23 @@ class ResourceRuleManager(BaseRuleManager):
         return RuleInfo(
             name="get_collection_size_per_resource", get_result=True, session=self.session, dto=CollectionSizes
         )
+
+    @rule_call
+    def get_project_resource_availability(self, project_id, ingest, destination, archive):
+        """
+
+        Parameters
+        ----------
+        project_id
+        ingest
+        destination
+        archive
+
+        Returns
+        -------
+
+        """
+        if not check_project_id_format(project_id):
+            raise RuleInputValidationError("invalid project id; eg. P000000001")
+
+        return RuleInfo(name="get_project_resource_availability", get_result=True, session=self.session, dto=Boolean)

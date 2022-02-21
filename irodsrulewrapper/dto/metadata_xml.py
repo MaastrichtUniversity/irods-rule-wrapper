@@ -1,10 +1,10 @@
-import datetime
-import logging
-from typing import List, Dict
+from typing import Dict
 import os
 from irods import exception
 import xml.etree.cElementTree as ET
 import json
+
+from irodsrulewrapper.utils import log_warning_message
 
 
 class MetadataXML:
@@ -186,14 +186,9 @@ def read_tag_list(root, tag):
 
 
 def read_text(root, tag):
-    logger = logging.getLogger(__name__)
     node = root.find(tag)
     if node is None:
-        logger.warning(
-            "[%s] [WARNING] - Missing tag '%s' in metadata.xml",
-            datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S%z"),
-            tag,
-        )
+        log_warning_message("", f"Missing tag '{tag}' in metadata.xml")
         return ""
     text = node.text
     if text is None:

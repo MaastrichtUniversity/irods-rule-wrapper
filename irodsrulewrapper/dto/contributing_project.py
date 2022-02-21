@@ -14,6 +14,7 @@ class ContributingProject:
         viewers_users: Users,
         viewers_groups: Groups,
         resource: str,
+        collection_metadata_schemas,
     ):
         self.id: str = id
         self.title: str = title
@@ -23,6 +24,7 @@ class ContributingProject:
         self.viewers_users: Users = viewers_users
         self.viewers_groups: Groups = viewers_groups
         self.resource: str = resource
+        self.collection_metadata_schemas = collection_metadata_schemas
 
     @classmethod
     def create_from_rule_result(cls, result: Dict) -> "ContributingProject":
@@ -36,7 +38,7 @@ class ContributingProject:
         viewers_users = Users.create_from_rule_result(result["viewers"]["userObjects"])
         viewers_groups = Groups.create_from_rule_result(result["viewers"]["groupObjects"])
         resource = result["resource"]
-        projects = cls(
+        project = cls(
             result["id"],
             result["title"],
             managers,
@@ -45,6 +47,7 @@ class ContributingProject:
             viewers_users,
             viewers_groups,
             resource,
+            result["collectionMetadataSchemas"],
         )
 
-        return projects
+        return project

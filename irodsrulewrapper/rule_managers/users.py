@@ -44,7 +44,7 @@ class UserRuleManager(BaseRuleManager):
         return RuleInfo(name="getDataStewards", get_result=True, session=self.session, dto=DataStewards)
 
     @rule_call
-    def get_username_attribute_value(self, username, attribute):
+    def get_username_attribute_value(self, username, attribute, fatal):
         """
         Query an attribute value from the user list of AVU
 
@@ -54,6 +54,8 @@ class UserRuleManager(BaseRuleManager):
             The username
         attribute : str
             The user attribute to query
+        fatal : str
+            'true'/'false' expected; If true, raise an exception when the query result is empty
 
         Returns
         -------
@@ -64,6 +66,8 @@ class UserRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid type for *username: expected a string")
         if type(attribute) != str:
             raise RuleInputValidationError("invalid type for *attribute: expected a string")
+        if fatal != "false" and fatal != "true":
+            raise RuleInputValidationError("invalid value for *fatal: expected 'true' or 'false'")
 
         return RuleInfo(name="get_username_attribute_value", get_result=True, session=self.session, dto=AttributeValue)
 

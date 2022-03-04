@@ -20,13 +20,6 @@ class RuleManager(
     def __init__(self, client_user=None, config=None, admin_mode=False):
         BaseRuleManager.__init__(self, client_user, config, admin_mode)
 
-    def __del__(self):
-        # __del__ is a destructor method which is called as soon as all references of the object are deleted.
-        # i.e when an object is garbage collected.
-        # Session cleanup is not called after each rule execution anymore.
-        # So it needs to happen here.
-        self.session.cleanup()
-
     def check_irods_connection(self):
         """
         Check if an iRODS connection can be established
@@ -100,6 +93,7 @@ class RuleManager(
 
             name = irods_basename(result[iRODSCollection.name])
             ctime = result[iRODSCollection.create_time]
+            mtime = result[iRODSCollection.modify_time]
             relative_path = path + "/" + name
 
             folder_node = {
@@ -109,6 +103,7 @@ class RuleManager(
                 "size": "--",
                 "rescname": "--",
                 "ctime": ctime.strftime("%Y-%m-%d %H:%M:%S"),
+                "mtime": mtime.strftime("%Y-%m-%d %H:%M:%S"),
             }
 
             output.append(folder_node)
@@ -122,6 +117,7 @@ class RuleManager(
                 raise DataObjectDoesNotExist()
 
             ctime = result[DataObject.create_time]
+            mtime = result[DataObject.modify_time]
             relative_path = path + "/" + data.name
 
             data_node = {
@@ -132,6 +128,7 @@ class RuleManager(
                 "rescname": data.resource_name,
                 "offlineResource": data.resource_name == "arcRescSURF01",
                 "ctime": ctime.strftime("%Y-%m-%d %H:%M:%S"),
+                "mtime": mtime.strftime("%Y-%m-%d %H:%M:%S"),
             }
 
             output.append(data_node)

@@ -1,5 +1,6 @@
 import pytest
 
+from irodsrulewrapper.dto.boolean import Boolean
 from irodsrulewrapper.dto.collection import Collection
 from irodsrulewrapper.dto.collections import Collections
 from irodsrulewrapper.rule import RuleManager
@@ -133,6 +134,13 @@ def test_collections():
     assert collections[0].title == "Test Coll 1"
     assert collections[1].title == "Test Coll 2.0"
 
+
+def test_boolean():
+    result = Boolean.create_from_rule_result(BOOLEAN_RESULT)
+    assert result.boolean is True
+
+
+BOOLEAN_RESULT = True
 
 COLLECTION_JSON = """
 {

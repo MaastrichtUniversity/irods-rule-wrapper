@@ -1,9 +1,13 @@
+import json
+
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.dto.attribute_value import AttributeValue
-from irodsrulewrapper.dto.collections import Collections, Collection
-from irodsrulewrapper.dto.metadata_xml import MetadataXML
-from irodsrulewrapper.dto.collections import Collections
+from irodsrulewrapper.dto.boolean import Boolean
 from irodsrulewrapper.dto.collection_details import CollectionDetails
+from irodsrulewrapper.dto.collections import Collection
+from irodsrulewrapper.dto.collections import Collections
+from irodsrulewrapper.dto.metadata_json import MetadataJSON
+from irodsrulewrapper.dto.metadata_xml import MetadataXML
 from irodsrulewrapper.dto.tape_estimate import TapeEstimate
 from irodsrulewrapper.utils import (
     check_project_path_format,
@@ -14,9 +18,9 @@ from irodsrulewrapper.utils import (
     BaseRuleManager,
     RuleInfo,
     RuleInputValidationError,
+    check_file_path_format,
+    is_safe_full_path,
 )
-
-import json
 
 
 class CollectionRuleManager(BaseRuleManager):
@@ -273,3 +277,248 @@ class CollectionRuleManager(BaseRuleManager):
         * Add the 'in-queue-for-export' AVU
         """
         return RuleInfo(name="prepareExportProjectCollection", get_result=False, session=self.session, dto=None)
+
+    def read_schema_from_collection(self, project_id: str, collection_id: str) -> dict:
+        """
+        Returns the object version of the schema.json on the collections root
+
+        Parameters
+        ----------
+        project_id: str
+            The project ID ie P000000001
+        collection_id: str
+            The collection ID ie C000000001
+
+        Returns
+        -------
+        dict
+            The schema json
+        """
+        metadata_json = MetadataJSON(self.session)
+        schema_irods_path = f"/nlmumc/projects/{project_id}/{collection_id}/schema.json"
+        if check_file_path_format(schema_irods_path) and is_safe_full_path(schema_irods_path):
+            return metadata_json.read_irods_json_file(schema_irods_path)
+        raise RuleInputValidationError("invalid schema path provided")
+
+    def read_schema_version_from_collection(self, project_id: str, collection_id: str, version: str) -> dict:
+        """
+        Returns the version stamped object version of the schema.json in the '.metadata_versions/' directory
+
+        Parameters
+        ----------
+        project_id: str
+            The project ID ie P000000001
+        collection_id: str
+            The collection ID ie C000000001
+        version: str
+            The verion of the schema to retrieve
+
+        Returns
+        -------
+        dict
+            The schema json
+        """
+        metadata_json = MetadataJSON(self.session)
+        schema_irods_path = f"/nlmumc/projects/{project_id}/{collection_id}/.metadata_versions/schema.{version}.json"
+        if check_file_path_format(schema_irods_path) and is_safe_full_path(schema_irods_path):
+            return metadata_json.read_irods_json_file(schema_irods_path)
+        raise RuleInputValidationError("invalid schema path provided")
+
+    def read_instance_from_collection(self, project_id: str, collection_id: str) -> dict:
+        """
+        Returns the object version of the instance.json on the collections root
+
+        Parameters
+        ----------
+        project_id: str
+            The project ID ie P000000001
+        collection_id: str
+            The collection ID ie C000000001
+
+        Returns
+        -------
+        dict
+            The instance json
+        """
+        metadata_json = MetadataJSON(self.session)
+        instance_irods_path = f"/nlmumc/projects/{project_id}/{collection_id}/instance.json"
+        if check_file_path_format(instance_irods_path) and is_safe_full_path(instance_irods_path):
+            return metadata_json.read_irods_json_file(instance_irods_path)
+        raise RuleInputValidationError("invalid instance path provided")
+
+    def read_instance_version_from_collection(self, project_id: str, collection_id: str, version: str) -> dict:
+        """
+        Returns the version stamped object version of the instance.json in the '.metadata_versions/' directory
+
+        Parameters
+        ----------
+        project_id: str
+            The project ID ie P000000001
+        collection_id: str
+            The collection ID ie C000000001
+        version: str
+            The verion of the instance to retrieve
+
+        Returns
+        -------
+        dict
+            The instance json
+        """
+        metadata_json = MetadataJSON(self.session)
+        instance_irods_path = (
+            f"/nlmumc/projects/{project_id}/{collection_id}/.metadata_versions/instance.{version}.json"
+        )
+        if check_file_path_format(instance_irods_path) and is_safe_full_path(instance_irods_path):
+            return metadata_json.read_irods_json_file(instance_irods_path)
+        raise RuleInputValidationError("invalid instance path provided")  # Raise different error
+
+    @rule_call
+    def set_collection_size(self, project_id, collection_id, open_collection, close_collection):
+        """
+        Recalculates the collection size and number of files.
+
+        Parameters
+        ----------
+        project_id: str
+            The project ID ie P000000001
+        collection_id: str
+            The collection ID ie C000000001
+        open_collection: str
+            'true'/'false' expected; If true, open the collection ACL for the current user
+        close_collection: str
+            'true'/'false' expected; If true, close the collection ACL.
+        """
+        if not check_project_id_format(project_id):
+            raise RuleInputValidationError("invalid project id; eg. P000000001")
+
+        if not check_collection_id_format(collection_id):
+            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+
+        expected_values = ["false", "true"]
+        if open_collection not in expected_values and close_collection not in expected_values:
+            raise RuleInputValidationError(
+                "invalid value for *open_collection/close_collection: expected 'true' or 'false'"
+            )
+        return RuleInfo(name="setCollectionSize", get_result=False, session=self.session, dto=None)
+
+    @rule_call
+    def create_collection_metadata_snapshot(self, project_id, collection_id):
+        """
+        Create a snapshot of the collection metadata files (schema & instance):
+            * Check user edit metadata permission
+            * Check if the snapshot folder (.metadata_versions) already exists, if not create it
+            * Request the new versions handle PIDs
+            * Update instance.json and schema.json properties
+            * Copy the current metadata files to .metadata_versions and add the version number in the filename
+            * Increment the AVU latest_version_number
+
+        Parameters
+        ----------
+        project_id : str
+            The project where the instance.json is to fill (e.g: P000000010)
+        collection_id : str
+            The collection where the instance.json is to fill (e.g: C000000002)
+
+        Returns
+        -------
+        bool
+            PIDs request status; If true, the handle PIDs were successfully requested.
+        """
+        if not check_project_id_format(project_id):
+            raise RuleInputValidationError("invalid project id; eg. P000000001")
+
+        if not check_collection_id_format(collection_id):
+            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+        return RuleInfo(name="create_collection_metadata_snapshot", get_result=True, session=self.session, dto=Boolean)
+
+    def save_metadata_json_to_collection(self, project_id, collection_id, instance, schema_dict):
+        """
+        After a user edits the collection metadata, this method takes care of metadata saving workflow:
+            * Check if the AVU latest_version_number exists and is an integer
+            * Overwrite the current instance with the new one
+            * Check if we need to overwrite the schema, if yes do it
+            * Create a snapshot of the new collection metadata
+            * Update collection-AVUs: 'schemaVersion', 'schemaName' & 'title'
+            * Run the rule that recalculates the collection size and number of files
+
+        Parameters
+        ----------
+        project_id: str
+            The project ID ie P000000001
+        collection_id: str
+            The collection ID ie C000000001
+        schema_dict: dict
+            Contains the following key-value pairs: overwrite, title, schema_path, schema_version, schema_file_name
+        instance: dict
+            The json formatted instance data
+
+        Returns
+        -------
+        bool
+            PIDs request status; If true, the handle PIDs were successfully requested.
+        """
+        if not check_project_id_format(project_id):
+            raise RuleInputValidationError("invalid project id; eg. P000000001")
+
+        if not check_collection_id_format(collection_id):
+            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+
+        collection_path = f"/nlmumc/projects/{project_id}/{collection_id}"
+        schema_irods_path = f"{collection_path}/schema.json"
+        instance_irods_path = f"{collection_path}/instance.json"
+
+        latest_version_number = self.get_collection_attribute_value(collection_path, "latest_version_number").value
+        if not latest_version_number.isdigit():
+            raise RuleInputValidationError(
+                f"The AVU 'latest_version_number' for {collection_path} is incorrect: {latest_version_number}"
+            )
+
+        metadata_json = MetadataJSON(self.session)
+        metadata_json.write_instance(instance, instance_irods_path)
+        if schema_dict["overwrite"]:
+            metadata_json.write_schema(schema_dict["schema_path"], schema_irods_path)
+
+        self.set_collection_avu(collection_path, "schemaVersion", schema_dict["schema_version"])
+        self.set_collection_avu(collection_path, "schemaName", schema_dict["schema_file_name"])
+        self.set_collection_avu(collection_path, "title", schema_dict["title"])
+        pid_request_status = self.create_collection_metadata_snapshot(project_id, collection_id)
+
+        # Re-calculate the collection, update the size AVU and close the project collection ACL.
+        self.set_collection_size(project_id, collection_id, "false", "false")
+
+        return pid_request_status
+
+    @rule_call
+    def set_acl_for_metadata_snapshot(
+        self, project_id: str, collection_id: str, user: str, open_acl: str, close_acl: str
+    ):
+        """
+        Modify the ACL of the given project collection for the given user to be able to create the metadata snapshot.
+
+        Parameters
+        ----------
+        project_id: str
+            The project ID ie P000000001
+        collection_id: str
+            The collection ID ie C000000001
+        user: str
+            The username
+        open_acl: str
+            'true'/'false' expected; If true, open the collection ACL for the current user
+        close_acl: str
+            'true'/'false' expected; If true, open the collection ACL for the current user
+        """
+        if not check_project_id_format(project_id):
+            raise RuleInputValidationError("invalid project id; eg. P000000001")
+
+        if not check_collection_id_format(collection_id):
+            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+
+        if not isinstance(user, str):
+            raise RuleInputValidationError("invalid type for *user: expected a string")
+
+        expected_values = ["false", "true"]
+        if open_acl not in expected_values and close_acl not in expected_values:
+            raise RuleInputValidationError("invalid value for *open_acl/close_acl: expected 'true' or 'false'")
+
+        return RuleInfo(name="set_acl_for_metadata_snapshot", get_result=False, session=self.session, dto=None)

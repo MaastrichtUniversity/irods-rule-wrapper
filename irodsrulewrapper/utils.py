@@ -5,7 +5,11 @@ from irods.session import iRODSSession
 import re
 import os
 import pika
+import pytz
+import datetime
 import ssl
+
+logger = logging.getLogger(__name__)
 
 
 def check_project_id_format(project):
@@ -64,6 +68,14 @@ def is_safe_path(basedir, path):
     return basedir == os.path.commonpath((basedir, match_path))
 
 
+def convert_to_current_timezone(date, date_format="%Y-%m-%d %H:%M:%S"):
+    old_timezone = pytz.timezone("UTC")
+    new_timezone = pytz.timezone("Europe/Amsterdam")
+    if isinstance(date, str):
+        date = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+    return old_timezone.localize(date).astimezone(new_timezone).strftime(date_format)
+
+
 class BaseRuleManager:
     def __init__(self, client_user=None, config=None, admin_mode=False):
         self.session = []
@@ -73,9 +85,9 @@ class BaseRuleManager:
         self.ssl_context = ssl.create_default_context(
             purpose=ssl.Purpose.SERVER_AUTH, cafile=None, capath=None, cadata=None
         )
+
         self.ssl_settings = {
             "irods_client_server_negotiation": "request_server_negotiation",
-            "irods_client_server_policy": os.environ["IRODS_CLIENT_SERVER_POLICY"],
             "irods_encryption_algorithm": "AES-256-CBC",
             "irods_encryption_key_size": 32,
             "irods_encryption_num_hash_rounds": 16,
@@ -88,7 +100,16 @@ class BaseRuleManager:
         else:
             self.init_with_variable_config(client_user, config, admin_mode)
 
+    def __del__(self):
+        # __del__() is a finalizer that is called when the object is garbage
+        # collected. And this happens *after* all the references to the object
+        # have been deleted. This is what CPython does, however it is not
+        # guranteed behavior by Python. Ideally we do the cleanup() after using
+        # this object to execute a rule/s. Perhaps with a try/finally.
+        self.session.cleanup()
+
     def init_with_environ_conf(self, client_user, admin_mode):
+        self.ssl_settings["irods_client_server_policy"] = os.environ["IRODS_CLIENT_SERVER_POLICY"]
         if admin_mode:
             self.session = iRODSSession(
                 host=os.environ["IRODS_HOST"],
@@ -110,6 +131,7 @@ class BaseRuleManager:
             )
 
     def init_with_variable_config(self, client_user, config, admin_mode):
+        self.ssl_settings["irods_client_server_policy"] = config["IRODS_CLIENT_SERVER_POLICY"]
         if admin_mode:
             self.session = iRODSSession(
                 host=config["IRODS_HOST"],
@@ -172,3 +194,43 @@ def publish_message(exchange, routing_key, message):
     channel.basic_publish(exchange=exchange, routing_key=routing_key, body=message)
 
     connection.close()
+
+
+def log_error_message(user, message):
+    logger.error(
+        "[%s] [ERROR] %s - %s",
+        datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S%z"),
+        user,
+        message,
+    )
+
+
+def log_warning_message(user, message):
+    logger.warning(
+        "[%s] [WARNING] %s - %s",
+        datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S%z"),
+        user,
+        message,
+    )
+
+
+def log_audit_trail_message(user_id: int, event: str):
+    """
+    Log an entry with AUDIT_TRAIL tag and user ID
+
+    Parameters
+    ----------
+    user_id: int
+        The user identifier number
+    event: str
+        The event you want to be logged
+
+    """
+    if type(user_id) != int:
+        user_id = ""
+    logger.warning(
+        "[%s][AUDIT_TRAIL][USER_ID %s] - %s",
+        datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S%z"),
+        str(user_id),
+        event,
+    )

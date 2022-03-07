@@ -185,7 +185,7 @@ def publish_message(exchange, routing_key, message):
         port=5672,
         virtual_host="/",
         credentials=credentials,
-        heartbeat_interval=600,
+        heartbeat=600,
         blocked_connection_timeout=300,
     )
     connection = pika.BlockingConnection(parameters)

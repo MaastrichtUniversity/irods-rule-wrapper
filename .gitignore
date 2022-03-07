@@ -159,15 +159,10 @@ htmlcov/
 nosetests.xml
 coverage.xml
 *.cover
-<<<<<<< HEAD
 .hypothesis/
 .pytest_cache/
-=======
 *.py,cover
-.hypothesis/
-.pytest_cache/
 pytestdebug.log
->>>>>>> b3953ca1431f4c6cb3cfc828bb5b703446e2628a
 
 # Translations
 *.mo
@@ -177,10 +172,7 @@ pytestdebug.log
 *.log
 local_settings.py
 db.sqlite3
-<<<<<<< HEAD
-=======
 db.sqlite3-journal
->>>>>>> b3953ca1431f4c6cb3cfc828bb5b703446e2628a
 
 # Flask stuff:
 instance/
@@ -191,10 +183,7 @@ instance/
 
 # Sphinx documentation
 docs/_build/
-<<<<<<< HEAD
-=======
 doc/_build/
->>>>>>> b3953ca1431f4c6cb3cfc828bb5b703446e2628a
 
 # PyBuilder
 target/
@@ -209,10 +198,8 @@ ipython_config.py
 # pyenv
 .python-version
 
-<<<<<<< HEAD
 # celery beat schedule file
 celerybeat-schedule
-=======
 # pipenv
 #   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
 #   However, in case of collaboration, if having platform-specific dependencies or dependencies
@@ -224,9 +211,7 @@ celerybeat-schedule
 __pypackages__/
 
 # Celery stuff
-celerybeat-schedule
 celerybeat.pid
->>>>>>> b3953ca1431f4c6cb3cfc828bb5b703446e2628a
 
 # SageMath parsed files
 *.sage.py
@@ -239,10 +224,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-<<<<<<< HEAD
-=======
 pythonenv*
->>>>>>> b3953ca1431f4c6cb3cfc828bb5b703446e2628a
 
 # Spyder project settings
 .spyderproject
@@ -258,8 +240,6 @@ pythonenv*
 .mypy_cache/
 .dmypy.json
 dmypy.json
-<<<<<<< HEAD
-=======
 
 # Pyre type checker
 .pyre/
@@ -271,4 +251,3 @@ dmypy.json
 .prof
 
 # End of https://www.toptal.com/developers/gitignore/api/python,pycharm
->>>>>>> b3953ca1431f4c6cb3cfc828bb5b703446e2628a

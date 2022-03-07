@@ -22,7 +22,8 @@ setuptools.setup(
     install_requires=[
         "python-irodsclient @ git+https://github.com/MaastrichtUniversity/python-irodsclient.git#egg=python-irodsclient",
         "cedar-parsing-utils @ git+https://github.com/MaastrichtUniversity/cedar-parsing-utils.git@DHS-1829#egg=cedar-parsing-utils",
-        "pika>=0.12.0,<1.0.0",
+        "pika>=1.2.0,<2.0.0",
+        "pytz>=2021.3",
     ],
     tests_requires=["pytest", "pytest-dotenv"],
 )

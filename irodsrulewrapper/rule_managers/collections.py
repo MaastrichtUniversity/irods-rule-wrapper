@@ -45,7 +45,18 @@ class CollectionRuleManager(BaseRuleManager):
         rights : str
             access level: 'own', 'write', 'read'
         """
-        # Do input validation here
+        if not check_project_id_format(project):
+            raise RuleInputValidationError("invalid project id; eg. P000000001")
+
+        if not check_collection_id_format(project_collection):
+            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+
+        if not isinstance(user, str):
+            raise RuleInputValidationError("invalid type for *user: expected a string")
+
+        if not isinstance(rights, str):
+            raise RuleInputValidationError("invalid type for *rights: expected a string")
+
         return RuleInfo(name="openProjectCollection", get_result=False, session=self.session, dto=None)
 
     @rule_call
@@ -60,7 +71,12 @@ class CollectionRuleManager(BaseRuleManager):
         project_collection : str
             Collection id
         """
-        # Do input validation here
+        if not check_project_id_format(project):
+            raise RuleInputValidationError("invalid project id; eg. P000000001")
+
+        if not check_collection_id_format(project_collection):
+            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+
         return RuleInfo(name="closeProjectCollection", get_result=False, session=self.session, dto=None)
 
     @rule_call

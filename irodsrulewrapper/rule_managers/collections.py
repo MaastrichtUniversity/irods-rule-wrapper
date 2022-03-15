@@ -1,5 +1,7 @@
 import json
 
+from cedarparsingutils.dto.general_instance import GeneralInstance
+
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.dto.attribute_value import AttributeValue
 from irodsrulewrapper.dto.boolean import Boolean
@@ -43,7 +45,18 @@ class CollectionRuleManager(BaseRuleManager):
         rights : str
             access level: 'own', 'write', 'read'
         """
-        # Do input validation here
+        if not check_project_id_format(project):
+            raise RuleInputValidationError("invalid project id; eg. P000000001")
+
+        if not check_collection_id_format(project_collection):
+            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+
+        if not isinstance(user, str):
+            raise RuleInputValidationError("invalid type for *user: expected a string")
+
+        if not isinstance(rights, str):
+            raise RuleInputValidationError("invalid type for *rights: expected a string")
+
         return RuleInfo(name="openProjectCollection", get_result=False, session=self.session, dto=None)
 
     @rule_call
@@ -58,7 +71,12 @@ class CollectionRuleManager(BaseRuleManager):
         project_collection : str
             Collection id
         """
-        # Do input validation here
+        if not check_project_id_format(project):
+            raise RuleInputValidationError("invalid project id; eg. P000000001")
+
+        if not check_collection_id_format(project_collection):
+            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+
         return RuleInfo(name="closeProjectCollection", get_result=False, session=self.session, dto=None)
 
     @rule_call
@@ -69,7 +87,7 @@ class CollectionRuleManager(BaseRuleManager):
         Parameters
         ----------
         collection_path : str
-            The collection's absolute path; eg. /nlmumc/projects/P000000001
+            The collection's absolute path; eg. /nlmumc/projects/P000000001/C000000001
         attribute: str
             The attribute that is going to be set; e.g 'responsibleCostCenter'
         value: str
@@ -345,6 +363,10 @@ class CollectionRuleManager(BaseRuleManager):
         if check_file_path_format(instance_irods_path) and is_safe_full_path(instance_irods_path):
             return metadata_json.read_irods_json_file(instance_irods_path)
         raise RuleInputValidationError("invalid instance path provided")
+
+    @staticmethod
+    def parse_general_instance(instance: dict) -> GeneralInstance:
+        return GeneralInstance.create_from_dict(instance)
 
     def read_instance_version_from_collection(self, project_id: str, collection_id: str, version: str) -> dict:
         """

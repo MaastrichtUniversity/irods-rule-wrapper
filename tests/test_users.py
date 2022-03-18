@@ -5,8 +5,8 @@ from irodsrulewrapper.rule import RuleManager
 import json
 
 
-def test_rule_get_username_attribute_value():
-    result = RuleManager(admin_mode=True).get_username_attribute_value("jmelius", "eduPersonUniqueID", "true")
+def test_rule_get_user_attribute_value():
+    result = RuleManager(admin_mode=True).get_user_attribute_value("jmelius", "eduPersonUniqueID", "true")
     value = result.value
     assert value is not None
     assert value == "jmelius@sram.surf.nl"
@@ -14,7 +14,7 @@ def test_rule_get_username_attribute_value():
 
 def test_rule_set_username_attribute_value():
     RuleManager(admin_mode=True).set_username_attribute_value("jmelius", "lastToSAcceptedTimestamp", "1618476697")
-    result = RuleManager(admin_mode=True).get_username_attribute_value("jmelius", "lastToSAcceptedTimestamp", "true")
+    result = RuleManager(admin_mode=True).get_user_attribute_value("jmelius", "lastToSAcceptedTimestamp", "true")
     value = result.value
     assert value is not None
     assert value == "1618476697"

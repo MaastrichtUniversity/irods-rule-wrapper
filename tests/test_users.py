@@ -13,7 +13,7 @@ def test_rule_get_user_attribute_value():
 
 
 def test_rule_set_username_attribute_value():
-    RuleManager(admin_mode=True).set_username_attribute_value("jmelius", "lastToSAcceptedTimestamp", "1618476697")
+    RuleManager(admin_mode=True).set_user_attribute_value("jmelius", "lastToSAcceptedTimestamp", "1618476697")
     result = RuleManager(admin_mode=True).get_user_attribute_value("jmelius", "lastToSAcceptedTimestamp", "true")
     value = result.value
     assert value is not None

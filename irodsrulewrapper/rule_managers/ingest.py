@@ -130,12 +130,16 @@ class IngestRuleManager(BaseRuleManager):
         xml_path = "/nlmumc/ingest/zones/" + token + "/" + "metadata.xml"
         return MetadataXML.read_metadata_xml(self.session, xml_path, token)
 
-    def create_drop_zone(self, data: dict, schema_path: str, instance: dict, schema_name: str, schema_version: str):
+    def create_drop_zone(
+        self, dropzone_type: str, data: dict, schema_path: str, instance: dict, schema_name: str, schema_version: str
+    ):
         """
         Calls the createIngest rule and then save the schema.json & instance.json to the newly created drop-zone.
 
         Parameters
         ----------
+        dropzone_type: str
+            The type of dropzone to create (mounted or direct)
         data: dict
             The input parameters for the createIngest rule
         schema_path: str
@@ -152,18 +156,25 @@ class IngestRuleManager(BaseRuleManager):
         str
             The drop-zone token
         """
-        token = self.generate_token().token
-        self.create_ingest(data["user"], token, data["project"], data["title"], schema_name, schema_version)
+        token = self.__create_dropzone(
+            dropzone_type, data["user"], data["project"], data["title"], schema_name, schema_version
+        ).token
         data["token"] = token
-        self.save_metadata_json_to_dropzone(token, schema_path, instance)
+        self.save_metadata_json_to_dropzone(dropzone_type, token, schema_path, instance)
         return token
 
-    def save_metadata_json_to_dropzone(self, token: str, schema_path: str, instance: dict):
+    @rule_call
+    def __create_dropzone(self, dropzone_type, username, project_id, title, schema_name, schema_version):
+        return RuleInfo(name="create_drop_zone", get_result=True, session=self.session, dto=Token)
+
+    def save_metadata_json_to_dropzone(self, dropzone_type: str, token: str, schema_path: str, instance: dict):
         """
         Save the schema.json & instance.json to the indicated drop-zone.
 
         Parameters
         ----------
+        dropzone_type: str
+            The type of dropzone that was created
         token: str
             The drop-zone token
         schema_path: str
@@ -172,9 +183,10 @@ class IngestRuleManager(BaseRuleManager):
             The instance.json as a dict
         """
         metadata_json = MetadataJSON(self.session)
-        schema_irods_path = "/nlmumc/ingest/zones/" + token + "/" + "schema.json"
+        dropzone_path = f"/nlmumc/ingest/{'direct' if dropzone_type == 'direct' else 'zones'}/{token}"
+        schema_irods_path = f"{dropzone_path}/schema.json"
         metadata_json.write_schema(schema_path, schema_irods_path)
-        instance_irods_path = "/nlmumc/ingest/zones/" + token + "/" + "instance.json"
+        instance_irods_path = f"{dropzone_path}/instance.json"
         metadata_json.write_instance(instance, instance_irods_path)
 
     def save_instance(self, instance_irods_path: str, instance: dict):

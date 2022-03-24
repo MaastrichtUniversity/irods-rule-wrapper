@@ -44,7 +44,7 @@ class UserRuleManager(BaseRuleManager):
         return RuleInfo(name="getDataStewards", get_result=True, session=self.session, dto=DataStewards)
 
     @rule_call
-    def get_username_attribute_value(self, username, attribute, fatal):
+    def get_user_attribute_value(self, username, attribute, fatal):
         """
         Query an attribute value from the user list of AVU
 
@@ -69,10 +69,10 @@ class UserRuleManager(BaseRuleManager):
         if fatal != "false" and fatal != "true":
             raise RuleInputValidationError("invalid value for *fatal: expected 'true' or 'false'")
 
-        return RuleInfo(name="get_username_attribute_value", get_result=True, session=self.session, dto=AttributeValue)
+        return RuleInfo(name="get_user_attribute_value", get_result=True, session=self.session, dto=AttributeValue)
 
     @rule_call
-    def set_username_attribute_value(self, username, attribute, value):
+    def set_user_attribute_value(self, username, attribute, value):
         """
         Set an attribute value to the input user
 
@@ -93,7 +93,7 @@ class UserRuleManager(BaseRuleManager):
         if type(value) != str:
             raise RuleInputValidationError("invalid type for *value: expected a string")
 
-        return RuleInfo(name="set_username_attribute_value", get_result=False, session=self.session, dto=None)
+        return RuleInfo(name="set_user_attribute_value", get_result=False, session=self.session, dto=None)
 
     def get_user_or_group(self, uid):
         if uid not in CacheTTL.CACHE_USERS_GROUPS:

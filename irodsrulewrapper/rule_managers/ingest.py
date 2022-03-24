@@ -79,33 +79,6 @@ class IngestRuleManager(BaseRuleManager):
         """
         return RuleInfo(name="start_ingest", get_result=False, session=self.session, dto=None)
 
-    @rule_call
-    def create_ingest(self, user, token, project, title, schema_name: str, schema_version: str):
-
-        input_params = {
-            "*user": '"{}"'.format(user),
-            "*token": '"{}"'.format(token),
-            "*project": '"{}"'.format(project),
-            "*title": '"{}"'.format(title),
-            "*schema_name": '"{}"'.format(schema_name),
-            "*schema_version": '"{}"'.format(schema_version),
-        }
-
-        rule_body = """
-        execute_rule{
-            createIngest;
-        }
-        """
-
-        return RuleInfo(
-            name="createIngest",
-            get_result=False,
-            session=self.session,
-            dto=None,
-            input_params=input_params,
-            rule_body=rule_body,
-        )
-
     def ingest(self, user, token):
         """
         Ingest the requested dropzone

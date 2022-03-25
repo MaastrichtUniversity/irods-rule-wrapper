@@ -39,7 +39,7 @@ class IngestRuleManager(BaseRuleManager):
         return RuleInfo(name="listActiveDropZones", get_result=True, session=self.session, dto=DropZones)
 
     @rule_call
-    def get_active_drop_zone(self, token, check_ingest_resource_status):
+    def get_active_drop_zone(self, token, check_ingest_resource_status, dropzone_type):
         """
         Get the list of active drop zones
 
@@ -49,24 +49,26 @@ class IngestRuleManager(BaseRuleManager):
             The dropzone token
         check_ingest_resource_status : str
             'true'/'false' excepted values; If true, show the project resource status
+        dropzone_type : str
+            The type of dropzone, 'mounted' or 'direct'
 
         Returns
         -------
         DropZone
             dto.DropZone object
         """
-        if type(token) != str:
+        if not isinstance(token, str):
             raise RuleInputValidationError("invalid type for *token: expected a string")
-
-        if check_ingest_resource_status != "false" and check_ingest_resource_status != "true":
+        if check_ingest_resource_status not in ("false", "true"):
             raise RuleInputValidationError(
                 "invalid value for *check_ingest_resource_status: expected 'true' or 'false'"
             )
-
+        if dropzone_type not in ("mounted", "direct"):
+            raise RuleInputValidationError("invalid value for *dropzone_type: expected 'mounted' or 'direct'")
         return RuleInfo(name="get_active_drop_zone", get_result=True, session=self.session, dto=DropZone)
 
     @rule_call
-    def start_ingest(self, user, token):
+    def start_ingest(self, user, token, dropzone_type):
         """
         Start an ingest
 
@@ -76,10 +78,18 @@ class IngestRuleManager(BaseRuleManager):
             The user making the ingestion request
         token : str
             The dropzone token
+        dropzone_type : str
+            The type of dropzone, 'mounted' or 'direct'
         """
+        if not isinstance(user, str):
+            raise RuleInputValidationError("invalid type for *user: expected a string")
+        if not isinstance(token, str):
+            raise RuleInputValidationError("invalid type for *token: expected a string")
+        if dropzone_type not in ("mounted", "direct"):
+            raise RuleInputValidationError("invalid value for *dropzone_type: expected 'mounted' or 'direct'")
         return RuleInfo(name="start_ingest", get_result=False, session=self.session, dto=None)
 
-    def ingest(self, user, token):
+    def ingest(self, user, token, dropzone_type):
         """
         Ingest the requested dropzone
         NOTE: We do the 'set_total_size_dropzone' here. This allows for the progress bar to be visible in the frontend.
@@ -92,12 +102,17 @@ class IngestRuleManager(BaseRuleManager):
             The user requesting the ingest
         token: str
             The dropzone token to be ingested
+        dropzone_type : str
+            The type of dropzone, 'mounted' or 'direct'
         """
         try:
             self.set_total_size_dropzone(token)
         except Exception as e:
             log_warning_message(user, f"set_total_size_dropzone failed with error: {e}")
-        self.start_ingest(user, token)
+        if dropzone_type == "direct":
+            self.set_acl("default", "own", user, f"/nlmumc/ingest/direct/{token}/instance.json")
+            self.set_acl("default", "own", user, f"/nlmumc/ingest/direct/{token}/schema.json")
+        self.start_ingest(user, token, dropzone_type)
 
     def read_metadata_xml_from_dropzone(self, token):
         xml_path = "/nlmumc/ingest/zones/" + token + "/" + "metadata.xml"

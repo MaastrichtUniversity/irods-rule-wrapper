@@ -202,7 +202,7 @@ class IngestRuleManager(BaseRuleManager):
         return instance
 
     @rule_call
-    def edit_drop_zone(self, token, project, title):
+    def edit_drop_zone(self, token, project, title, dropzone_type):
         """
         Edits the dropzone's project and title AVUs
 
@@ -214,10 +214,13 @@ class IngestRuleManager(BaseRuleManager):
             the new project number (ex. P000000001)
         title : str
             the new title (ex. bar)
+        dropzone_type: str
+            The type of dropzone (mounted or direct)
         """
 
+        dropzone_path = f"/nlmumc/ingest/{'direct' if dropzone_type == 'direct' else 'zones'}/{token}"
         input_params = {
-            "*token": '"{}"'.format(token),
+            "*dropzonePath": '"{}"'.format(dropzone_path),
             "*project": '"{}"'.format(project),
             "*title": '"{}"'.format(title),
         }

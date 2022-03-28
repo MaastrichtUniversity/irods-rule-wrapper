@@ -26,6 +26,15 @@ def test_rule_get_user_group_memberships():
 
 
 def test_rule_get_users():
+    result = RuleManager(admin_mode=True).get_user_internal_affiliation_status("jmelius")
+    is_internal = result.boolean
+    assert is_internal is True
+    result = RuleManager(admin_mode=True).get_user_internal_affiliation_status("auser")
+    is_internal = result.boolean
+    assert is_internal is False
+
+
+def test_rule_get_users():
     result = RuleManager(admin_mode=True).get_users("true")
     users = result.users
     assert users is not None

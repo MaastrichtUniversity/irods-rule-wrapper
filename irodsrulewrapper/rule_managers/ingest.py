@@ -78,8 +78,8 @@ class IngestRuleManager(BaseRuleManager):
             The user making the ingestion request
         token : str
             The dropzone token
-        dropzone_type : str
-            The type of dropzone, 'mounted' or 'direct'
+        dropzone_type: str
+            The type of dropzone (mounted or direct)
         """
         if not isinstance(user, str):
             raise RuleInputValidationError("invalid type for *user: expected a string")
@@ -118,16 +118,12 @@ class IngestRuleManager(BaseRuleManager):
         xml_path = "/nlmumc/ingest/zones/" + token + "/" + "metadata.xml"
         return MetadataXML.read_metadata_xml(self.session, xml_path, token)
 
-    def create_drop_zone(
-        self, dropzone_type: str, data: dict, schema_path: str, instance: dict, schema_name: str, schema_version: str
-    ):
+    def create_drop_zone(self, data: dict, schema_path: str, instance: dict, schema_name: str, schema_version: str):
         """
         Calls the createIngest rule and then save the schema.json & instance.json to the newly created drop-zone.
 
         Parameters
         ----------
-        dropzone_type: str
-            The type of dropzone to create (mounted or direct)
         data: dict
             The input parameters for the createIngest rule
         schema_path: str
@@ -145,10 +141,10 @@ class IngestRuleManager(BaseRuleManager):
             The drop-zone token
         """
         token = self.__create_dropzone(
-            dropzone_type, data["user"], data["project"], data["title"], schema_name, schema_version
+            data["dropzone_type"], data["user"], data["project"], data["title"], schema_name, schema_version
         ).token
         data["token"] = token
-        self.save_metadata_json_to_dropzone(dropzone_type, token, schema_path, instance)
+        self.save_metadata_json_to_dropzone(data["dropzone_type"], token, schema_path, instance)
         return token
 
     @rule_call

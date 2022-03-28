@@ -5,6 +5,7 @@ from irodsrulewrapper.dto.group import Group
 from irodsrulewrapper.dto.user_or_group import UserOrGroup
 from irodsrulewrapper.dto.data_stewards import DataStewards
 from irodsrulewrapper.dto.attribute_value import AttributeValue
+from irodsrulewrapper.dto.boolean import Boolean
 from irodsrulewrapper.cache import CacheTTL
 
 
@@ -109,6 +110,13 @@ class UserRuleManager(BaseRuleManager):
     @rule_call
     def get_user_or_group_by_id(self, uid):
         if type(uid) != str:
-            raise RuleInputValidationError("invalid type for *username: expected a string")
+            raise RuleInputValidationError("invalid type for *uid: expected a string")
 
         return RuleInfo(name="get_user_or_group_by_id", get_result=True, session=self.session, dto=UserOrGroup)
+
+    @rule_call
+    def get_user_internal_affiliation_status(self, username):
+        if type(username) != str:
+            raise RuleInputValidationError("invalid type for *username: expected a string")
+
+        return RuleInfo(name="get_user_internal_affiliation_status", get_result=True, session=self.session, dto=Boolean)

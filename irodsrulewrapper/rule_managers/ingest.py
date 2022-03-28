@@ -93,7 +93,7 @@ class IngestRuleManager(BaseRuleManager):
         """
         Ingest the requested dropzone
         NOTE: We do the 'set_total_size_dropzone' here. This allows for the progress bar to be visible in the frontend.
-        However, this call can fail and the ingest will still continue. This is by design, because we do not know
+        However, this call can fail and the ingestion will still continue. This is by design, because we do not know
         the duration the call will take for huge dropzones.
 
         Parameters
@@ -106,7 +106,7 @@ class IngestRuleManager(BaseRuleManager):
             The type of dropzone, 'mounted' or 'direct'
         """
         try:
-            self.set_total_size_dropzone(token)
+            self.set_total_size_dropzone(token, dropzone_type)
         except Exception as e:
             log_warning_message(user, f"set_total_size_dropzone failed with error: {e}")
         if dropzone_type == "direct":
@@ -252,7 +252,7 @@ class IngestRuleManager(BaseRuleManager):
         return RuleInfo(name="generate_token", get_result=True, session=self.session, dto=Token)
 
     @rule_call
-    def set_total_size_dropzone(self, token):
+    def set_total_size_dropzone(self, token, dropzone_type):
         """
         Set an attribute value to the input user
 
@@ -260,10 +260,14 @@ class IngestRuleManager(BaseRuleManager):
         ----------
         token : str
             The dropzone token to be ingested
+        dropzone_type: str
+            The type of dropzone, 'mounted' or 'direct'
 
         """
         if type(token) != str:
             raise RuleInputValidationError("invalid type for *token: expected a string")
+        if dropzone_type not in ("mounted", "direct"):
+            raise RuleInputValidationError("invalid value for *dropzone_type: expected 'mounted' or 'direct'")
 
         return RuleInfo(name="set_dropzone_total_size_avu", get_result=False, session=self.session, dto=None)
 

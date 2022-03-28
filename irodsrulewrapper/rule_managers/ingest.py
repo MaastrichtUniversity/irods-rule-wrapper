@@ -144,14 +144,14 @@ class IngestRuleManager(BaseRuleManager):
             data["dropzone_type"], data["user"], data["project"], data["title"], schema_name, schema_version
         ).token
         data["token"] = token
-        self.save_metadata_json_to_dropzone(data["dropzone_type"], token, schema_path, instance)
+        self.write_dropzone_metadata_files(data["dropzone_type"], token, schema_path, instance)
         return token
 
     @rule_call
     def __create_dropzone(self, dropzone_type, username, project_id, title, schema_name, schema_version):
         return RuleInfo(name="create_drop_zone", get_result=True, session=self.session, dto=Token)
 
-    def save_metadata_json_to_dropzone(self, dropzone_type: str, token: str, schema_path: str, instance: dict):
+    def write_dropzone_metadata_files(self, dropzone_type: str, token: str, schema_path: str, instance: dict):
         """
         Save the schema.json & instance.json to the indicated drop-zone.
 

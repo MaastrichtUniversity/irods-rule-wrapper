@@ -173,30 +173,40 @@ class IngestRuleManager(BaseRuleManager):
         instance_irods_path = f"{dropzone_path}/instance.json"
         metadata_json.write_instance(instance, instance_irods_path)
 
-    def save_instance(self, instance_irods_path: str, instance: dict):
+    def write_instance_to_dropzone(self, instance: dict, token, dropzone_type):
         """
         Save the instance.json to the indicated iRODS path.
 
         Parameters
         ----------
-        instance_irods_path:
-            The iRODS full path of the metadata instance
         instance: dict
             The instance.json as a dict
+        token : str
+            The dropzone token
+        dropzone_type: str
+            The type of dropzone (mounted or direct)
         """
         metadata_json = MetadataJSON(self.session)
+        dropzone_path = f"/nlmumc/ingest/{'direct' if dropzone_type == 'direct' else 'zones'}/{token}"
+        instance_irods_path = dropzone_path + "/instance.json"
+        if dropzone_type == "direct":
+            self.set_acl("default", "write", self.session.username, instance_irods_path)
         metadata_json.write_instance(instance, instance_irods_path)
+        if dropzone_type == "direct":
+            self.set_acl("default", "read", self.session.username, instance_irods_path)
 
-    def read_schema_from_dropzone(self, token):
+    def read_schema_from_dropzone(self, token, dropzone_type):
         metadata_json = MetadataJSON(self.session)
-        schema_irods_path = "/nlmumc/ingest/zones/" + token + "/" + "schema.json"
+        dropzone_path = f"/nlmumc/ingest/{'direct' if dropzone_type == 'direct' else 'zones'}/{token}"
+        schema_irods_path = dropzone_path + "/schema.json"
         schema = metadata_json.read_irods_json_file(schema_irods_path)
 
         return schema
 
-    def read_instance_from_dropzone(self, token):
+    def read_instance_from_dropzone(self, token, dropzone_type):
         metadata_json = MetadataJSON(self.session)
-        instance_irods_path = "/nlmumc/ingest/zones/" + token + "/" + "instance.json"
+        dropzone_path = f"/nlmumc/ingest/{'direct' if dropzone_type == 'direct' else 'zones'}/{token}"
+        instance_irods_path = dropzone_path + "/instance.json"
         instance = metadata_json.read_irods_json_file(instance_irods_path)
 
         return instance

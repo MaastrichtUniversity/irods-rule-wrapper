@@ -11,6 +11,9 @@ from irodsrulewrapper.utils import (
     check_collection_id_format,
     check_project_id_format,
     log_warning_message,
+    format_schema_dropzone_path,
+    format_instance_dropzone_path,
+    format_dropzone_path,
 )
 
 
@@ -70,7 +73,7 @@ class IngestRuleManager(BaseRuleManager):
     @rule_call
     def start_ingest(self, user, token, dropzone_type):
         """
-        Start an ingest
+        Start the ingestion workflow.
 
         Parameters
         ----------
@@ -110,8 +113,8 @@ class IngestRuleManager(BaseRuleManager):
         except Exception as e:
             log_warning_message(user, f"set_total_size_dropzone failed with error: {e}")
         if dropzone_type == "direct":
-            self.set_acl("default", "own", user, f"/nlmumc/ingest/direct/{token}/instance.json")
-            self.set_acl("default", "own", user, f"/nlmumc/ingest/direct/{token}/schema.json")
+            self.set_acl("default", "own", user, format_instance_dropzone_path(token, dropzone_type))
+            self.set_acl("default", "own", user, format_schema_dropzone_path(token, dropzone_type))
         self.start_ingest(user, token, dropzone_type)
 
     def read_metadata_xml_from_dropzone(self, token):
@@ -167,11 +170,8 @@ class IngestRuleManager(BaseRuleManager):
             The instance.json as a dict
         """
         metadata_json = MetadataJSON(self.session)
-        dropzone_path = f"/nlmumc/ingest/{'direct' if dropzone_type == 'direct' else 'zones'}/{token}"
-        schema_irods_path = f"{dropzone_path}/schema.json"
-        metadata_json.write_schema(schema_path, schema_irods_path)
-        instance_irods_path = f"{dropzone_path}/instance.json"
-        metadata_json.write_instance(instance, instance_irods_path)
+        metadata_json.write_schema(schema_path, format_schema_dropzone_path(token, dropzone_type))
+        metadata_json.write_instance(instance, format_instance_dropzone_path(token, dropzone_type))
 
     def write_instance_to_dropzone(self, instance: dict, token, dropzone_type):
         """
@@ -187,27 +187,52 @@ class IngestRuleManager(BaseRuleManager):
             The type of dropzone (mounted or direct)
         """
         metadata_json = MetadataJSON(self.session)
-        dropzone_path = f"/nlmumc/ingest/{'direct' if dropzone_type == 'direct' else 'zones'}/{token}"
-        instance_irods_path = dropzone_path + "/instance.json"
+        instance_irods_path = format_instance_dropzone_path(token, dropzone_type)
         if dropzone_type == "direct":
             self.set_acl("default", "write", self.session.username, instance_irods_path)
         metadata_json.write_instance(instance, instance_irods_path)
         if dropzone_type == "direct":
             self.set_acl("default", "read", self.session.username, instance_irods_path)
 
-    def read_schema_from_dropzone(self, token, dropzone_type):
+    def read_schema_from_dropzone(self, token, dropzone_type) -> dict:
+        """
+        Save the schema.json to the indicated iRODS path.
+
+        Parameters
+        ----------
+        token : str
+            The dropzone token
+        dropzone_type: str
+            The type of dropzone (mounted or direct)
+
+        Returns
+        -------
+        dict
+            The json schema
+        """
         metadata_json = MetadataJSON(self.session)
-        dropzone_path = f"/nlmumc/ingest/{'direct' if dropzone_type == 'direct' else 'zones'}/{token}"
-        schema_irods_path = dropzone_path + "/schema.json"
-        schema = metadata_json.read_irods_json_file(schema_irods_path)
+        schema = metadata_json.read_irods_json_file(format_schema_dropzone_path(token, dropzone_type))
 
         return schema
 
-    def read_instance_from_dropzone(self, token, dropzone_type):
+    def read_instance_from_dropzone(self, token, dropzone_type) -> dict:
+        """
+        Read the instance.json from the indicated iRODS path.
+
+        Parameters
+        ----------
+        token : str
+            The dropzone token
+        dropzone_type: str
+            The type of dropzone (mounted or direct)
+
+        Returns
+        -------
+        dict
+            The json instance.
+        """
         metadata_json = MetadataJSON(self.session)
-        dropzone_path = f"/nlmumc/ingest/{'direct' if dropzone_type == 'direct' else 'zones'}/{token}"
-        instance_irods_path = dropzone_path + "/instance.json"
-        instance = metadata_json.read_irods_json_file(instance_irods_path)
+        instance = metadata_json.read_irods_json_file(format_instance_dropzone_path(token, dropzone_type))
 
         return instance
 
@@ -228,9 +253,8 @@ class IngestRuleManager(BaseRuleManager):
             The type of dropzone (mounted or direct)
         """
 
-        dropzone_path = f"/nlmumc/ingest/{'direct' if dropzone_type == 'direct' else 'zones'}/{token}"
         input_params = {
-            "*dropzonePath": '"{}"'.format(dropzone_path),
+            "*dropzonePath": '"{}"'.format(format_dropzone_path(token, dropzone_type)),
             "*project": '"{}"'.format(project),
             "*title": '"{}"'.format(title),
         }

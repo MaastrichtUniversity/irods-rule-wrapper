@@ -76,6 +76,71 @@ def convert_to_current_timezone(date, date_format="%Y-%m-%d %H:%M:%S"):
     return old_timezone.localize(date).astimezone(new_timezone).strftime(date_format)
 
 
+def format_dropzone_path(token, dropzone_type):
+    """
+    Format the dropzone absolute path based on the token and the dropzone type.
+
+    Parameters
+    ----------
+    token : str
+        The dropzone token
+    dropzone_type : str
+        The type of dropzone, 'mounted' or 'direct'
+
+    Returns
+    -------
+    str
+        Absolute dropzone path
+    """
+    if dropzone_type == "mounted":
+        dropzone_path = "/nlmumc/ingest/zones/{}".format(token)
+    elif dropzone_type == "direct":
+        dropzone_path = "/nlmumc/ingest/direct/{}".format(token)
+    else:
+        raise RuleInputValidationError("invalid type for *dropzone_type: expected 'mounted' or 'direct'")
+    return dropzone_path
+
+
+def format_schema_dropzone_path(token, dropzone_type):
+    """
+    Format the schema.json dropzone absolute path based on the token and the dropzone type.
+
+    Parameters
+    ----------
+    token : str
+        The dropzone token.
+    dropzone_type : str
+        The type of dropzone, 'mounted' or 'direct'.
+
+    Returns
+    -------
+    str
+        Absolute schema.json dropzone path.
+    """
+    dropzone_path = format_dropzone_path(token, dropzone_type)
+    return "{}/schema.json".format(dropzone_path)
+
+
+def format_instance_dropzone_path(token, dropzone_type):
+    """
+    Format the instance.json dropzone absolute path based on the token and the dropzone type.
+
+    Parameters
+    ----------
+    token : str
+        The dropzone token.
+    dropzone_type : str
+        The type of dropzone, 'mounted' or 'direct'.
+
+    Returns
+    -------
+    str
+        Absolute instance.json dropzone absolute path.
+    """
+    dropzone_path = format_dropzone_path(token, dropzone_type)
+    return "{}/instance.json".format(dropzone_path)
+
+
 class BaseRuleManager:
     def __init__(self, client_user=None, config=None, admin_mode=False):
         self.session = []

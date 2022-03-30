@@ -307,7 +307,7 @@ class CollectionRuleManager(BaseRuleManager):
         schema_irods_path = f"/nlmumc/projects/{project_id}/{collection_id}/schema.json"
         try:
             validators.validate_file_path(schema_irods_path)
-            validators.validate_path_safety(schema_irods_path)
+            validators.validate_full_path_safety(schema_irods_path)
             return metadata_json.read_irods_json_file(schema_irods_path)
         except exceptions.ValidationError:
             raise RuleInputValidationError("invalid schema path provided")
@@ -334,7 +334,7 @@ class CollectionRuleManager(BaseRuleManager):
         schema_irods_path = f"/nlmumc/projects/{project_id}/{collection_id}/.metadata_versions/schema.{version}.json"
         try:
             validators.validate_file_path(schema_irods_path)
-            validators.validate_path_safety(schema_irods_path)
+            validators.validate_full_path_safety(schema_irods_path)
             return metadata_json.read_irods_json_file(schema_irods_path)
         except exceptions.ValidationError:
             raise RuleInputValidationError("invalid schema path provided")
@@ -359,7 +359,7 @@ class CollectionRuleManager(BaseRuleManager):
         instance_irods_path = f"/nlmumc/projects/{project_id}/{collection_id}/instance.json"
         try:
             validators.validate_file_path(instance_irods_path)
-            validators.validate_path_safety(instance_irods_path)
+            validators.validate_full_path_safety(instance_irods_path)
             return metadata_json.read_irods_json_file(instance_irods_path)
         except exceptions.ValidationError:
             raise RuleInputValidationError("invalid instance path provided")
@@ -392,7 +392,7 @@ class CollectionRuleManager(BaseRuleManager):
         )
         try:
             validators.validate_file_path(instance_irods_path)
-            validators.validate_path_safety(instance_irods_path)
+            validators.validate_full_path_safety(instance_irods_path)
             return metadata_json.read_irods_json_file(instance_irods_path)
         except exceptions.ValidationError:
             raise RuleInputValidationError("invalid instance path provided")  # Raise different error

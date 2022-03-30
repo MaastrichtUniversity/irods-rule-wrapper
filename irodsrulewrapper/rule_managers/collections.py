@@ -9,7 +9,6 @@ from irodsrulewrapper.dto.collection_details import CollectionDetails
 from irodsrulewrapper.dto.collections import Collection
 from irodsrulewrapper.dto.collections import Collections
 from irodsrulewrapper.dto.metadata_json import MetadataJSON
-from irodsrulewrapper.dto.metadata_xml import MetadataXML
 from irodsrulewrapper.dto.tape_estimate import TapeEstimate
 from irodsrulewrapper.utils import publish_message, BaseRuleManager, RuleInfo, RuleInputValidationError
 
@@ -235,10 +234,6 @@ class CollectionRuleManager(BaseRuleManager):
         return RuleInfo(
             name="get_collection_attribute_value", get_result=True, session=self.session, dto=AttributeValue
         )
-
-    def read_metadata_xml_from_collection(self, project_id, collection_id):
-        xml_path = "/nlmumc/projects/" + project_id + "/" + collection_id + "/" + "metadata.xml"
-        return MetadataXML.read_metadata_xml(self.session, xml_path)
 
     def export_project_collection(self, project, collection, repository, message):
         """

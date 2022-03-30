@@ -2,7 +2,6 @@ from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.dto.drop_zones import DropZones, DropZone
 from irodsrulewrapper.dto.metadata_json import MetadataJSON
 from irodsrulewrapper.dto.metadata_pid import MetadataPID
-from irodsrulewrapper.dto.metadata_xml import MetadataXML
 from irodsrulewrapper.dto.token import Token
 from irodsrulewrapper.utils import (
     BaseRuleManager,
@@ -113,10 +112,6 @@ class IngestRuleManager(BaseRuleManager):
             self.set_acl("default", "own", user, formatters.format_instance_dropzone_path(token, dropzone_type))
             self.set_acl("default", "own", user, formatters.format_schema_dropzone_path(token, dropzone_type))
         self.start_ingest(user, token, dropzone_type)
-
-    def read_metadata_xml_from_dropzone(self, token):
-        xml_path = "/nlmumc/ingest/zones/" + token + "/" + "metadata.xml"
-        return MetadataXML.read_metadata_xml(self.session, xml_path, token)
 
     def create_drop_zone(self, data: dict, schema_path: str, instance: dict, schema_name: str, schema_version: str):
         """

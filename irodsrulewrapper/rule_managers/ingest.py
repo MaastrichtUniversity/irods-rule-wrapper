@@ -8,13 +8,10 @@ from irodsrulewrapper.utils import (
     BaseRuleManager,
     RuleInfo,
     RuleInputValidationError,
-    check_collection_id_format,
-    check_project_id_format,
     log_warning_message,
-    format_schema_dropzone_path,
-    format_instance_dropzone_path,
-    format_dropzone_path,
 )
+
+from dhpythonirodsutils import validators, formatters, exceptions
 
 
 class IngestRuleManager(BaseRuleManager):
@@ -113,8 +110,8 @@ class IngestRuleManager(BaseRuleManager):
         except Exception as e:
             log_warning_message(user, f"set_total_size_dropzone failed with error: {e}")
         if dropzone_type == "direct":
-            self.set_acl("default", "own", user, format_instance_dropzone_path(token, dropzone_type))
-            self.set_acl("default", "own", user, format_schema_dropzone_path(token, dropzone_type))
+            self.set_acl("default", "own", user, formatters.format_instance_dropzone_path(token, dropzone_type))
+            self.set_acl("default", "own", user, formatters.format_schema_dropzone_path(token, dropzone_type))
         self.start_ingest(user, token, dropzone_type)
 
     def read_metadata_xml_from_dropzone(self, token):
@@ -170,8 +167,8 @@ class IngestRuleManager(BaseRuleManager):
             The instance.json as a dict
         """
         metadata_json = MetadataJSON(self.session)
-        metadata_json.write_schema(schema_path, format_schema_dropzone_path(token, dropzone_type))
-        metadata_json.write_instance(instance, format_instance_dropzone_path(token, dropzone_type))
+        metadata_json.write_schema(schema_path, formatters.format_schema_dropzone_path(token, dropzone_type))
+        metadata_json.write_instance(instance, formatters.format_instance_dropzone_path(token, dropzone_type))
 
     def write_instance_to_dropzone(self, instance: dict, token, dropzone_type):
         """
@@ -187,7 +184,7 @@ class IngestRuleManager(BaseRuleManager):
             The type of dropzone (mounted or direct)
         """
         metadata_json = MetadataJSON(self.session)
-        instance_irods_path = format_instance_dropzone_path(token, dropzone_type)
+        instance_irods_path = formatters.format_instance_dropzone_path(token, dropzone_type)
         if dropzone_type == "direct":
             self.set_acl("default", "write", self.session.username, instance_irods_path)
         metadata_json.write_instance(instance, instance_irods_path)
@@ -211,7 +208,7 @@ class IngestRuleManager(BaseRuleManager):
             The json schema
         """
         metadata_json = MetadataJSON(self.session)
-        schema = metadata_json.read_irods_json_file(format_schema_dropzone_path(token, dropzone_type))
+        schema = metadata_json.read_irods_json_file(formatters.format_schema_dropzone_path(token, dropzone_type))
 
         return schema
 
@@ -232,7 +229,7 @@ class IngestRuleManager(BaseRuleManager):
             The json instance.
         """
         metadata_json = MetadataJSON(self.session)
-        instance = metadata_json.read_irods_json_file(format_instance_dropzone_path(token, dropzone_type))
+        instance = metadata_json.read_irods_json_file(formatters.format_instance_dropzone_path(token, dropzone_type))
 
         return instance
 
@@ -254,7 +251,7 @@ class IngestRuleManager(BaseRuleManager):
         """
 
         input_params = {
-            "*dropzonePath": '"{}"'.format(format_dropzone_path(token, dropzone_type)),
+            "*dropzonePath": '"{}"'.format(formatters.format_dropzone_path(token, dropzone_type)),
             "*project": '"{}"'.format(project),
             "*title": '"{}"'.format(title),
         }
@@ -322,10 +319,11 @@ class IngestRuleManager(BaseRuleManager):
         version : str
             The version number of collection,schema and instance that PID are requested for
         """
-        if not check_project_id_format(project_id):
-            raise RuleInputValidationError("invalid project's path format: e.g P000000010")
-        if not check_collection_id_format(collection_id):
-            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+        try:
+            validators.validate_project_id(project_id)
+            validators.validate_collection_id(collection_id)
+        except exceptions.ValidationError:
+            raise RuleInputValidationError("invalid project or collection id format: e.g P000000010")
 
         return RuleInfo(name="get_versioned_pids", get_result=True, session=self.session, dto=MetadataPID)
 
@@ -347,10 +345,11 @@ class IngestRuleManager(BaseRuleManager):
         overwrite_flag: str
             'true'/'false' expected; If true, the copy overwrites possible existing schema.1.json & instance.1.json files
         """
-        if not check_project_id_format(project_id):
-            raise RuleInputValidationError("invalid project's path format: e.g P000000010")
-        if not check_collection_id_format(collection_id):
-            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+        try:
+            validators.validate_project_id(project_id)
+            validators.validate_collection_id(collection_id)
+        except exceptions.ValidationError:
+            raise RuleInputValidationError("invalid project or collection id: e.g P000000010")
         if not isinstance(source_collection, str):
             raise RuleInputValidationError("invalid type for *source_collection: expected a string")
         if overwrite_flag != "false" and overwrite_flag != "true":

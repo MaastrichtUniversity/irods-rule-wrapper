@@ -80,8 +80,6 @@ class RuleManager(
         output = []
         base_path = "/nlmumc/projects/" + base
         absolute_path = "/nlmumc/projects/" + path
-        print(base_path)
-        print(path)
         try:
             validators.validate_path_safety(base_path, absolute_path)
         except exceptions.ValidationError:

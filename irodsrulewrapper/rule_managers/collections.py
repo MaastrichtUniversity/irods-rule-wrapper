@@ -84,8 +84,7 @@ class CollectionRuleManager(BaseRuleManager):
             The value that is going to bet set; e.g 'UM-12345678N'
         """
         try:
-            validators.validate_project_path(collection_path)
-            validators.validate_project_collection_path(collection_path)
+            validators.validate_irods_collection(collection_path)
         except exceptions.ValidationError:
             raise RuleInputValidationError("invalid path format")
 

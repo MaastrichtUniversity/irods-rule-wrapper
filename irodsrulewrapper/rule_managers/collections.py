@@ -304,7 +304,7 @@ class CollectionRuleManager(BaseRuleManager):
             The schema json
         """
         metadata_json = MetadataJSON(self.session)
-        schema_irods_path = f"/nlmumc/projects/{project_id}/{collection_id}/schema.json"
+        schema_irods_path = formatters.format_schema_collection_path(project_id, collection_id)
         try:
             validators.validate_file_path(schema_irods_path)
             validators.validate_full_path_safety(schema_irods_path)
@@ -331,7 +331,7 @@ class CollectionRuleManager(BaseRuleManager):
             The schema json
         """
         metadata_json = MetadataJSON(self.session)
-        schema_irods_path = f"/nlmumc/projects/{project_id}/{collection_id}/.metadata_versions/schema.{version}.json"
+        schema_irods_path = formatters.format_schema_versioned_collection_path(project_id, collection_id, version)
         try:
             validators.validate_file_path(schema_irods_path)
             validators.validate_full_path_safety(schema_irods_path)
@@ -356,7 +356,7 @@ class CollectionRuleManager(BaseRuleManager):
             The instance json
         """
         metadata_json = MetadataJSON(self.session)
-        instance_irods_path = f"/nlmumc/projects/{project_id}/{collection_id}/instance.json"
+        instance_irods_path = formatters.format_instance_collection_path(project_id, collection_id)
         try:
             validators.validate_file_path(instance_irods_path)
             validators.validate_full_path_safety(instance_irods_path)
@@ -387,9 +387,7 @@ class CollectionRuleManager(BaseRuleManager):
             The instance json
         """
         metadata_json = MetadataJSON(self.session)
-        instance_irods_path = (
-            f"/nlmumc/projects/{project_id}/{collection_id}/.metadata_versions/instance.{version}.json"
-        )
+        instance_irods_path = formatters.format_instance_versioned_collection_path(project_id, collection_id, version)
         try:
             validators.validate_file_path(instance_irods_path)
             validators.validate_full_path_safety(instance_irods_path)

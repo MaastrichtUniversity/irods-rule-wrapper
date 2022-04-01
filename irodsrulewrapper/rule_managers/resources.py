@@ -1,8 +1,10 @@
 from irodsrulewrapper.decorator import rule_call
-from irodsrulewrapper.utils import BaseRuleManager, RuleInfo, check_project_id_format, RuleInputValidationError
+from irodsrulewrapper.utils import BaseRuleManager, RuleInfo, RuleInputValidationError
 from irodsrulewrapper.dto.resources import Resources
 from irodsrulewrapper.dto.boolean import Boolean
 from irodsrulewrapper.dto.collection_sizes import CollectionSizes
+
+from dhpythonirodsutils import validators, exceptions
 
 
 class ResourceRuleManager(BaseRuleManager):
@@ -63,7 +65,9 @@ class ResourceRuleManager(BaseRuleManager):
         -------
 
         """
-        if not check_project_id_format(project):
+        try:
+            validators.validate_project_id(project)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid project id; eg. P000000001")
 
         return RuleInfo(
@@ -85,7 +89,9 @@ class ResourceRuleManager(BaseRuleManager):
         -------
 
         """
-        if not check_project_id_format(project_id):
+        try:
+            validators.validate_project_id(project_id)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid project id; eg. P000000001")
 
         return RuleInfo(name="get_project_resource_availability", get_result=True, session=self.session, dto=Boolean)

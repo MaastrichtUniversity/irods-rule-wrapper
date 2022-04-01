@@ -506,9 +506,6 @@ class CollectionRuleManager(BaseRuleManager):
         self.set_collection_avu(collection_path, "title", schema_dict["title"])
         pid_request_status = self.create_collection_metadata_snapshot(project_id, collection_id)
 
-        # Re-calculate the collection, update the size AVU and close the project collection ACL.
-        self.set_collection_size(project_id, collection_id, "false", "false")
-
         return pid_request_status
 
     @rule_call

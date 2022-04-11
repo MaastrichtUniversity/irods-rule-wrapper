@@ -11,6 +11,8 @@ from irodsrulewrapper.rule_managers.groups import GroupRuleManager
 from irodsrulewrapper.rule_managers.resources import ResourceRuleManager
 from irodsrulewrapper.rule_managers.ingest import IngestRuleManager
 
+from dhpythonirodsutils import validators, exceptions
+
 from .utils import *
 
 
@@ -78,8 +80,9 @@ class RuleManager(
         output = []
         base_path = "/nlmumc/projects/" + base
         absolute_path = "/nlmumc/projects/" + path
-
-        if not is_safe_path(base_path, absolute_path):
+        try:
+            validators.validate_path_safety(base_path, absolute_path)
+        except exceptions.ValidationError:
             raise CAT_NO_ACCESS_PERMISSION
 
         collection = self.session.collections.get(absolute_path)
@@ -153,7 +156,10 @@ class RuleManager(
         path_prefix = "/nlmumc/projects/"
         full_path = path_prefix + path
 
-        if check_file_path_format(full_path) is False or is_safe_full_path(full_path) is False:
+        try:
+            validators.validate_file_path(full_path)
+            validators.validate_full_path_safety(full_path)
+        except exceptions.ValidationError:
             return file, file_information
 
         try:

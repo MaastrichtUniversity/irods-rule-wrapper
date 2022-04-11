@@ -1,8 +1,9 @@
 import logging
 
+from dhpythonirodsutils import loggers
+
 from irods.session import iRODSSession
 
-import re
 import os
 import pika
 import pytz
@@ -10,62 +11,6 @@ import datetime
 import ssl
 
 logger = logging.getLogger(__name__)
-
-
-def check_project_id_format(project):
-    if re.search("^P[0-9]{9}$", project) is not None:
-        return True
-    else:
-        return False
-
-
-def check_project_path_format(project):
-    if re.search("^/nlmumc/projects/P[0-9]{9}$", project) is not None:
-        return True
-    else:
-        return False
-
-
-def check_collection_id_format(collection):
-    if re.search("^C[0-9]{9}$", collection) is not None:
-        return True
-    else:
-        return False
-
-
-def check_project_collection_path_format(path):
-    if re.search("^/nlmumc/projects/P[0-9]{9}/C[0-9]{9}$", path) is not None:
-        return True
-    else:
-        return False
-
-
-def check_file_path_format(path):
-    if re.search("^/nlmumc/projects/P[0-9]{9}/C[0-9]{9}/", path) is not None:
-        return True
-    else:
-        return False
-
-
-def get_project_from_collection_path(path):
-    m = re.search(r"^(/nlmumc/projects/)?(?P<project>P[0-9]{9})/C[0-9]{9}/?", path)
-    if m is not None:
-        return "/nlmumc/projects/" + m.group("project")
-    else:
-        return None
-
-
-def is_safe_full_path(full_path):
-    split_path = full_path.split("/")
-    # basedir => "/nlmumc/projects/P[0-9]{9}/C[0-9]{9}"
-    basedir = "/" + split_path[1] + "/" + split_path[2] + "/" + split_path[3] + "/" + split_path[4]
-    return is_safe_path(basedir, full_path)
-
-
-# https://security.openstack.org/guidelines/dg_using-file-paths.html
-def is_safe_path(basedir, path):
-    match_path = os.path.abspath(path)
-    return basedir == os.path.commonpath((basedir, match_path))
 
 
 def convert_to_current_timezone(date, date_format="%Y-%m-%d %H:%M:%S"):
@@ -197,21 +142,11 @@ def publish_message(exchange, routing_key, message):
 
 
 def log_error_message(user, message):
-    logger.error(
-        "[%s] [ERROR] %s - %s",
-        datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S%z"),
-        user,
-        message,
-    )
+    logger.error(loggers.format_error_message(user, message))
 
 
 def log_warning_message(user, message):
-    logger.warning(
-        "[%s] [WARNING] %s - %s",
-        datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S%z"),
-        user,
-        message,
-    )
+    logger.warning(loggers.format_warning_message(user, message))
 
 
 def log_audit_trail_message(user_id: int, event: str):
@@ -226,11 +161,4 @@ def log_audit_trail_message(user_id: int, event: str):
         The event you want to be logged
 
     """
-    if type(user_id) != int:
-        user_id = ""
-    logger.warning(
-        "[%s][AUDIT_TRAIL][USER_ID %s] - %s",
-        datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S%z"),
-        str(user_id),
-        event,
-    )
+    logger.warning(loggers.format_audit_trail_message(user_id, event))

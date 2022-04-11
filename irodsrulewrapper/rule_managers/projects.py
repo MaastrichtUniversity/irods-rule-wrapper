@@ -1,8 +1,6 @@
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.dto.project_contributors_metadata import ProjectContributorsMetadata
 from irodsrulewrapper.utils import (
-    check_project_path_format,
-    check_project_id_format,
     BaseRuleManager,
     RuleInfo,
     RuleInputValidationError,
@@ -17,6 +15,8 @@ from irodsrulewrapper.dto.migration_cards import MigrationCards
 from irodsrulewrapper.dto.project_contributors import ProjectContributors
 from irodsrulewrapper.dto.contributing_project import ContributingProject
 from irodsrulewrapper.dto.boolean import Boolean
+
+from dhpythonirodsutils import validators, exceptions
 
 
 class ProjectRuleManager(BaseRuleManager):
@@ -41,7 +41,9 @@ class ProjectRuleManager(BaseRuleManager):
         dict || Project
             JSON || dto.Project object
         """
-        if not check_project_path_format(project_path):
+        try:
+            validators.validate_project_path(project_path)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010")
         if show_service_accounts != "false" and show_service_accounts != "true":
             raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
@@ -72,7 +74,9 @@ class ProjectRuleManager(BaseRuleManager):
             The list of usernames for managers, contributors and viewers.
             Returns an empty list if the user is not a manager.
         """
-        if not check_project_id_format(project_id):
+        try:
+            validators.validate_project_id(project_id)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid project's path format: e.g P000000010")
         if show_service_accounts != "false" and show_service_accounts != "true":
             raise RuleInputValidationError("invalid value for *showServiceAccounts: expected 'true' or 'false'")
@@ -123,7 +127,9 @@ class ProjectRuleManager(BaseRuleManager):
             It should follow the following format: 'username:access_level"
             e.g "p.vanschayck@maastrichtuniversity.nl:read m.coonen@maastrichtuniversity.nl:write"
         """
-        if not check_project_id_format(project_id):
+        try:
+            validators.validate_project_id(project_id)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010")
 
         if type(users) != str:
@@ -216,7 +222,9 @@ class ProjectRuleManager(BaseRuleManager):
         MigrationCards
             dto.MigrationCards object
         """
-        if not check_project_path_format(project_path):
+        try:
+            validators.validate_project_path(project_path)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010")
 
         return RuleInfo(name="get_project_migration_status", get_result=True, session=self.session, dto=MigrationCards)
@@ -339,7 +347,9 @@ class ProjectRuleManager(BaseRuleManager):
         ProjectContributors
             dto.ProjectContributors object
         """
-        if not check_project_id_format(project_id):
+        try:
+            validators.validate_project_id(project_id)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010")
         if inherited != "false" and inherited != "true":
             raise RuleInputValidationError("invalid value for *inherited: expected 'true' or 'false'")
@@ -368,7 +378,9 @@ class ProjectRuleManager(BaseRuleManager):
             dto.ContributingProject object
         """
 
-        if not check_project_id_format(project_id):
+        try:
+            validators.validate_project_id(project_id)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid project id; eg. P000000001")
 
         if show_service_accounts != "false" and show_service_accounts != "true":
@@ -426,7 +438,9 @@ class ProjectRuleManager(BaseRuleManager):
             JSON rule output
         """
 
-        if not check_project_id_format(project_id):
+        try:
+            validators.validate_project_id(project_id)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid project id; eg. P000000001")
         if inherited != "false" and inherited != "true":
             raise RuleInputValidationError("invalid value for *inherited: expected 'true' or 'false'")
@@ -452,7 +466,9 @@ class ProjectRuleManager(BaseRuleManager):
 
         """
 
-        if not check_project_id_format(project_id):
+        try:
+            validators.validate_project_id(project_id)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid project id; eg. P000000001")
 
         return RuleInfo(

@@ -1,6 +1,6 @@
 import pytest
 
-from irodsrulewrapper.utils import is_safe_path
+from dhpythonirodsutils import validators
 
 
 @pytest.mark.parametrize(
@@ -15,5 +15,9 @@ from irodsrulewrapper.utils import is_safe_path
 )
 def test_is_safe_path(path, expected_result):
     basedir = "/nlmumc/projects/P000000001/C000000001"
-    test = is_safe_path(basedir, path)
-    assert test is expected_result
+    result = True
+    try:
+        validators.validate_path_safety(basedir, path)
+    except:
+        result = False
+    assert result is expected_result

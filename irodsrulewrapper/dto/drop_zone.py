@@ -15,6 +15,7 @@ class DropZone:
         resource_status: str,
         total_size: str,
         destination: str,
+        dropzone_type: str,
     ):
         self.date: str = date
         self.project: str = project
@@ -27,6 +28,7 @@ class DropZone:
         self.resource_status: str = resource_status
         self.total_size: str = total_size
         self.destination: str = destination
+        self.type: str = dropzone_type
 
     @classmethod
     def create_from_rule_result(cls, result: Dict) -> "DropZone":
@@ -45,5 +47,6 @@ class DropZone:
             result["resourceStatus"],
             result["totalSize"],
             result["destination"],
+            result["type"],
         )
         return user

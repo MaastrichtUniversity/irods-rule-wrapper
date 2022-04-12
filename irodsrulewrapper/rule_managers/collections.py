@@ -424,6 +424,12 @@ class CollectionRuleManager(BaseRuleManager):
         return RuleInfo(name="setCollectionSize", get_result=False, session=self.session, dto=None)
 
     @rule_call
+    def get_collection_tree(self, relative_path):
+        return RuleInfo(name="get_collection_tree", get_result=True, session=self.session, dto=None,
+                        parse_to_dto=self.parse_to_dto)
+
+
+    @rule_call
     def create_collection_metadata_snapshot(self, project_id, collection_id):
         """
         Create a snapshot of the collection metadata files (schema & instance):

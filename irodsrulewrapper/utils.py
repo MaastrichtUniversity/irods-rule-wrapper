@@ -22,80 +22,50 @@ def convert_to_current_timezone(date, date_format="%Y-%m-%d %H:%M:%S"):
 
 
 class BaseRuleManager:
+    # ssl_context & ssl_settings left as class variables to help with mocking during testing
+    ssl_context = ssl.create_default_context(
+        purpose=ssl.Purpose.SERVER_AUTH, cafile=None, capath=None, cadata=None
+    )
+    ssl_settings = {
+        "irods_client_server_negotiation": "request_server_negotiation",
+        "irods_encryption_algorithm": "AES-256-CBC",
+        "irods_encryption_key_size": 32,
+        "irods_encryption_num_hash_rounds": 16,
+        "irods_encryption_salt_size": 8,
+        "ssl_context": ssl_context,
+    }
+
     def __init__(self, client_user=None, config=None, admin_mode=False):
         self.session = []
         self.parse_to_dto = True
         if not client_user and not admin_mode:
             raise Exception("No user to initialize RuleManager provided")
-        self.ssl_context = ssl.create_default_context(
-            purpose=ssl.Purpose.SERVER_AUTH, cafile=None, capath=None, cadata=None
-        )
 
-        self.ssl_settings = {
-            "irods_client_server_negotiation": "request_server_negotiation",
-            "irods_encryption_algorithm": "AES-256-CBC",
-            "irods_encryption_key_size": 32,
-            "irods_encryption_num_hash_rounds": 16,
-            "irods_encryption_salt_size": 8,
-            "ssl_context": self.ssl_context,
-        }
-
-        if config is None:
-            self.init_with_environ_conf(client_user, admin_mode)
-        else:
-            self.init_with_variable_config(client_user, config, admin_mode)
+        self.init_irods_session(client_user, admin_mode, with_config=config)
 
     def __del__(self):
         # __del__() is a finalizer that is called when the object is garbage
         # collected. And this happens *after* all the references to the object
         # have been deleted. This is what CPython does, however it is not
-        # guranteed behavior by Python. Ideally we do the cleanup() after using
+        # guaranteed behavior by Python. Ideally we do the cleanup() after using
         # this object to execute a rule/s. Perhaps with a try/finally.
         self.session.cleanup()
 
-    def init_with_environ_conf(self, client_user, admin_mode):
-        self.ssl_settings["irods_client_server_policy"] = os.environ["IRODS_CLIENT_SERVER_POLICY"]
-        if admin_mode:
-            self.session = iRODSSession(
-                host=os.environ["IRODS_HOST"],
-                port=1247,
-                user=os.environ["IRODS_USER"],
-                password=os.environ["IRODS_PASS"],
-                zone="nlmumc",
-                **self.ssl_settings
-            )
-        else:
-            self.session = iRODSSession(
-                host=os.environ["IRODS_HOST"],
-                port=1247,
-                user=os.environ["IRODS_USER"],
-                password=os.environ["IRODS_PASS"],
-                zone="nlmumc",
-                client_user=client_user,
-                **self.ssl_settings
-            )
+    def init_irods_session(self, client_user, admin_mode, with_config=None):
+        irods_session_settings = {
+            'host': with_config["IRODS_HOST"] if with_config else os.environ["IRODS_HOST"],
+            'user': with_config["IRODS_USER"] if with_config else os.environ["IRODS_USER"],
+            'password': with_config["IRODS_USER"] if with_config else os.environ["IRODS_PASS"],
+            'port': 1247,
+            'zone': "nlmumc",
+            'irods_client_server_policy': os.environ["IRODS_CLIENT_SERVER_POLICY"],
+            **self.ssl_settings,
+        }
 
-    def init_with_variable_config(self, client_user, config, admin_mode):
-        self.ssl_settings["irods_client_server_policy"] = config["IRODS_CLIENT_SERVER_POLICY"]
-        if admin_mode:
-            self.session = iRODSSession(
-                host=config["IRODS_HOST"],
-                port=1247,
-                user=config["IRODS_USER"],
-                password=config["IRODS_PASS"],
-                zone="nlmumc",
-                **self.ssl_settings
-            )
-        else:
-            self.session = iRODSSession(
-                host=config["IRODS_HOST"],
-                port=1247,
-                user=config["IRODS_USER"],
-                password=config["IRODS_PASS"],
-                zone="nlmumc",
-                client_user=client_user,
-                **self.ssl_settings
-            )
+        if not admin_mode:
+            irods_session_settings["client_user"] = client_user
+
+        self.session = iRODSSession(**irods_session_settings)
 
 
 class RuleInputValidationError(Exception):

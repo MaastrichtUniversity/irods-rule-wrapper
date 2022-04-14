@@ -24,10 +24,15 @@ def test_rule_get_project_details_json():
     assert project_details["title"] == "(HVC) Placeholder project"
 
 
-def test_rule_get_contributing_project():
-    result = RuleManager("mcoonen").get_contributing_project("P000000010", "false")
+def test_rule_get_contributing_project_success():
+    result = RuleManager("psuppers").get_contributing_project("P000000010", "false")
     assert result is not None
 
+
+def test_rule_get_contributing_project_fail():
+    # 'mcooonen' is in datahub group, and datahub group only has read permissions for P0..010
+    result = RuleManager("mcoonen").get_contributing_project("P000000010", "false")
+    assert result is None
 
 def test_rule_get_project_contributors():
     result = RuleManager("opalmen").get_project_contributors("P000000010", "true", "false")

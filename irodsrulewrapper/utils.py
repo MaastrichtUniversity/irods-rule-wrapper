@@ -36,7 +36,7 @@ class BaseRuleManager:
     }
 
     def __init__(self, client_user=None, config=None, admin_mode=False):
-        self.session = []
+        self.session = None
         self.parse_to_dto = True
         if not client_user and not admin_mode:
             raise Exception("No user to initialize RuleManager provided")
@@ -49,7 +49,8 @@ class BaseRuleManager:
         # have been deleted. This is what CPython does, however it is not
         # guaranteed behavior by Python. Ideally we do the cleanup() after using
         # this object to execute a rule/s. Perhaps with a try/finally.
-        self.session.cleanup()
+        if self.session:
+            self.session.cleanup()
 
     def init_irods_session(self, client_user, admin_mode, with_config=None):
         irods_session_settings = {

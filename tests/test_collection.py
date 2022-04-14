@@ -3,7 +3,7 @@ import pytest
 from irodsrulewrapper.dto.boolean import Boolean
 from irodsrulewrapper.dto.collection import Collection
 from irodsrulewrapper.dto.collections import Collections
-from irodsrulewrapper.rule import RuleManager
+from irodsrulewrapper.rule import RuleManager, RuleJSONManager
 from irodsrulewrapper.utils import publish_message
 import json
 from irods.exception import CAT_NO_ACCESS_PERMISSION
@@ -83,7 +83,7 @@ def test_get_project_collection_tape_estimate():
 
 
 def test_rule_get_collection_tree():
-    collection = RuleManager(admin_mode=True).get_collection_tree("P000000010/C000000001", "P000000010/C000000001")
+    collection = RuleJSONManager(admin_mode=True).get_collection_tree("P000000010/C000000001")
     assert collection is not None
 
 

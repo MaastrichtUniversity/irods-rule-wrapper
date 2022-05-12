@@ -62,7 +62,7 @@ class BaseRuleManager:
                 user=os.environ["IRODS_USER"],
                 password=os.environ["IRODS_PASS"],
                 zone="nlmumc",
-                **self.ssl_settings
+                **self.ssl_settings,
             )
         else:
             self.session = iRODSSession(
@@ -72,7 +72,7 @@ class BaseRuleManager:
                 password=os.environ["IRODS_PASS"],
                 zone="nlmumc",
                 client_user=client_user,
-                **self.ssl_settings
+                **self.ssl_settings,
             )
 
     def init_with_variable_config(self, client_user, config, admin_mode):
@@ -84,7 +84,7 @@ class BaseRuleManager:
                 user=config["IRODS_USER"],
                 password=config["IRODS_PASS"],
                 zone="nlmumc",
-                **self.ssl_settings
+                **self.ssl_settings,
             )
         else:
             self.session = iRODSSession(
@@ -94,7 +94,7 @@ class BaseRuleManager:
                 password=config["IRODS_PASS"],
                 zone="nlmumc",
                 client_user=client_user,
-                **self.ssl_settings
+                **self.ssl_settings,
             )
 
 
@@ -149,7 +149,7 @@ def log_warning_message(user, message):
     logger.warning(loggers.format_warning_message(user, message))
 
 
-def log_audit_trail_message(user_id: int, event: str):
+def log_audit_trail_message(user_id: int, topic: str, event: str):
     """
     Log an entry with AUDIT_TRAIL tag and user ID
 
@@ -157,8 +157,10 @@ def log_audit_trail_message(user_id: int, event: str):
     ----------
     user_id: int
         The user identifier number
+    topic: str
+        The General topic for this log
     event: str
         The event you want to be logged
 
     """
-    logger.warning(loggers.format_audit_trail_message(user_id, event))
+    logger.warning(loggers.format_audit_trail_message(user_id, topic, event))

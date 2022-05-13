@@ -1,5 +1,5 @@
+# Note: Some of these tests require env variable CACHE_TTL_VALUE to be set
 from irodsrulewrapper.rule import RuleManager
-from irodsrulewrapper.cache import CacheTTL
 
 
 def test_rule_get_projects():

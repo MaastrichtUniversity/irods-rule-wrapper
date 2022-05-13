@@ -90,11 +90,13 @@ class Project:
         "enableOpenAccessExport": false,
         "enableArchive": true,
         "enableUnarchive": true,
+        "enableContributorEditMetadata": true,
         "principalInvestigatorDisplayName": "test_pi",
         "dataStewardDisplayName": "test_datasteward",
         "respCostCenter": "test_cost2",
         "storageQuotaGiB": 11,
         "dataSizeGiB": 99,
+        "collectionMetadataSchemas": ["test-schema-1", "test-schema-2"],
         "has_financial_view_access": true,
         "managers": {
             "userObjects":

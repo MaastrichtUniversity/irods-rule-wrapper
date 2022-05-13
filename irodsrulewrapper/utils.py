@@ -23,9 +23,7 @@ def convert_to_current_timezone(date, date_format="%Y-%m-%d %H:%M:%S"):
 
 class BaseRuleManager:
     # ssl_context & ssl_settings left as class variables to help with mocking during testing
-    ssl_context = ssl.create_default_context(
-        purpose=ssl.Purpose.SERVER_AUTH, cafile=None, capath=None, cadata=None
-    )
+    ssl_context = ssl.create_default_context(purpose=ssl.Purpose.SERVER_AUTH, cafile=None, capath=None, cadata=None)
     ssl_settings = {
         "irods_client_server_negotiation": "request_server_negotiation",
         "irods_encryption_algorithm": "AES-256-CBC",
@@ -54,12 +52,12 @@ class BaseRuleManager:
 
     def init_irods_session(self, client_user, admin_mode, with_config=None):
         irods_session_settings = {
-            'host': with_config["IRODS_HOST"] if with_config else os.environ["IRODS_HOST"],
-            'user': with_config["IRODS_USER"] if with_config else os.environ["IRODS_USER"],
-            'password': with_config["IRODS_USER"] if with_config else os.environ["IRODS_PASS"],
-            'port': 1247,
-            'zone': "nlmumc",
-            'irods_client_server_policy': os.environ["IRODS_CLIENT_SERVER_POLICY"],
+            "host": with_config["IRODS_HOST"] if with_config else os.environ["IRODS_HOST"],
+            "user": with_config["IRODS_USER"] if with_config else os.environ["IRODS_USER"],
+            "password": with_config["IRODS_USER"] if with_config else os.environ["IRODS_PASS"],
+            "port": 1247,
+            "zone": "nlmumc",
+            "irods_client_server_policy": os.environ["IRODS_CLIENT_SERVER_POLICY"],
             **self.ssl_settings,
         }
 
@@ -120,7 +118,7 @@ def log_warning_message(user, message):
     logger.warning(loggers.format_warning_message(user, message))
 
 
-def log_audit_trail_message(user_id: int, event: str):
+def log_audit_trail_message(user_id: int, topic: str, event: str):
     """
     Log an entry with AUDIT_TRAIL tag and user ID
 
@@ -128,8 +126,10 @@ def log_audit_trail_message(user_id: int, event: str):
     ----------
     user_id: int
         The user identifier number
+    topic: str
+        The General topic for this log
     event: str
         The event you want to be logged
 
     """
-    logger.warning(loggers.format_audit_trail_message(user_id, event))
+    logger.warning(loggers.format_audit_trail_message(user_id, topic, event))

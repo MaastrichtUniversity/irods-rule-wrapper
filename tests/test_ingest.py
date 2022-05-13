@@ -1,5 +1,6 @@
 from irodsrulewrapper.rule import RuleManager
-#from irodsrulewrapper.dto.metadata_xml import MetadataXML
+
+# from irodsrulewrapper.dto.metadata_xml import MetadataXML
 import pytest
 
 """

@@ -3,6 +3,7 @@ from irodsrulewrapper.dto.groups import Groups
 from irodsrulewrapper.rule import RuleManager, RuleJSONManager
 import json
 
+
 def test_rule_get_project_details_json():
     groups = RuleJSONManager(admin_mode=True).list_groups_users()
     assert groups is not None

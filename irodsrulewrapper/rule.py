@@ -59,7 +59,6 @@ class RuleManager(
             self.session.cleanup()
         return pwd
 
-  
     def download_file(self, path):
         """
         Returns the file buffer of the path given, if the file exists

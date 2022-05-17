@@ -33,12 +33,14 @@ class Projects:
           "enableOpenAccessExport": false,
           "enableArchive": true,
           "enableUnarchive": true,
+          "enableContributorEditMetadata": true,
           "principalInvestigatorDisplayName": "test_pi",
           "dataStewardDisplayName": "test_datasteward",
           "has_financial_view_access": true,
           "respCostCenter": "test_cost2",
           "storageQuotaGiB": 11,
           "dataSizeGiB": 99,
+          "collectionMetadataSchemas": ["test-schema-1", "test-schema-2"],
           "managers": {
             "userObjects": [
               {
@@ -97,12 +99,14 @@ class Projects:
           "enableOpenAccessExport": false,
           "enableArchive": true,
           "enableUnarchive": true,
+          "enableContributorEditMetadata": true,
           "principalInvestigatorDisplayName": "test_pi2",
           "dataStewardDisplayName": "test_datasteward2",
           "has_financial_view_access": true,
           "respCostCenter": "test_cost2",
           "storageQuotaGiB": 11,
           "dataSizeGiB": 99,
+          "collectionMetadataSchemas": ["test-schema-1", "test-schema-2"],
           "managers": {
             "userObjects": [
               {

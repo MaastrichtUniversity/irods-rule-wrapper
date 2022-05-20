@@ -1,5 +1,6 @@
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.dto.project_contributors_metadata import ProjectContributorsMetadata
+from irodsrulewrapper.dto.projects_minimal import ProjectsMinimal
 from irodsrulewrapper.utils import (
     BaseRuleManager,
     RuleInfo,
@@ -206,6 +207,18 @@ class ProjectRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
 
         return RuleInfo(name="list_projects", get_result=True, session=self.session, dto=Projects)
+
+    @rule_call
+    def get_projects_minimal(self):
+        """
+        Get the list of projects with minimal information (id & title).
+
+        Returns
+        -------
+        ProjectsMinimal
+            dto.ProjectsMinimal object
+        """
+        return RuleInfo(name="list_projects_minimal", get_result=True, session=self.session, dto=ProjectsMinimal)
 
     @rule_call
     def get_project_migration_status(self, project_path):

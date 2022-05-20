@@ -25,6 +25,7 @@ setuptools.setup(
         "dh-python-irods-utils @ git+https://github.com/MaastrichtUniversity/dh-python-irods-utils.git@v1.0.2#egg=dh-python-irods-utils",
         "pika>=1.2.0,<2.0.0",
         "pytz>=2021.3",
+        "pydantic>=1.9.1,<2.0.0",
     ],
     tests_requires=["pytest", "pytest-dotenv"],
 )

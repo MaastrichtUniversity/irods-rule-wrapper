@@ -359,7 +359,7 @@ class IngestRuleManager(BaseRuleManager):
         )
 
     @rule_call
-    def get_dropzone_folders(self, token):
+    def get_dropzone_folders(self, token, path):
         return RuleInfo(
             name="get_dropzone_folders", get_result=True, session=self.session, dto=None, parse_to_dto=self.parse_to_dto
         )

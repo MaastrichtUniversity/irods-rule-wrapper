@@ -244,6 +244,7 @@ class ProjectRuleManager(BaseRuleManager):
         openAccess,
         tapeArchive,
         tapeUnarchive,
+        sharedDropzones,
         metadata_schemas,
     ):
         """
@@ -274,6 +275,8 @@ class ProjectRuleManager(BaseRuleManager):
         tapeArchive : str
             'true'/'false' excepted values
         tapeUnarchive : str
+            'true'/'false' excepted values
+        sharedDropzones : str
             'true'/'false' excepted values
         metadata_schemas : str
             csv string that contains the list of schema names
@@ -320,6 +323,9 @@ class ProjectRuleManager(BaseRuleManager):
 
         if tapeUnarchive != "false" and tapeUnarchive != "true":
             raise RuleInputValidationError("invalid value for *tapeUnarchive: expected 'true' or 'false'")
+
+        if sharedDropzones != "false" and sharedDropzones != "true":
+            raise RuleInputValidationError("invalid value for *sharedDropzones: expected 'true' or 'false'")
 
         if not isinstance(metadata_schemas, str):
             raise RuleInputValidationError("invalid type for *metadata_schemas: expected a string")

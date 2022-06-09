@@ -20,6 +20,7 @@ class Project:
         storage_quota_gb: int,
         size: int,
         collection_metadata_schemas: str,
+        enable_dropzone_sharing: str,
         manager_users: Users,
         manager_groups: Groups,
         contributor_users: Users,
@@ -40,6 +41,7 @@ class Project:
         self.storage_quota_gb: int = storage_quota_gb
         self.size: int = size
         self.collection_metadata_schemas: str = collection_metadata_schemas
+        self.enable_dropzone_sharing: str = enable_dropzone_sharing
         self.manager_users: Users = manager_users
         self.manager_groups: Groups = manager_groups
         self.contributor_users: Users = contributor_users
@@ -67,6 +69,7 @@ class Project:
             result["storageQuotaGiB"],
             result["dataSizeGiB"],
             result["collectionMetadataSchemas"],
+            result["enableDropzoneSharing"] == "true",
             Users.create_from_rule_result(result["managers"]["userObjects"]),
             Groups.create_from_rule_result(result["managers"]["groupObjects"]),
             Users.create_from_rule_result(result["contributors"]["userObjects"]),
@@ -97,6 +100,7 @@ class Project:
         "storageQuotaGiB": 11,
         "dataSizeGiB": 99,
         "collectionMetadataSchemas": ["test-schema-1", "test-schema-2"],
+        "enableDropzoneSharing": false,
         "has_financial_view_access": true,
         "managers": {
             "userObjects":

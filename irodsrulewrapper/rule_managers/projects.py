@@ -155,8 +155,8 @@ class ProjectRuleManager(BaseRuleManager):
         """
         if mode != "default" and mode != "recursive":
             raise RuleInputValidationError("invalid value for *mode: expected 'default' or 'recursive'")
-        if access_level != "own" and access_level != "write" and access_level != "read":
-            raise RuleInputValidationError("invalid value for *access_level: expected 'default' or 'recursive'")
+        if access_level not in ["own", "write", "read", "null", "admin:own", "admin:write", "admin:read", "admin:null"]:
+            raise RuleInputValidationError("invalid value for *access_level: expected 'read', 'write', 'own, 'null'")
         if type(user) != str:
             raise RuleInputValidationError("invalid type for *user: expected a string")
         if type(path) != str:

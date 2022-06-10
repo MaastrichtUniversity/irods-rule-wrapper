@@ -1,3 +1,5 @@
+from irodsrulewrapper.rule_managers.projects import ProjectRuleManager
+
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.dto.drop_zones import DropZones, DropZone
 from irodsrulewrapper.dto.metadata_json import MetadataJSON
@@ -109,13 +111,21 @@ class IngestRuleManager(BaseRuleManager):
         except Exception as e:
             log_warning_message(user, f"set_total_size_dropzone failed with error: {e}")
         if dropzone_type == "direct":
-            self.set_acl("default", "own", user, formatters.format_instance_dropzone_path(token, dropzone_type))
-            self.set_acl("default", "own", user, formatters.format_schema_dropzone_path(token, dropzone_type))
+            admin_rule_manager = ProjectRuleManager(admin_mode=True)
+            admin_rule_manager.set_acl(
+                "default", "admin:own", user, formatters.format_instance_dropzone_path(token, dropzone_type)
+            )
+            admin_rule_manager.set_acl(
+                "default", "admin:own", user, formatters.format_schema_dropzone_path(token, dropzone_type)
+            )
         self.start_ingest(user, token, dropzone_type)
 
     def create_drop_zone(self, data: dict, schema_path: str, instance: dict, schema_name: str, schema_version: str):
         """
-        Calls the createIngest rule and then save the schema.json & instance.json to the newly created drop-zone.
+        Calls:
+            * the createIngest rule.
+            * save the schema.json & instance.json to the newly created drop-zone.
+            * transfer the project ACL to the newly created drop-zone.
 
         Parameters
         ----------
@@ -140,6 +150,8 @@ class IngestRuleManager(BaseRuleManager):
         ).token
         data["token"] = token
         self.write_dropzone_metadata_files(data["dropzone_type"], token, schema_path, instance)
+        self.transfer_project_acl_to_dropzone(data["project"])
+
         return token
 
     @rule_call
@@ -180,11 +192,17 @@ class IngestRuleManager(BaseRuleManager):
         """
         metadata_json = MetadataJSON(self.session)
         instance_irods_path = formatters.format_instance_dropzone_path(token, dropzone_type)
+
+        prefix = ""
+        # If the user calling this rule is 'rods' we need to escalate
+        if self.session.username == "rods":
+            prefix = "admin:"
+
         if dropzone_type == "direct":
-            self.set_acl("default", "write", self.session.username, instance_irods_path)
+            self.set_acl("default", f"{prefix}write", self.session.username, instance_irods_path)
         metadata_json.write_instance(instance, instance_irods_path)
         if dropzone_type == "direct":
-            self.set_acl("default", "read", self.session.username, instance_irods_path)
+            self.set_acl("default", f"{prefix}read", self.session.username, instance_irods_path)
 
     def read_schema_from_dropzone(self, token, dropzone_type) -> dict:
         """
@@ -351,3 +369,24 @@ class IngestRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid value for *overwrite_flag: expected 'true' or 'false'")
 
         return RuleInfo(name="create_ingest_metadata_snapshot", get_result=False, session=self.session, dto=None)
+
+    @rule_call
+    def transfer_project_acl_to_dropzone(self, project_id):
+        """
+        This rule transfers the ACLs that exist on a project level to all of its dropzones
+            * Get the 'enableDropzoneSharing' avu on the project
+            * Get all dropzones for the project
+            * For each dropzone, depending on the enableDropzoneSharing avu perform the following:
+                    * False -> Remove all contributors and managers from the dropzones except for the creator
+                    * True  -> Add all contributors and managers to a dropzone with 'own' rights
+        Parameters
+        ----------
+        project_id : str
+            The project to transfer (e.g: P000000010)
+        """
+        try:
+            validators.validate_project_id(project_id)
+        except exceptions.ValidationError:
+            raise RuleInputValidationError("invalid project or collection id: e.g P000000010")
+
+        return RuleInfo(name="transfer_project_acl_to_dropzone", get_result=False, session=self.session, dto=None)

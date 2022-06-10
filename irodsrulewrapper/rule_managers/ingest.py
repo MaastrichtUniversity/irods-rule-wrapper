@@ -1,3 +1,5 @@
+from irodsrulewrapper.rule_managers.projects import ProjectRuleManager
+
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.dto.drop_zones import DropZones, DropZone
 from irodsrulewrapper.dto.metadata_json import MetadataJSON
@@ -109,8 +111,13 @@ class IngestRuleManager(BaseRuleManager):
         except Exception as e:
             log_warning_message(user, f"set_total_size_dropzone failed with error: {e}")
         if dropzone_type == "direct":
-            self.set_acl("default", "own", user, formatters.format_instance_dropzone_path(token, dropzone_type))
-            self.set_acl("default", "own", user, formatters.format_schema_dropzone_path(token, dropzone_type))
+            admin_rule_manager = ProjectRuleManager(admin_mode=True)
+            admin_rule_manager.set_acl(
+                "default", "admin:own", user, formatters.format_instance_dropzone_path(token, dropzone_type)
+            )
+            admin_rule_manager.set_acl(
+                "default", "admin:own", user, formatters.format_schema_dropzone_path(token, dropzone_type)
+            )
         self.start_ingest(user, token, dropzone_type)
 
     def create_drop_zone(self, data: dict, schema_path: str, instance: dict, schema_name: str, schema_version: str):

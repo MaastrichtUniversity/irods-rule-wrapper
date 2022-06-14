@@ -399,14 +399,14 @@ class IngestRuleManager(BaseRuleManager):
                 * Depending on the enableDropzoneSharing avu perform the following:
                         * False -> Remove all contributors and managers from the dropzone except for the creator
                         * True  -> Add all contributors and managers to a dropzone with 'own' rights
-            Parameters
-            ----------
-            project_id : str
-                The project to transfer (e.g: P000000010)
-            dropzone_token : str
-                The dropzone token to update
-            new_dropzone : str
-                'true'/'false' expected; If true, the input dropzone has been newly created
+        Parameters
+        ----------
+        project_id : str
+            The project to transfer (e.g: P000000010)
+        dropzone_token : str
+            The dropzone token to update
+        new_dropzone : str
+            'true'/'false' expected; If true, the input dropzone has been newly created
         """
         try:
             validators.validate_project_id(project_id)

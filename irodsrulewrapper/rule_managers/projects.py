@@ -262,21 +262,21 @@ class ProjectRuleManager(BaseRuleManager):
         extra_parameters: dict
             Json formatted list of extra parameters.
             Currently supported are:
-                authorization_period_end_date : str
+                authorizationPeriodEndDate : str
                     Date
-                data_retention_period_end_date : str
+                dataRetentionPeriodEndDate : str
                     Date
-                storage_quota_gb  : str
+                storageQuotaGb  : str
                     The storage quota in Gb
-                enable_open_access : str
+                enableOpenAccessExport : str
                     'true'/'false' expected values
-                enable_archive : str
+                enableArchive : str
                     'true'/'false' expected values
-                enable_unarchive : str
+                enableUnarchive : str
                     'true'/'false' expected values
-                enable_dropzone_sharing : str
+                enableDropzoneSharing : str
                     'true'/'false' expected values
-                collection_metadata_schemas : str
+                collectionMetadataSchemas : str
                     csv string that contains the list of schema names
 
         Returns
@@ -306,41 +306,41 @@ class ProjectRuleManager(BaseRuleManager):
         if not isinstance(extra_parameters, dict):
             raise RuleInputValidationError("invalid type for *extraParameters: expected a string")
 
-        if "authorization_period_end_date" in extra_parameters:
+        if "authorizationPeriodEndDate" in extra_parameters:
             # TODO check data format
-            if type(extra_parameters["authorization_period_end_date"]) != str:
+            if type(extra_parameters["authorizationPeriodEndDate"]) != str:
                 raise RuleInputValidationError("invalid type for *authorizationPeriodEndDate: expected a string")
 
-        if "data_retention_period_end_date" in extra_parameters:
+        if "dataRetentionPeriodEndDate" in extra_parameters:
             # TODO check data format
-            if type(extra_parameters["data_retention_period_end_date"]) != str:
+            if type(extra_parameters["dataRetentionPeriodEndDate"]) != str:
                 raise RuleInputValidationError("invalid type for *dataRetentionPeriodEndDate: expected a string")
 
-        if "storage_quota_gb" in extra_parameters:
-            if type(extra_parameters["storage_quota_gb"]) != int:
+        if "storageQuotaGb" in extra_parameters:
+            if type(extra_parameters["storageQuotaGb"]) != int:
                 raise RuleInputValidationError("invalid type for *storageQuotaGb: expected an integer")
 
-        if "enable_open_access" in extra_parameters:
-            if extra_parameters["enable_open_access"] != "false" and extra_parameters["enable_open_access"] != "true":
+        if "enableOpenAccessExport" in extra_parameters:
+            if extra_parameters["enableOpenAccessExport"] != "false" and extra_parameters["enableOpenAccessExport"] != "true":
                 raise RuleInputValidationError("invalid value for *enableOpenAccessExport: expected 'true' or 'false'")
 
-        if "enable_archive" in extra_parameters:
-            if extra_parameters["enable_archive"] != "false" and extra_parameters["enable_archive"] != "true":
+        if "enableArchive" in extra_parameters:
+            if extra_parameters["enableArchive"] != "false" and extra_parameters["enableArchive"] != "true":
                 raise RuleInputValidationError("invalid value for *enableArchive: expected 'true' or 'false'")
 
-        if "enable_unarchive" in extra_parameters:
-            if extra_parameters["enable_unarchive"] != "false" and extra_parameters["enable_unarchive"] != "true":
+        if "enableUnarchive" in extra_parameters:
+            if extra_parameters["enableUnarchive"] != "false" and extra_parameters["enableUnarchive"] != "true":
                 raise RuleInputValidationError("invalid value for *enableUnarchive: expected 'true' or 'false'")
 
-        if "enable_dropzone_sharing" in extra_parameters:
+        if "enableDropzoneSharing" in extra_parameters:
             if (
-                extra_parameters["enable_dropzone_sharing"] != "false"
-                and extra_parameters["enable_dropzone_sharing"] != "true"
+                extra_parameters["enableDropzoneSharing"] != "false"
+                and extra_parameters["enableDropzoneSharing"] != "true"
             ):
                 raise RuleInputValidationError("invalid value for *enableDropzoneSharing: expected 'true' or 'false'")
 
-        if "collection_metadata_schemas" in extra_parameters:
-            if not isinstance(extra_parameters["collection_metadata_schemas"], str):
+        if "collectionMetadataSchemas" in extra_parameters:
+            if not isinstance(extra_parameters["collectionMetadataSchemas"], str):
                 raise RuleInputValidationError("invalid type for *collectionMetadataSchemas: expected a string")
 
         return RuleInfo(name="create_new_project", get_result=True, session=self.session, dto=CreateProject)

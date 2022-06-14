@@ -149,9 +149,9 @@ class IngestRuleManager(BaseRuleManager):
         token = self.__create_dropzone(
             data["dropzone_type"], data["user"], data["project"], data["title"], schema_name, schema_version
         ).token
-        data["token"] = token
         self.write_dropzone_metadata_files(data["dropzone_type"], token, schema_path, instance)
-        self.transfer_project_acl_to_dropzone(data["project"])
+        if data["dropzone_type"] == "direct":
+            self.set_project_acl_to_dropzone(data["project"], token, "true")
 
         return token
 
@@ -372,7 +372,7 @@ class IngestRuleManager(BaseRuleManager):
         return RuleInfo(name="create_ingest_metadata_snapshot", get_result=False, session=self.session, dto=None)
 
     @rule_call
-    def transfer_project_acl_to_dropzone(self, project_id):
+    def set_project_acl_to_dropzones(self, project_id):
         """
         This rule transfers the ACLs that exist on a project level to all of its dropzones
             * Get the 'enableDropzoneSharing' avu on the project
@@ -390,4 +390,36 @@ class IngestRuleManager(BaseRuleManager):
         except exceptions.ValidationError:
             raise RuleInputValidationError("invalid project or collection id: e.g P000000010")
 
-        return RuleInfo(name="transfer_project_acl_to_dropzone", get_result=False, session=self.session, dto=None)
+        return RuleInfo(name="set_project_acl_to_dropzones", get_result=False, session=self.session, dto=None)
+
+    @rule_call
+    def set_project_acl_to_dropzone(self, project_id, dropzone_token, new_dropzone):
+        """
+        This rule transfers the ACLs that exist on the input project level to the input dropzone.
+                * Get the 'enableDropzoneSharing' avu on the project
+                * Depending on the enableDropzoneSharing avu perform the following:
+                        * False -> Remove all contributors and managers from the dropzone except for the creator
+                        * True  -> Add all contributors and managers to a dropzone with 'own' rights
+        Parameters
+        ----------
+        project_id : str
+            The project to transfer (e.g: P000000010)
+        dropzone_token : str
+            The dropzone token to update
+        new_dropzone : str
+            'true'/'false' expected; If true, the input dropzone has been newly created
+        """
+        try:
+            validators.validate_project_id(project_id)
+        except exceptions.ValidationError:
+            raise RuleInputValidationError("invalid project or collection id: e.g P000000010")
+
+        try:
+            validators.validate_dropzone_token(dropzone_token)
+        except exceptions.ValidationError:
+            raise RuleInputValidationError("invalid dropzone token: e.g crazy-frog")
+
+        if new_dropzone != "false" and new_dropzone != "true":
+            raise RuleInputValidationError("invalid value for new_dropzone: expected 'true' or 'false'")
+
+        return RuleInfo(name="set_project_acl_to_dropzone", get_result=False, session=self.session, dto=None)

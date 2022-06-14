@@ -111,6 +111,7 @@ class IngestRuleManager(BaseRuleManager):
         except Exception as e:
             log_warning_message(user, f"set_total_size_dropzone failed with error: {e}")
         if dropzone_type == "direct":
+            # CAUTION: This is an admin level rule call
             admin_rule_manager = ProjectRuleManager(admin_mode=True)
             admin_rule_manager.set_acl(
                 "default", "admin:own", user, formatters.format_instance_dropzone_path(token, dropzone_type)

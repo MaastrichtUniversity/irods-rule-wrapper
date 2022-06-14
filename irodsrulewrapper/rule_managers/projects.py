@@ -1,5 +1,3 @@
-import json
-
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.dto.project_contributors_metadata import ProjectContributorsMetadata
 from irodsrulewrapper.utils import (

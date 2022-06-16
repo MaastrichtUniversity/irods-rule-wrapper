@@ -1,5 +1,7 @@
 from typing import Dict
 
+from dhpythonirodsutils import formatters
+
 
 class DropZone:
     def __init__(
@@ -55,7 +57,7 @@ class DropZone:
             result["destination"],
             result["type"],
             result["creator"],
-            result["sharedWithMe"] == "true",
-            result["enableDropzoneSharing"] == "true",
+            formatters.format_string_to_boolean(result["sharedWithMe"]),
+            formatters.format_string_to_boolean(result["enableDropzoneSharing"]),
         )
         return user

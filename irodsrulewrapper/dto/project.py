@@ -1,6 +1,8 @@
 import json
 from typing import Dict
 
+from dhpythonirodsutils import formatters
+
 from irodsrulewrapper.dto.users import Users
 from irodsrulewrapper.dto.groups import Groups
 
@@ -59,17 +61,17 @@ class Project:
         project_details = cls(
             result["project"],
             result["title"],
-            result["enableOpenAccessExport"] == "true",
-            result["enableArchive"] == "true",
-            result["enableUnarchive"] == "true",
-            result["enableContributorEditMetadata"] == "true",
+            formatters.format_string_to_boolean(result["enableOpenAccessExport"]),
+            formatters.format_string_to_boolean(result["enableArchive"]),
+            formatters.format_string_to_boolean(result["enableUnarchive"]),
+            formatters.format_string_to_boolean(result["enableContributorEditMetadata"]),
             result["principalInvestigatorDisplayName"],
             result["dataStewardDisplayName"],
             result["respCostCenter"],
             result["storageQuotaGiB"],
             result["dataSizeGiB"],
             result["collectionMetadataSchemas"],
-            result["enableDropzoneSharing"] == "true",
+            formatters.format_string_to_boolean(result["enableDropzoneSharing"]),
             Users.create_from_rule_result(result["managers"]["userObjects"]),
             Groups.create_from_rule_result(result["managers"]["groupObjects"]),
             Users.create_from_rule_result(result["contributors"]["userObjects"]),

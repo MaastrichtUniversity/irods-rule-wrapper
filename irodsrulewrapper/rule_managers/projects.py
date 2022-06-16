@@ -45,7 +45,9 @@ class ProjectRuleManager(BaseRuleManager):
             validators.validate_project_path(project_path)
         except exceptions.ValidationError:
             raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010")
-        if show_service_accounts != "false" and show_service_accounts != "true":
+        try:
+            validators.validate_string_boolean(show_service_accounts)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
 
         return RuleInfo(
@@ -78,7 +80,9 @@ class ProjectRuleManager(BaseRuleManager):
             validators.validate_project_id(project_id)
         except exceptions.ValidationError:
             raise RuleInputValidationError("invalid project's path format: e.g P000000010")
-        if show_service_accounts != "false" and show_service_accounts != "true":
+        try:
+            validators.validate_string_boolean(show_service_accounts)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid value for *showServiceAccounts: expected 'true' or 'false'")
 
         return RuleInfo(
@@ -105,7 +109,9 @@ class ProjectRuleManager(BaseRuleManager):
         ContributingProjects
             dto.ContributingProjects object
         """
-        if show_service_accounts != "false" and show_service_accounts != "true":
+        try:
+            validators.validate_string_boolean(show_service_accounts)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
 
         return RuleInfo(
@@ -202,7 +208,9 @@ class ProjectRuleManager(BaseRuleManager):
         Projects
             dto.Projects object
         """
-        if show_service_accounts != "false" and show_service_accounts != "true":
+        try:
+            validators.validate_string_boolean(show_service_accounts)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
 
         return RuleInfo(name="list_projects", get_result=True, session=self.session, dto=Projects)
@@ -319,22 +327,27 @@ class ProjectRuleManager(BaseRuleManager):
                 raise RuleInputValidationError("invalid type for *storageQuotaGb: expected an integer")
 
         if "enableOpenAccessExport" in extra_parameters:
-            if extra_parameters["enableOpenAccessExport"] != "false" and extra_parameters["enableOpenAccessExport"] != "true":
+            try:
+                validators.validate_string_boolean(extra_parameters["enableOpenAccessExport"])
+            except exceptions.ValidationError:
                 raise RuleInputValidationError("invalid value for *enableOpenAccessExport: expected 'true' or 'false'")
 
         if "enableArchive" in extra_parameters:
-            if extra_parameters["enableArchive"] != "false" and extra_parameters["enableArchive"] != "true":
+            try:
+                validators.validate_string_boolean(extra_parameters["enableArchive"])
+            except exceptions.ValidationError:
                 raise RuleInputValidationError("invalid value for *enableArchive: expected 'true' or 'false'")
 
         if "enableUnarchive" in extra_parameters:
-            if extra_parameters["enableUnarchive"] != "false" and extra_parameters["enableUnarchive"] != "true":
+            try:
+                validators.validate_string_boolean(extra_parameters["enableUnarchive"])
+            except exceptions.ValidationError:
                 raise RuleInputValidationError("invalid value for *enableUnarchive: expected 'true' or 'false'")
 
         if "enableDropzoneSharing" in extra_parameters:
-            if (
-                extra_parameters["enableDropzoneSharing"] != "false"
-                and extra_parameters["enableDropzoneSharing"] != "true"
-            ):
+            try:
+                validators.validate_string_boolean(extra_parameters["enableDropzoneSharing"])
+            except exceptions.ValidationError:
                 raise RuleInputValidationError("invalid value for *enableDropzoneSharing: expected 'true' or 'false'")
 
         if "collectionMetadataSchemas" in extra_parameters:
@@ -368,9 +381,13 @@ class ProjectRuleManager(BaseRuleManager):
             validators.validate_project_id(project_id)
         except exceptions.ValidationError:
             raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010")
-        if inherited != "false" and inherited != "true":
+        try:
+            validators.validate_string_boolean(inherited)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid value for *inherited: expected 'true' or 'false'")
-        if show_service_accounts != "false" and show_service_accounts != "true":
+        try:
+            validators.validate_string_boolean(show_service_accounts)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
 
         return RuleInfo(
@@ -400,7 +417,9 @@ class ProjectRuleManager(BaseRuleManager):
         except exceptions.ValidationError:
             raise RuleInputValidationError("invalid project id; eg. P000000001")
 
-        if show_service_accounts != "false" and show_service_accounts != "true":
+        try:
+            validators.validate_string_boolean(show_service_accounts)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
 
         return RuleInfo(name="get_contributing_project", get_result=True, session=self.session, dto=ContributingProject)
@@ -459,7 +478,9 @@ class ProjectRuleManager(BaseRuleManager):
             validators.validate_project_id(project_id)
         except exceptions.ValidationError:
             raise RuleInputValidationError("invalid project id; eg. P000000001")
-        if inherited != "false" and inherited != "true":
+        try:
+            validators.validate_string_boolean(inherited)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid value for *inherited: expected 'true' or 'false'")
 
         return RuleInfo(

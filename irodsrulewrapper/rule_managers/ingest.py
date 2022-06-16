@@ -34,7 +34,9 @@ class IngestRuleManager(BaseRuleManager):
         DropZones
             dto.DropZones object
         """
-        if report != "false" and report != "true":
+        try:
+            validators.validate_string_boolean(report)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid value for *report: expected 'true' or 'false'")
 
         return RuleInfo(name="listActiveDropZones", get_result=True, session=self.session, dto=DropZones)
@@ -60,11 +62,15 @@ class IngestRuleManager(BaseRuleManager):
         """
         if not isinstance(token, str):
             raise RuleInputValidationError("invalid type for *token: expected a string")
-        if check_ingest_resource_status not in ("false", "true"):
+        try:
+            validators.validate_string_boolean(check_ingest_resource_status)
+        except exceptions.ValidationError:
             raise RuleInputValidationError(
                 "invalid value for *check_ingest_resource_status: expected 'true' or 'false'"
             )
-        if dropzone_type not in ("mounted", "direct"):
+        try:
+            validators.validate_dropzone_type(dropzone_type)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid value for *dropzone_type: expected 'mounted' or 'direct'")
         return RuleInfo(name="get_active_drop_zone", get_result=True, session=self.session, dto=DropZone)
 
@@ -86,7 +92,9 @@ class IngestRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid type for *user: expected a string")
         if not isinstance(token, str):
             raise RuleInputValidationError("invalid type for *token: expected a string")
-        if dropzone_type not in ("mounted", "direct"):
+        try:
+            validators.validate_dropzone_type(dropzone_type)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid value for *dropzone_type: expected 'mounted' or 'direct'")
         return RuleInfo(name="start_ingest", get_result=False, session=self.session, dto=None)
 
@@ -314,7 +322,9 @@ class IngestRuleManager(BaseRuleManager):
         """
         if type(token) != str:
             raise RuleInputValidationError("invalid type for *token: expected a string")
-        if dropzone_type not in ("mounted", "direct"):
+        try:
+            validators.validate_dropzone_type(dropzone_type)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid value for *dropzone_type: expected 'mounted' or 'direct'")
 
         return RuleInfo(name="set_dropzone_total_size_avu", get_result=False, session=self.session, dto=None)
@@ -362,12 +372,11 @@ class IngestRuleManager(BaseRuleManager):
         try:
             validators.validate_project_id(project_id)
             validators.validate_collection_id(collection_id)
+            validators.validate_string_boolean(overwrite_flag)
         except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid project or collection id: e.g P000000010")
+            raise RuleInputValidationError("invalid project id, collection id or overwrite flag")
         if not isinstance(source_collection, str):
             raise RuleInputValidationError("invalid type for *source_collection: expected a string")
-        if overwrite_flag != "false" and overwrite_flag != "true":
-            raise RuleInputValidationError("invalid value for *overwrite_flag: expected 'true' or 'false'")
 
         return RuleInfo(name="create_ingest_metadata_snapshot", get_result=False, session=self.session, dto=None)
 
@@ -419,7 +428,9 @@ class IngestRuleManager(BaseRuleManager):
         except exceptions.ValidationError:
             raise RuleInputValidationError("invalid dropzone token: e.g crazy-frog")
 
-        if new_dropzone != "false" and new_dropzone != "true":
+        try:
+            validators.validate_string_boolean(new_dropzone)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid value for new_dropzone: expected 'true' or 'false'")
 
         return RuleInfo(name="set_project_acl_to_dropzone", get_result=False, session=self.session, dto=None)

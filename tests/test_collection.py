@@ -148,6 +148,7 @@ COLLECTION_JSON = """
     "creator": "jonathan.melius@maastrichtuniversity.nl",
     "id": "C000000001",
     "numFiles": "1253",
+    "numUserFiles": "1249",
     "size": 2793.9677238464355,
     "title": "Test Coll 1"
 }
@@ -160,6 +161,7 @@ COLLECTIONS_JSON = """
         "creator": "jonathan.melius@maastrichtuniversity.nl",
         "id": "C000000001",
         "numFiles": "1253",
+        "numUserFiles": "1249",
         "size": 2793.9677238464355,
         "title": "Test Coll 1"
     },
@@ -168,6 +170,7 @@ COLLECTIONS_JSON = """
         "creator": "jonathan.melius@maastrichtuniversity.nl",
         "id": "C000000002",
         "numFiles": "42",
+        "numUserFiles": "38",
         "size": 0.0,
         "title": "Test Coll 2.0"
     }

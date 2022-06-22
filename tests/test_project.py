@@ -54,20 +54,15 @@ def test_rule_get_project_migration_status():
 def test_rule_create_new_project():
     manager = RuleManager(admin_mode=True)
     project = manager.create_new_project(
-        "authorizationPeriodEndDate",
-        "dataRetentionPeriodEndDate",
         "ingestResource",
         "resource",
-        42,
         "PyTest title",
         "jmelius",
         "opalmen",
         "XXXXXXXXX",
-        "true",
-        "false",
-        "true",
-        "DataHub_general_template",
+        {"enable_dropzone_sharing": "true"},
     )
+
     assert project.project_id is not None
     assert project.project_path is not None
     # Set ACL otherwise list_project fails

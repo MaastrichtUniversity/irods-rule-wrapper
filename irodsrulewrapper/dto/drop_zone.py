@@ -1,5 +1,7 @@
 from typing import Dict
 
+from dhpythonirodsutils import formatters
+
 
 class DropZone:
     def __init__(
@@ -16,6 +18,9 @@ class DropZone:
         total_size: str,
         destination: str,
         dropzone_type: str,
+        creator: str,
+        shared_with_me: bool,
+        dropzone_sharing_enabled: bool,
     ):
         self.date: str = date
         self.project: str = project
@@ -29,6 +34,9 @@ class DropZone:
         self.total_size: str = total_size
         self.destination: str = destination
         self.type: str = dropzone_type
+        self.creator: str = creator
+        self.shared_with_me: bool = shared_with_me
+        self.dropzone_sharing_enabled: bool = dropzone_sharing_enabled
 
     @classmethod
     def create_from_rule_result(cls, result: Dict) -> "DropZone":
@@ -48,5 +56,8 @@ class DropZone:
             result["totalSize"],
             result["destination"],
             result["type"],
+            result["creator"],
+            formatters.format_string_to_boolean(result["sharedWithMe"]),
+            formatters.format_string_to_boolean(result["enableDropzoneSharing"]),
         )
         return user

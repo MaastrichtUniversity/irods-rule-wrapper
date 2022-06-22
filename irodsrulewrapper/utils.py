@@ -54,7 +54,7 @@ class BaseRuleManager:
         irods_session_settings = {
             "host": with_config["IRODS_HOST"] if with_config else os.environ["IRODS_HOST"],
             "user": with_config["IRODS_USER"] if with_config else os.environ["IRODS_USER"],
-            "password": with_config["IRODS_USER"] if with_config else os.environ["IRODS_PASS"],
+            "password": with_config["IRODS_PASS"] if with_config else os.environ["IRODS_PASS"],
             "port": 1247,
             "zone": "nlmumc",
             "irods_client_server_policy": os.environ["IRODS_CLIENT_SERVER_POLICY"],

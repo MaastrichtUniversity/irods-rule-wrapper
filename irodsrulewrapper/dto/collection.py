@@ -11,7 +11,8 @@ class Collection:
         size: float,
         title: str,
         pid: str,
-        num_files: str,
+        num_files: int,
+        num_user_files: int,
         enable_archive: bool,
         enable_unarchive: bool,
         enable_open_access_export: bool,
@@ -22,7 +23,8 @@ class Collection:
         self.size: float = size
         self.title: str = title
         self.pid: str = pid
-        self.num_files: str = num_files
+        self.num_files: int = num_files
+        self.num_user_files: int = num_user_files
         self.enable_archive: bool = enable_archive
         self.enable_unarchive: bool = enable_unarchive
         self.enable_open_access_export: bool = enable_open_access_export
@@ -68,6 +70,7 @@ class Collection:
             result["title"],
             result["PID"],
             result["numFiles"],
+            result["numUserFiles"],
             enable_archive,
             enable_unarchive,
             enable_open_access_export,

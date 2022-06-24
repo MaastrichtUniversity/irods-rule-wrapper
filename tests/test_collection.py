@@ -123,7 +123,8 @@ def test_collection():
     assert collection.pid == "21.T12996/P000000010C000000001"
     assert collection.creator == "jonathan.melius@maastrichtuniversity.nl"
     assert collection.size == 2793.9677238464355
-    assert collection.num_files == "1253"
+    assert collection.num_files == 1253
+    assert collection.num_user_files == 1249
 
 
 def test_collections():
@@ -132,6 +133,8 @@ def test_collections():
     assert collections is not None
     assert collections.__len__() == 2
     assert collections[0].title == "Test Coll 1"
+    assert collections[0].num_files == 1253
+    assert collections[0].num_user_files == 1249
     assert collections[1].title == "Test Coll 2.0"
 
 
@@ -147,7 +150,8 @@ COLLECTION_JSON = """
     "PID": "21.T12996/P000000010C000000001",
     "creator": "jonathan.melius@maastrichtuniversity.nl",
     "id": "C000000001",
-    "numFiles": "1253",
+    "numFiles": 1253,
+    "numUserFiles": 1249,
     "size": 2793.9677238464355,
     "title": "Test Coll 1"
 }
@@ -159,7 +163,8 @@ COLLECTIONS_JSON = """
         "PID": "21.T12996/P000000010C000000001",
         "creator": "jonathan.melius@maastrichtuniversity.nl",
         "id": "C000000001",
-        "numFiles": "1253",
+        "numFiles": 1253,
+        "numUserFiles": 1249,
         "size": 2793.9677238464355,
         "title": "Test Coll 1"
     },
@@ -167,7 +172,8 @@ COLLECTIONS_JSON = """
         "PID": "21.T12996/P000000010C000000002",
         "creator": "jonathan.melius@maastrichtuniversity.nl",
         "id": "C000000002",
-        "numFiles": "42",
+        "numFiles": 42,
+        "numUserFiles": 38,
         "size": 0.0,
         "title": "Test Coll 2.0"
     }

@@ -1,3 +1,5 @@
+from dhpythonirodsutils import validators, exceptions
+
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.utils import BaseRuleManager, RuleInfo, RuleInputValidationError
 from irodsrulewrapper.dto.groups import Groups
@@ -23,7 +25,9 @@ class GroupRuleManager(BaseRuleManager):
         Groups
             dto.Groups object
         """
-        if show_service_accounts != "false" and show_service_accounts != "true":
+        try:
+            validators.validate_string_boolean(show_service_accounts)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid value for *showServiceAccounts: expected 'true' or 'false'")
         return RuleInfo(name="get_groups", get_result=True, session=self.session, dto=Groups)
 
@@ -44,7 +48,9 @@ class GroupRuleManager(BaseRuleManager):
         Groups
             dto.Groups object
         """
-        if show_special_groups != "false" and show_special_groups != "true":
+        try:
+            validators.validate_string_boolean(show_special_groups)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid value for *showServiceAccounts: expected 'true' or 'false'")
 
         if type(username) != str:

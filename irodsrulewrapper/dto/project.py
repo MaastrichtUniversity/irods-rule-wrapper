@@ -1,6 +1,8 @@
 import json
 from typing import Dict
 
+from dhpythonirodsutils import formatters
+
 from irodsrulewrapper.dto.users import Users
 from irodsrulewrapper.dto.groups import Groups
 
@@ -20,6 +22,7 @@ class Project:
         storage_quota_gb: int,
         size: int,
         collection_metadata_schemas: str,
+        enable_dropzone_sharing: str,
         manager_users: Users,
         manager_groups: Groups,
         contributor_users: Users,
@@ -40,6 +43,7 @@ class Project:
         self.storage_quota_gb: int = storage_quota_gb
         self.size: int = size
         self.collection_metadata_schemas: str = collection_metadata_schemas
+        self.enable_dropzone_sharing: str = enable_dropzone_sharing
         self.manager_users: Users = manager_users
         self.manager_groups: Groups = manager_groups
         self.contributor_users: Users = contributor_users
@@ -57,16 +61,17 @@ class Project:
         project_details = cls(
             result["project"],
             result["title"],
-            result["enableOpenAccessExport"] == "true",
-            result["enableArchive"] == "true",
-            result["enableUnarchive"] == "true",
-            result["enableContributorEditMetadata"] == "true",
+            formatters.format_string_to_boolean(result["enableOpenAccessExport"]),
+            formatters.format_string_to_boolean(result["enableArchive"]),
+            formatters.format_string_to_boolean(result["enableUnarchive"]),
+            formatters.format_string_to_boolean(result["enableContributorEditMetadata"]),
             result["principalInvestigatorDisplayName"],
             result["dataStewardDisplayName"],
             result["respCostCenter"],
             result["storageQuotaGiB"],
             result["dataSizeGiB"],
             result["collectionMetadataSchemas"],
+            formatters.format_string_to_boolean(result["enableDropzoneSharing"]),
             Users.create_from_rule_result(result["managers"]["userObjects"]),
             Groups.create_from_rule_result(result["managers"]["groupObjects"]),
             Users.create_from_rule_result(result["contributors"]["userObjects"]),
@@ -97,6 +102,7 @@ class Project:
         "storageQuotaGiB": 11,
         "dataSizeGiB": 99,
         "collectionMetadataSchemas": ["test-schema-1", "test-schema-2"],
+        "enableDropzoneSharing": false,
         "has_financial_view_access": true,
         "managers": {
             "userObjects":

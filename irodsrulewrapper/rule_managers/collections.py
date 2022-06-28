@@ -142,7 +142,9 @@ class CollectionRuleManager(BaseRuleManager):
         except exceptions.ValidationError:
             raise RuleInputValidationError("invalid project or collection id; eg. P000000001")
 
-        if inherited != "false" and inherited != "true":
+        try:
+            validators.validate_string_boolean(inherited)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid value for *inherited: expected 'true' or 'false'")
 
         return RuleInfo(name="detailsProjectCollection", get_result=True, session=self.session, dto=CollectionDetails)

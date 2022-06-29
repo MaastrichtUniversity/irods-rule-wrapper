@@ -116,9 +116,16 @@ def test_rule_get_project_contributors_metadata():
     assert result.data_steward.display_name == "Olav Palmen"
 
 
-def test_dto_projects_minimal():
+def test_rule_get_projects_minimal():
     projects = RuleManager(admin_mode=True).get_projects_minimal()
     assert projects.__len__() == 7
+    assert projects[0].id == "P000000010"
+    assert projects[0].title == "(MDL) Placeholder project"
+    assert projects[1].title == "(HVC) Placeholder project"
+
+
+def test_rule_list_contributing_projects_by_action():
+    projects = RuleManager(admin_mode=True).list_contributing_projects_by_action("browse")
     assert projects[0].id == "P000000010"
     assert projects[0].title == "(MDL) Placeholder project"
     assert projects[1].title == "(HVC) Placeholder project"

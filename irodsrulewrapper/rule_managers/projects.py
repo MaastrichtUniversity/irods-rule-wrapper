@@ -514,7 +514,6 @@ class ProjectRuleManager(BaseRuleManager):
         -------
         ProjectContributorsMetadata
             The contributors(PI, data-steward, etc) metadata.
-
         """
 
         try:
@@ -527,4 +526,31 @@ class ProjectRuleManager(BaseRuleManager):
             get_result=True,
             session=self.session,
             dto=ProjectContributorsMetadata,
+        )
+
+    @rule_call
+    def list_contributing_projects_by_action(self, action):
+        """
+        Query the list of projects where the client user is at least a contributor and the action feature is enable for
+        the project.
+
+        Parameters
+        ----------
+        action: str
+            The action label associated to a project feature AVU ('enableArchive'). e.g: 'archive'
+
+        Returns
+        -------
+        dict
+            Per project, it returns the project: ID, path, and title
+        """
+
+        if not isinstance(action, str):
+            raise RuleInputValidationError("invalid type for *action: expected a string")
+
+        return RuleInfo(
+            name="list_contributing_projects_by_action",
+            get_result=True,
+            session=self.session,
+            dto=ProjectsMinimal,
         )

@@ -529,27 +529,32 @@ class ProjectRuleManager(BaseRuleManager):
         )
 
     @rule_call
-    def list_contributing_projects_by_action(self, action):
+    def list_contributing_projects_by_attribute(self, attribute):
         """
         Query the list of projects where the client user is at least a contributor and the action feature is enable for
         the project.
 
         Parameters
         ----------
-        action: str
-            The action label associated to a project feature AVU ('enableArchive'). e.g: 'archive'
+        attribute: str
+            The attribute value of a project feature AVU. e.g: 'enableArchive', 'enableUnarchive',
+            'enableOpenAccessExport', 'enableContributorEditMetadata'
 
         Returns
         -------
         dict
             Per project, it returns the project: ID, path, and title
         """
-
-        if not isinstance(action, str):
+        if not isinstance(attribute, str):
             raise RuleInputValidationError("invalid type for *action: expected a string")
 
+        try:
+            validators.validate_project_collections_action_avu(attribute)
+        except exceptions.ValidationError:
+            raise RuleInputValidationError("invalid value for *attribute; e.g: 'enableArchive'")
+
         return RuleInfo(
-            name="list_contributing_projects_by_action",
+            name="list_contributing_projects_by_attribute",
             get_result=True,
             session=self.session,
             dto=ProjectsMinimal,

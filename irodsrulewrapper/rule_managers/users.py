@@ -1,4 +1,6 @@
+import irods.exception
 from dhpythonirodsutils import validators, exceptions
+from irods.query import SpecificQuery
 
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.utils import BaseRuleManager, RuleInfo, RuleInputValidationError
@@ -124,3 +126,11 @@ class UserRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid type for *username: expected a string")
 
         return RuleInfo(name="get_user_internal_affiliation_status", get_result=True, session=self.session, dto=Boolean)
+
+    def remove_user_temporary_passwords(self, irods_id):
+        try:
+            query = SpecificQuery(self.session, alias="delete_password", args=[irods_id])
+            for result in query:
+                print("hello result")
+        except irods.exception.CAT_NO_ROWS_FOUND:
+            print("no rows found, hacky workaround")

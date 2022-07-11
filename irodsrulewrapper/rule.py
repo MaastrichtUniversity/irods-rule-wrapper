@@ -1,18 +1,19 @@
-from irods.exception import CAT_INVALID_CLIENT_USER
-from irods.exception import DataObjectDoesNotExist, CollectionDoesNotExist, NoResultFound, CAT_NO_ACCESS_PERMISSION
-from irods.data_object import irods_basename
-from irods.models import Collection as iRODSCollection
-from irods.models import DataObject
+from dhpythonirodsutils import validators, exceptions
+from irods.exception import (
+    DataObjectDoesNotExist,
+    CollectionDoesNotExist,
+    CAT_NO_ROWS_FOUND,
+    CAT_INVALID_CLIENT_USER,
+    QueryException,
+)
+from irods.query import SpecificQuery
 
 from irodsrulewrapper.rule_managers.collections import CollectionRuleManager
-from irodsrulewrapper.rule_managers.projects import ProjectRuleManager
-from irodsrulewrapper.rule_managers.users import UserRuleManager
 from irodsrulewrapper.rule_managers.groups import GroupRuleManager
-from irodsrulewrapper.rule_managers.resources import ResourceRuleManager
 from irodsrulewrapper.rule_managers.ingest import IngestRuleManager
-
-from dhpythonirodsutils import validators, exceptions
-
+from irodsrulewrapper.rule_managers.projects import ProjectRuleManager
+from irodsrulewrapper.rule_managers.resources import ResourceRuleManager
+from irodsrulewrapper.rule_managers.users import UserRuleManager
 from .utils import *
 
 
@@ -58,6 +59,26 @@ class RuleManager(
         if sessions_cleanup:
             self.session.cleanup()
         return pwd
+
+    def remove_user_temporary_passwords(self, irods_id):
+        try:
+            query = SpecificQuery(self.session, alias="delete_password", args=[irods_id])
+            result = query.execute()
+            # print(f"result: {result}")
+            if result and result[0] != 0:
+                raise QueryException  # TODO maybe also log an error for elastalert??
+        except CAT_NO_ROWS_FOUND:
+            print("no rows found, hacky workaround")
+
+    def count_user_temporary_passwords(self, irods_id):
+        try:
+            query = SpecificQuery(self.session, alias="count_password", args=[irods_id])
+            # print(f"query: {query}")
+            for result in query:
+                # print(f"result: {result}")
+                return result[0]
+        except CAT_NO_ROWS_FOUND:
+            return 0
 
     def download_file(self, path):
         """

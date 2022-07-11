@@ -34,6 +34,27 @@ def test_rule_get_users():
     assert is_internal is False
 
 
+def get_user_id_by_username(username):
+    ret = RuleManager(admin_mode=True).get_users("false")
+    for user in ret.users:
+        if user.user_name == username:
+            return user.user_id
+    return 10000
+
+
+def test_count_user_temporary_passwords():
+    user_id = get_user_id_by_username("jmelius")
+    result = RuleManager(admin_mode=True).count_user_temporary_passwords(user_id)
+    print(f"test result: {result}")
+
+
+def test_remove_user_temporary_passwords():
+    user_id = get_user_id_by_username("jmelius")
+    RuleManager(admin_mode=True).remove_user_temporary_passwords(user_id)
+    result = RuleManager(admin_mode=True).count_user_temporary_passwords(user_id)
+    assert int(result) == 0
+
+
 def test_rule_get_users():
     result = RuleManager(admin_mode=True).get_users("true")
     users = result.users

@@ -30,7 +30,7 @@ class ProjectOverview:
         self.viewer_groups: List = viewer_groups
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> "Project":
+    def create_from_rule_result(cls, result: Dict) -> "ProjectOverview":
         manager_users = []
         contributor_users = []
         contributor_groups = []

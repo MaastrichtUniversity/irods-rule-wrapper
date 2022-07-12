@@ -80,6 +80,16 @@ class RuleManager(
         except CAT_NO_ROWS_FOUND:
             return 0
 
+    def get_user_temporary_password_creation_timestamp(self, irods_id):
+        try:
+            query = SpecificQuery(self.session, alias="get_create_ts_password", args=[irods_id])
+            # print(f"query: {query}")
+            for result in query:
+                # print(f"result: {result}")
+                return result[0]
+        except CAT_NO_ROWS_FOUND:
+            return 0
+
     def download_file(self, path):
         """
         Returns the file buffer of the path given, if the file exists

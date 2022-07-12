@@ -3,6 +3,7 @@ from irodsrulewrapper.dto.user_extended import UserExtended
 from irodsrulewrapper.dto.users import Users
 from irodsrulewrapper.rule import RuleManager
 import json
+import time
 
 
 def test_rule_get_user_attribute_value():
@@ -25,7 +26,7 @@ def test_rule_get_user_group_memberships():
     assert result.groups is not None
 
 
-def test_rule_get_users():
+def test_rule_get_user_internal_affiliation_status():
     result = RuleManager(admin_mode=True).get_user_internal_affiliation_status("jmelius")
     is_internal = result.boolean
     assert is_internal is True
@@ -46,6 +47,16 @@ def test_count_user_temporary_passwords():
     user_id = get_user_id_by_username("jmelius")
     result = RuleManager(admin_mode=True).count_user_temporary_passwords(user_id)
     print(f"test result: {result}")
+
+
+def test_get_user_temporary_password_creation_timestamp():
+    user_id = get_user_id_by_username("jmelius")
+    result = RuleManager(admin_mode=True).get_user_temporary_password_creation_timestamp(user_id)
+    print(f"test result: {result}")
+    creation_datetime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(result)))
+    print(f"test creation datetime: {creation_datetime}")
+    expiration_datetime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(result) + 86400))  # +24H
+    print(f"test creation datetime: {expiration_datetime}")
 
 
 def test_remove_user_temporary_passwords():

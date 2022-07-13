@@ -1,6 +1,6 @@
-from irods.session import iRODSSession
-from irods.rule import Rule
 import json
+
+from irods.rule import Rule
 
 
 def rule_call(func):

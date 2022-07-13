@@ -1,14 +1,12 @@
+import datetime
 import logging
-
-from dhpythonirodsutils import loggers
-
-from irods.session import iRODSSession
-
 import os
+import ssl
+
 import pika
 import pytz
-import datetime
-import ssl
+from dhpythonirodsutils import loggers
+from irods.session import iRODSSession
 
 logger = logging.getLogger(__name__)
 

@@ -1,6 +1,7 @@
-from typing import List, Dict
-from .users import Users
+from typing import Dict
+
 from .groups import Groups
+from .users import Users
 
 
 class ContributingProject:

@@ -32,6 +32,6 @@ class UserExtended:
         "email": "o.palmen@maastrichtuniversity.nl",
         "familyName": "Palmen",
         "givenName": "Olav",
-        "username": "opalmen"     
+        "username": "opalmen"
     }
     """

@@ -1,3 +1,5 @@
+from dhpythonirodsutils.enums import ProjectAVUs
+
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.dto.project_contributors_metadata import ProjectContributorsMetadata
 from irodsrulewrapper.dto.projects_minimal import ProjectsMinimal
@@ -305,67 +307,85 @@ class ProjectRuleManager(BaseRuleManager):
         """
 
         if type(ingest_resource) != str:
-            raise RuleInputValidationError("invalid type for *ingestResource: expected a string")
+            raise RuleInputValidationError(f"invalid type for *{ProjectAVUs.INGEST_RESOURCE.value}: expected a string")
 
         if type(resource) != str:
-            raise RuleInputValidationError("invalid type for *resource: expected a string")
+            raise RuleInputValidationError(f"invalid type for *{ProjectAVUs.RESOURCE.value}: expected a string")
 
         if type(title) != str:
-            raise RuleInputValidationError("invalid type for *title: expected a string")
+            raise RuleInputValidationError(f"invalid type for *{ProjectAVUs.TITLE.value}: expected a string")
 
         if type(principal_investigator) != str:
             raise RuleInputValidationError("invalid type for *principalInvestigator: expected a string")
 
         if type(data_steward) != str:
-            raise RuleInputValidationError("invalid type for *dataSteward: expected a string")
+            raise RuleInputValidationError(f"invalid type for *{ProjectAVUs.DATA_STEWARD.value}: expected a string")
 
         if type(responsible_cost_center) != str:
-            raise RuleInputValidationError("invalid type for *responsibleCostCenter: expected a string")
+            raise RuleInputValidationError(
+                f"invalid type for *{ProjectAVUs.RESPONSIBLE_COST_CENTER.value}: expected a string"
+            )
 
         if not isinstance(extra_parameters, dict):
             raise RuleInputValidationError("invalid type for *extraParameters: expected a string")
 
-        if "authorizationPeriodEndDate" in extra_parameters:
+        if ProjectAVUs.AUTHORIZATION_PERIOD_END_DATE.value in extra_parameters:
             # TODO check data format
-            if type(extra_parameters["authorizationPeriodEndDate"]) != str:
-                raise RuleInputValidationError("invalid type for *authorizationPeriodEndDate: expected a string")
+            if type(extra_parameters[ProjectAVUs.AUTHORIZATION_PERIOD_END_DATE.value]) != str:
+                raise RuleInputValidationError(
+                    f"invalid type for *{ProjectAVUs.AUTHORIZATION_PERIOD_END_DATE.value}: expected a string"
+                )
 
-        if "dataRetentionPeriodEndDate" in extra_parameters:
+        if ProjectAVUs.DATA_RETENTION_PERIOD_END_DATE.value in extra_parameters:
             # TODO check data format
-            if type(extra_parameters["dataRetentionPeriodEndDate"]) != str:
-                raise RuleInputValidationError("invalid type for *dataRetentionPeriodEndDate: expected a string")
+            if type(extra_parameters[ProjectAVUs.DATA_RETENTION_PERIOD_END_DATE.value]) != str:
+                raise RuleInputValidationError(
+                    f"invalid type for *{ProjectAVUs.DATA_RETENTION_PERIOD_END_DATE.value}: expected a string"
+                )
 
-        if "storageQuotaGb" in extra_parameters:
-            if type(extra_parameters["storageQuotaGb"]) != int:
-                raise RuleInputValidationError("invalid type for *storageQuotaGb: expected an integer")
+        if ProjectAVUs.STORAGE_QUOTA_GB.value in extra_parameters:
+            if type(extra_parameters[ProjectAVUs.STORAGE_QUOTA_GB.value]) != int:
+                raise RuleInputValidationError(
+                    f"invalid type for *{ProjectAVUs.STORAGE_QUOTA_GB.value}: expected an integer"
+                )
 
-        if "enableOpenAccessExport" in extra_parameters:
+        if ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value in extra_parameters:
             try:
-                validators.validate_string_boolean(extra_parameters["enableOpenAccessExport"])
+                validators.validate_string_boolean(extra_parameters[ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value])
             except exceptions.ValidationError:
-                raise RuleInputValidationError("invalid value for *enableOpenAccessExport: expected 'true' or 'false'")
+                raise RuleInputValidationError(
+                    f"invalid value for *{ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value}: expected 'true' or 'false'"
+                )
 
-        if "enableArchive" in extra_parameters:
+        if ProjectAVUs.ENABLE_ARCHIVE.value in extra_parameters:
             try:
-                validators.validate_string_boolean(extra_parameters["enableArchive"])
+                validators.validate_string_boolean(extra_parameters[ProjectAVUs.ENABLE_ARCHIVE.value])
             except exceptions.ValidationError:
-                raise RuleInputValidationError("invalid value for *enableArchive: expected 'true' or 'false'")
+                raise RuleInputValidationError(
+                    f"invalid value for *{ProjectAVUs.ENABLE_ARCHIVE.value}: expected 'true' or 'false'"
+                )
 
-        if "enableUnarchive" in extra_parameters:
+        if ProjectAVUs.ENABLE_UNARCHIVE.value in extra_parameters:
             try:
-                validators.validate_string_boolean(extra_parameters["enableUnarchive"])
+                validators.validate_string_boolean(extra_parameters[ProjectAVUs.ENABLE_UNARCHIVE.value])
             except exceptions.ValidationError:
-                raise RuleInputValidationError("invalid value for *enableUnarchive: expected 'true' or 'false'")
+                raise RuleInputValidationError(
+                    f"invalid value for *{ProjectAVUs.ENABLE_UNARCHIVE.value}: expected 'true' or 'false'"
+                )
 
-        if "enableDropzoneSharing" in extra_parameters:
+        if ProjectAVUs.ENABLE_DROPZONE_SHARING.value in extra_parameters:
             try:
-                validators.validate_string_boolean(extra_parameters["enableDropzoneSharing"])
+                validators.validate_string_boolean(extra_parameters[ProjectAVUs.ENABLE_DROPZONE_SHARING.value])
             except exceptions.ValidationError:
-                raise RuleInputValidationError("invalid value for *enableDropzoneSharing: expected 'true' or 'false'")
+                raise RuleInputValidationError(
+                    f"invalid value for *{ProjectAVUs.ENABLE_DROPZONE_SHARING.value}: expected 'true' or 'false'"
+                )
 
-        if "collectionMetadataSchemas" in extra_parameters:
-            if not isinstance(extra_parameters["collectionMetadataSchemas"], str):
-                raise RuleInputValidationError("invalid type for *collectionMetadataSchemas: expected a string")
+        if ProjectAVUs.COLLECTION_METADATA_SCHEMAS.value in extra_parameters:
+            if not isinstance(extra_parameters[ProjectAVUs.COLLECTION_METADATA_SCHEMAS.value], str):
+                raise RuleInputValidationError(
+                    f"invalid type for *{ProjectAVUs.COLLECTION_METADATA_SCHEMAS.value}: expected a string"
+                )
 
         return RuleInfo(name="create_new_project", get_result=True, session=self.session, dto=CreateProject)
 
@@ -514,7 +534,6 @@ class ProjectRuleManager(BaseRuleManager):
         -------
         ProjectContributorsMetadata
             The contributors(PI, data-steward, etc) metadata.
-
         """
 
         try:
@@ -527,4 +546,36 @@ class ProjectRuleManager(BaseRuleManager):
             get_result=True,
             session=self.session,
             dto=ProjectContributorsMetadata,
+        )
+
+    @rule_call
+    def list_contributing_projects_by_attribute(self, attribute):
+        """
+        Query the list of projects where the client user is at least a contributor and the action feature is enable for
+        the project.
+
+        Parameters
+        ----------
+        attribute: str
+            The attribute value of a project feature AVU. e.g: 'enableArchive', 'enableUnarchive',
+            'enableOpenAccessExport', 'enableContributorEditMetadata'
+
+        Returns
+        -------
+        dict
+            Per project, it returns the project: ID, path, and title
+        """
+        if not isinstance(attribute, str):
+            raise RuleInputValidationError("invalid type for *action: expected a string")
+
+        try:
+            validators.validate_project_collections_action_avu(attribute)
+        except exceptions.ValidationError:
+            raise RuleInputValidationError("invalid value for *attribute; e.g: 'enableArchive'")
+
+        return RuleInfo(
+            name="list_contributing_projects_by_attribute",
+            get_result=True,
+            session=self.session,
+            dto=ProjectsMinimal,
         )

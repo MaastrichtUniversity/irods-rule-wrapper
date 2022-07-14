@@ -1,4 +1,7 @@
 from typing import List, Dict
+
+from dhpythonirodsutils.enums import ProjectAVUs
+
 from .users import Users
 from .groups import Groups
 
@@ -37,17 +40,17 @@ class ContributingProject:
         contributors_groups = Groups.create_from_rule_result(result["contributors"]["groupObjects"])
         viewers_users = Users.create_from_rule_result(result["viewers"]["userObjects"])
         viewers_groups = Groups.create_from_rule_result(result["viewers"]["groupObjects"])
-        resource = result["resource"]
+        resource = result[ProjectAVUs.RESOURCE.value]
         project = cls(
             result["id"],
-            result["title"],
+            result[ProjectAVUs.TITLE.value],
             managers,
             contributors_users,
             contributors_groups,
             viewers_users,
             viewers_groups,
             resource,
-            result["collectionMetadataSchemas"],
+            result[ProjectAVUs.COLLECTION_METADATA_SCHEMAS.value],
         )
 
         return project

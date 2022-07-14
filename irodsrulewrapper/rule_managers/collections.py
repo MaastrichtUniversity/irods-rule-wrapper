@@ -114,7 +114,13 @@ class CollectionRuleManager(BaseRuleManager):
         if not validators.validate_project_path(project_path):
             raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010")
 
-        return RuleInfo(name="list_collections", get_result=True, session=self.session, dto=Collections)
+        return RuleInfo(
+            name="list_collections",
+            get_result=True,
+            session=self.session,
+            dto=Collections,
+            parse_to_dto=self.parse_to_dto,
+        )
 
     @rule_call
     def get_project_collection_details(self, project, collection, inherited):

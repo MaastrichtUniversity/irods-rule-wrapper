@@ -1,4 +1,7 @@
 from typing import List, Dict
+
+from dhpythonirodsutils.enums import ProjectAVUs
+
 from .users import User
 from .groups import Group
 from irodsrulewrapper.rule_managers.users import UserRuleManager
@@ -59,9 +62,9 @@ class ProjectOverview:
 
         project_details = cls(
             result["path"],
-            result["title"],
-            result["OBI:0000103"],
-            result["dataSteward"],
+            result[ProjectAVUs.TITLE.value],
+            result[ProjectAVUs.PRINCIPAL_INVESTIGATOR.value],
+            result[ProjectAVUs.DATA_STEWARD.value],
             result["dataSizeGiB"],
             manager_users,
             contributor_users,

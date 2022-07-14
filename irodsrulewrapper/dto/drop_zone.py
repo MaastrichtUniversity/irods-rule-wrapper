@@ -1,6 +1,7 @@
 from typing import Dict
 
 from dhpythonirodsutils import formatters
+from dhpythonirodsutils.enums import ProjectAVUs
 
 
 class DropZone:
@@ -58,6 +59,6 @@ class DropZone:
             result["type"],
             result["creator"],
             formatters.format_string_to_boolean(result["sharedWithMe"]),
-            formatters.format_string_to_boolean(result["enableDropzoneSharing"]),
+            formatters.format_string_to_boolean(result[ProjectAVUs.ENABLE_DROPZONE_SHARING.value]),
         )
         return user

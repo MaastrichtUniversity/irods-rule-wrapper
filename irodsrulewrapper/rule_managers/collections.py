@@ -114,7 +114,13 @@ class CollectionRuleManager(BaseRuleManager):
         if not validators.validate_project_path(project_path):
             raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010")
 
-        return RuleInfo(name="list_collections", get_result=True, session=self.session, dto=Collections)
+        return RuleInfo(
+            name="list_collections",
+            get_result=True,
+            session=self.session,
+            dto=Collections,
+            parse_to_dto=self.parse_to_dto,
+        )
 
     @rule_call
     def get_project_collection_details(self, project, collection, inherited):
@@ -142,7 +148,9 @@ class CollectionRuleManager(BaseRuleManager):
         except exceptions.ValidationError:
             raise RuleInputValidationError("invalid project or collection id; eg. P000000001")
 
-        if inherited != "false" and inherited != "true":
+        try:
+            validators.validate_string_boolean(inherited)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid value for *inherited: expected 'true' or 'false'")
 
         return RuleInfo(name="detailsProjectCollection", get_result=True, session=self.session, dto=CollectionDetails)

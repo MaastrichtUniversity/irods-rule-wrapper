@@ -1,3 +1,5 @@
+from dhpythonirodsutils import validators, exceptions
+
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.utils import BaseRuleManager, RuleInfo, RuleInputValidationError
 from irodsrulewrapper.dto.users import Users, User
@@ -67,7 +69,9 @@ class UserRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid type for *username: expected a string")
         if type(attribute) != str:
             raise RuleInputValidationError("invalid type for *attribute: expected a string")
-        if fatal != "false" and fatal != "true":
+        try:
+            validators.validate_string_boolean(fatal)
+        except exceptions.ValidationError:
             raise RuleInputValidationError("invalid value for *fatal: expected 'true' or 'false'")
 
         return RuleInfo(name="get_user_attribute_value", get_result=True, session=self.session, dto=AttributeValue)

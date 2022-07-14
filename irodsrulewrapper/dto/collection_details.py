@@ -1,4 +1,8 @@
 from typing import List, Dict
+
+from dhpythonirodsutils import formatters
+from dhpythonirodsutils.enums import ProjectAVUs
+
 from irodsrulewrapper.dto.external_pid import ExternalPID
 
 
@@ -36,21 +40,33 @@ class CollectionDetails:
                 external_pid_list.append(ExternalPID.create_from_rule_result(external))
 
         enable_archive = None
-        if "enableArchive" in result and result["enableArchive"] == "true":
+        if ProjectAVUs.ENABLE_ARCHIVE.value in result and formatters.format_string_to_boolean(
+            result[ProjectAVUs.ENABLE_ARCHIVE.value]
+        ):
             enable_archive = True
-        elif "enableArchive" in result and result["enableArchive"] == "false":
+        elif ProjectAVUs.ENABLE_ARCHIVE.value in result and not formatters.format_string_to_boolean(
+            result[ProjectAVUs.ENABLE_ARCHIVE.value]
+        ):
             enable_archive = False
 
         enable_unarchive = None
-        if "enableUnarchive" in result and result["enableUnarchive"] == "true":
+        if ProjectAVUs.ENABLE_UNARCHIVE.value in result and formatters.format_string_to_boolean(
+            result[ProjectAVUs.ENABLE_UNARCHIVE.value]
+        ):
             enable_unarchive = True
-        elif "enableUnarchive" in result and result["enableUnarchive"] == "false":
+        elif ProjectAVUs.ENABLE_UNARCHIVE.value in result and not formatters.format_string_to_boolean(
+            result[ProjectAVUs.ENABLE_UNARCHIVE.value]
+        ):
             enable_unarchive = False
 
         enable_open_access_export = None
-        if "enableOpenAccessExport" in result and result["enableOpenAccessExport"] == "true":
+        if ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value in result and formatters.format_string_to_boolean(
+            result[ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value]
+        ):
             enable_open_access_export = True
-        elif "enableOpenAccessExport" in result and result["enableOpenAccessExport"] == "false":
+        elif ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value in result and not formatters.format_string_to_boolean(
+            result[ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value]
+        ):
             enable_open_access_export = False
 
         collection = cls(

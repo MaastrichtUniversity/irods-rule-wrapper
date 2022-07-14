@@ -1,5 +1,8 @@
 from typing import Dict
 
+from dhpythonirodsutils import formatters
+from dhpythonirodsutils.enums import ProjectAVUs
+
 
 class Collection:
     def __init__(
@@ -9,7 +12,8 @@ class Collection:
         size: float,
         title: str,
         pid: str,
-        num_files: str,
+        num_files: int,
+        num_user_files: int,
         enable_archive: bool,
         enable_unarchive: bool,
         enable_open_access_export: bool,
@@ -20,7 +24,8 @@ class Collection:
         self.size: float = size
         self.title: str = title
         self.pid: str = pid
-        self.num_files: str = num_files
+        self.num_files: int = num_files
+        self.num_user_files: int = num_user_files
         self.enable_archive: bool = enable_archive
         self.enable_unarchive: bool = enable_unarchive
         self.enable_open_access_export: bool = enable_open_access_export
@@ -40,21 +45,33 @@ class Collection:
             size = result["byteSize"]
 
         enable_archive = None
-        if "enableArchive" in result and result["enableArchive"] == "true":
+        if ProjectAVUs.ENABLE_ARCHIVE.value in result and formatters.format_string_to_boolean(
+            result[ProjectAVUs.ENABLE_ARCHIVE.value]
+        ):
             enable_archive = True
-        elif "enableArchive" in result and result["enableArchive"] == "false":
+        elif ProjectAVUs.ENABLE_ARCHIVE.value in result and not formatters.format_string_to_boolean(
+            result[ProjectAVUs.ENABLE_ARCHIVE.value]
+        ):
             enable_archive = False
 
         enable_unarchive = None
-        if "enableUnarchive" in result and result["enableUnarchive"] == "true":
+        if ProjectAVUs.ENABLE_UNARCHIVE.value in result and formatters.format_string_to_boolean(
+            result[ProjectAVUs.ENABLE_UNARCHIVE.value]
+        ):
             enable_unarchive = True
-        elif "enableUnarchive" in result and result["enableUnarchive"] == "false":
+        elif ProjectAVUs.ENABLE_UNARCHIVE.value in result and not formatters.format_string_to_boolean(
+            result[ProjectAVUs.ENABLE_UNARCHIVE.value]
+        ):
             enable_unarchive = False
 
         enable_open_access_export = None
-        if "enableOpenAccessExport" in result and result["enableOpenAccessExport"] == "true":
+        if ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value in result and formatters.format_string_to_boolean(
+            result[ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value]
+        ):
             enable_open_access_export = True
-        elif "enableOpenAccessExport" in result and result["enableOpenAccessExport"] == "false":
+        elif ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value in result and not formatters.format_string_to_boolean(
+            result[ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value]
+        ):
             enable_open_access_export = False
 
         collection = cls(
@@ -64,6 +81,7 @@ class Collection:
             result["title"],
             result["PID"],
             result["numFiles"],
+            result["numUserFiles"],
             enable_archive,
             enable_unarchive,
             enable_open_access_export,

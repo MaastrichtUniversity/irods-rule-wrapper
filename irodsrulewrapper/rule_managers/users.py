@@ -1,14 +1,14 @@
 from dhpythonirodsutils import validators, exceptions
 
+from irodsrulewrapper.cache import CacheTTL
 from irodsrulewrapper.decorator import rule_call
-from irodsrulewrapper.utils import BaseRuleManager, RuleInfo, RuleInputValidationError
-from irodsrulewrapper.dto.users import Users, User
-from irodsrulewrapper.dto.group import Group
-from irodsrulewrapper.dto.user_or_group import UserOrGroup
-from irodsrulewrapper.dto.data_stewards import DataStewards
 from irodsrulewrapper.dto.attribute_value import AttributeValue
 from irodsrulewrapper.dto.boolean import Boolean
-from irodsrulewrapper.cache import CacheTTL
+from irodsrulewrapper.dto.data_stewards import DataStewards
+from irodsrulewrapper.dto.group import Group
+from irodsrulewrapper.dto.user_or_group import UserOrGroup
+from irodsrulewrapper.dto.users import Users, User
+from irodsrulewrapper.utils import BaseRuleManager, RuleInfo, RuleInputValidationError
 
 
 class UserRuleManager(BaseRuleManager):
@@ -30,8 +30,14 @@ class UserRuleManager(BaseRuleManager):
         Users
             dto.Users object
         """
-        if show_service_accounts != "false" and show_service_accounts != "true":
-            raise RuleInputValidationError("invalid value for *showServiceAccounts: expected 'true' or 'false'")
+
+        try:
+            validators.validate_string_boolean(show_service_accounts)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError(
+                "invalid value for *show_service_accounts: expected 'true' or 'false'"
+            ) from err
+
         return RuleInfo(name="getUsers", get_result=True, session=self.session, dto=Users)
 
     @rule_call
@@ -65,14 +71,15 @@ class UserRuleManager(BaseRuleManager):
         AttributeValue
             dto.AttributeValue object
         """
-        if type(username) != str:
+        if not isinstance(username, str):
             raise RuleInputValidationError("invalid type for *username: expected a string")
-        if type(attribute) != str:
+        if not isinstance(attribute, str):
             raise RuleInputValidationError("invalid type for *attribute: expected a string")
+
         try:
             validators.validate_string_boolean(fatal)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid value for *fatal: expected 'true' or 'false'")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid value for *fatal: expected 'true' or 'false'") from err
 
         return RuleInfo(name="get_user_attribute_value", get_result=True, session=self.session, dto=AttributeValue)
 
@@ -91,16 +98,30 @@ class UserRuleManager(BaseRuleManager):
             The user attribute's value to set
 
         """
-        if type(username) != str:
+        if not isinstance(username, str):
             raise RuleInputValidationError("invalid type for *username: expected a string")
-        if type(attribute) != str:
+        if not isinstance(attribute, str):
             raise RuleInputValidationError("invalid type for *attribute: expected a string")
-        if type(value) != str:
+        if not isinstance(value, str):
             raise RuleInputValidationError("invalid type for *value: expected a string")
 
         return RuleInfo(name="set_user_attribute_value", get_result=False, session=self.session, dto=None)
 
-    def get_user_or_group(self, uid):
+    def get_user_or_group(self, uid: str):
+        """
+        Retrieve a user or group DTO based on the input uid.
+        First check if the uid is present the cached dict. Otherwise, query the uid.
+
+        Parameters
+        ----------
+        uid: str
+            The uid to query and retrieve from the cache
+
+        Returns
+        -------
+        User|Group
+            The DTO of the input uid
+        """
         if uid not in CacheTTL.CACHE_USERS_GROUPS:
             # TODO Find an another way, as performing, to skip rodsadmin & service-accounts than hard-coded values
             item = self.get_user_or_group_by_id(uid)
@@ -113,14 +134,40 @@ class UserRuleManager(BaseRuleManager):
 
     @rule_call
     def get_user_or_group_by_id(self, uid):
-        if type(uid) != str:
+        """
+        Get user or group information from its id
+
+        Parameters
+        ----------
+        uid : str
+            The account's id; eg.g '10132'
+
+        Returns
+        -------
+        UserOrGroup
+            Simple DTO that contains the result of the rule
+        """
+        if not isinstance(uid, str):
             raise RuleInputValidationError("invalid type for *uid: expected a string")
 
         return RuleInfo(name="get_user_or_group_by_id", get_result=True, session=self.session, dto=UserOrGroup)
 
     @rule_call
     def get_user_internal_affiliation_status(self, username):
-        if type(username) != str:
+        """
+        Get the user voPersonExternalID and check if the user is part of the UM or MUMC organization.
+
+        Parameters
+        ----------
+        username: str
+            The user to check
+
+        Returns
+        -------
+        bool
+            True, if the user is from the UM or MUMC organization. Otherwise, False.
+        """
+        if not isinstance(username, str):
             raise RuleInputValidationError("invalid type for *username: expected a string")
 
         return RuleInfo(name="get_user_internal_affiliation_status", get_result=True, session=self.session, dto=Boolean)

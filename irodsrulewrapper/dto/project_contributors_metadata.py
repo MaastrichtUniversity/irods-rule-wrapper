@@ -2,6 +2,8 @@ import json
 
 from typing import Dict
 
+from dhpythonirodsutils.enums import ProjectAVUs
+
 from irodsrulewrapper.dto.user_extended import UserExtended
 
 
@@ -17,7 +19,7 @@ class ProjectContributorsMetadata:
     @classmethod
     def create_from_rule_result(cls, result: Dict) -> "ProjectContributorsMetadata":
         principal_investigator = UserExtended.create_from_rule_result(result["principalInvestigator"])
-        data_steward = UserExtended.create_from_rule_result(result["dataSteward"])
+        data_steward = UserExtended.create_from_rule_result(result[ProjectAVUs.DATA_STEWARD.value])
         project = cls(principal_investigator, data_steward)
 
         return project

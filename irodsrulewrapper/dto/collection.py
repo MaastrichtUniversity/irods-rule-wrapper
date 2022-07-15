@@ -1,6 +1,7 @@
 from typing import Dict
 
 from dhpythonirodsutils import formatters
+from dhpythonirodsutils.enums import ProjectAVUs
 
 
 class Collection:
@@ -44,22 +45,32 @@ class Collection:
             size = result["byteSize"]
 
         enable_archive = None
-        if "enableArchive" in result and formatters.format_string_to_boolean(result["enableArchive"]):
+        if ProjectAVUs.ENABLE_ARCHIVE.value in result and formatters.format_string_to_boolean(
+            result[ProjectAVUs.ENABLE_ARCHIVE.value]
+        ):
             enable_archive = True
-        elif "enableArchive" in result and not formatters.format_string_to_boolean(result["enableArchive"]):
+        elif ProjectAVUs.ENABLE_ARCHIVE.value in result and not formatters.format_string_to_boolean(
+            result[ProjectAVUs.ENABLE_ARCHIVE.value]
+        ):
             enable_archive = False
 
         enable_unarchive = None
-        if "enableUnarchive" in result and formatters.format_string_to_boolean(result["enableUnarchive"]):
+        if ProjectAVUs.ENABLE_UNARCHIVE.value in result and formatters.format_string_to_boolean(
+            result[ProjectAVUs.ENABLE_UNARCHIVE.value]
+        ):
             enable_unarchive = True
-        elif "enableUnarchive" in result and not formatters.format_string_to_boolean(result["enableUnarchive"]):
+        elif ProjectAVUs.ENABLE_UNARCHIVE.value in result and not formatters.format_string_to_boolean(
+            result[ProjectAVUs.ENABLE_UNARCHIVE.value]
+        ):
             enable_unarchive = False
 
         enable_open_access_export = None
-        if "enableOpenAccessExport" in result and formatters.format_string_to_boolean(result["enableOpenAccessExport"]):
+        if ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value in result and formatters.format_string_to_boolean(
+            result[ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value]
+        ):
             enable_open_access_export = True
-        elif "enableOpenAccessExport" in result and not formatters.format_string_to_boolean(
-            result["enableOpenAccessExport"]
+        elif ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value in result and not formatters.format_string_to_boolean(
+            result[ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value]
         ):
             enable_open_access_export = False
 

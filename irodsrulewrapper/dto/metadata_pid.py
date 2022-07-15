@@ -1,6 +1,3 @@
-from typing import Dict
-
-
 class MetadataPID:
     def __init__(self, instance: dict, collection: dict, schema: dict):
         self.instance: dict = instance
@@ -8,6 +5,6 @@ class MetadataPID:
         self.schema: dict = schema
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> "MetadataPID":
+    def create_from_rule_result(cls, result: dict) -> "MetadataPID":
         value = cls(result["instance"], result["collection"], result["schema"])
         return value

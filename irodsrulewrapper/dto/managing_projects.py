@@ -1,24 +1,23 @@
-from typing import List, Dict
 import json
 
 
 class ManagingProjects:
     def __init__(
         self,
-        managers: List[str],
-        contributors: List[str],
-        viewers: List[str],
+        managers: list[str],
+        contributors: list[str],
+        viewers: list[str],
         principal_investigator: str,
         data_steward: str,
     ):
-        self.managers: List[str] = managers
-        self.contributors: List[str] = contributors
-        self.viewers: List[str] = viewers
+        self.managers: list[str] = managers
+        self.contributors: list[str] = contributors
+        self.viewers: list[str] = viewers
         self.principal_investigator: str = principal_investigator
         self.data_steward: str = data_steward
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> "ManagingProjects":
+    def create_from_rule_result(cls, result: dict) -> "ManagingProjects":
         # get_project_acl_for_manager returns an empty list, if the user is not a manager for the project
         if len(result) == 0:
             return None

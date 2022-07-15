@@ -585,8 +585,8 @@ class ProjectRuleManager(BaseRuleManager):
 
         try:
             validators.validate_project_collections_action_avu(attribute)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid value for *attribute; e.g: 'enableArchive'")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid value for *attribute; e.g: 'enableArchive'") from err
 
         return RuleInfo(
             name="list_contributing_projects_by_attribute",

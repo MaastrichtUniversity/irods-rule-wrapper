@@ -1,5 +1,3 @@
-from typing import Dict
-
 from dhpythonirodsutils import formatters
 from dhpythonirodsutils.enums import ProjectAVUs
 
@@ -40,7 +38,7 @@ class DropZone:
         self.dropzone_sharing_enabled: bool = dropzone_sharing_enabled
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> "DropZone":
+    def create_from_rule_result(cls, result: dict) -> "DropZone":
         if "resourceStatus" not in result:
             result["resourceStatus"] = ""
 

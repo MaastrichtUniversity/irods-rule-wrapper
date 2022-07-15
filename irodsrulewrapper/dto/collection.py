@@ -1,5 +1,3 @@
-from typing import Dict
-
 from dhpythonirodsutils import formatters
 from dhpythonirodsutils.enums import ProjectAVUs
 
@@ -7,7 +5,7 @@ from dhpythonirodsutils.enums import ProjectAVUs
 class Collection:
     def __init__(
         self,
-        id: str,
+        collection_id: str,
         creator: str,
         size: float,
         title: str,
@@ -19,7 +17,7 @@ class Collection:
         enable_open_access_export: bool,
     ):
 
-        self.id: str = id
+        self.id: str = collection_id
         self.creator: str = creator
         self.size: float = size
         self.title: str = title
@@ -31,12 +29,12 @@ class Collection:
         self.enable_open_access_export: bool = enable_open_access_export
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> "Collection":
-        id = ""
+    def create_from_rule_result(cls, result: dict) -> "Collection":
+        collection_id = ""
         if "id" in result:
-            id = result["id"]
+            collection_id = result["id"]
         elif "collection" in result:
-            id = result["collection"]
+            collection_id = result["collection"]
 
         size = ""
         if "size" in result:
@@ -75,7 +73,7 @@ class Collection:
             enable_open_access_export = False
 
         collection = cls(
-            id,
+            collection_id,
             result["creator"],
             size,
             result["title"],

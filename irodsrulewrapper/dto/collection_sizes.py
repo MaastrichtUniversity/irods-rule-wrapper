@@ -1,15 +1,14 @@
-from .collection_size import CollectionSize
-from typing import List, Dict, Set
+from irodsrulewrapper.dto.collection_size import CollectionSize
 
 
 class CollectionSizes:
-    def __init__(self, collection_sizes: Dict[str, List[CollectionSize]], resources_set: Set):
-        self.collection_sizes: Dict[str, List[CollectionSize]] = collection_sizes
-        self.resources_set: Set = resources_set
+    def __init__(self, collection_sizes: dict[str, list[CollectionSize]], resources_set: set):
+        self.collection_sizes: dict[str, list[CollectionSize]] = collection_sizes
+        self.resources_set: set = resources_set
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> "CollectionSizes":
-        collection_sizes: Dict[str, List[CollectionSize]] = {}
+    def create_from_rule_result(cls, result: dict) -> "CollectionSizes":
+        collection_sizes: dict[str, list[CollectionSize]] = {}
         resources_set = set()
         for collection_id, size_per_resource in result.items():
             collection_size_list = []

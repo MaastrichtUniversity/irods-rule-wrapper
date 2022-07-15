@@ -1,6 +1,3 @@
-from typing import Dict
-
-
 class Group:
     def __init__(self, name: str, group_id: str, display_name: str, description: str):
         self.name: str = name
@@ -9,7 +6,7 @@ class Group:
         self.description: str = description
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> "Group":
+    def create_from_rule_result(cls, result: dict) -> "Group":
         # Backward compatibility
         name = ""
         if "userName" in result:

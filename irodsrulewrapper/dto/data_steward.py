@@ -1,6 +1,3 @@
-from typing import Dict
-
-
 class DataSteward:
     def __init__(self, user_name: str, user_id: str, display_name: str):
         self.user_name: str = user_name
@@ -8,6 +5,6 @@ class DataSteward:
         self.display_name: str = display_name
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> "DataSteward":
+    def create_from_rule_result(cls, result: dict) -> "DataSteward":
         data_steward = cls(result["userName"], result["userId"], result["displayName"])
         return data_steward

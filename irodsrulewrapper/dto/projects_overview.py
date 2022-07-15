@@ -1,14 +1,18 @@
-from .project_overview import ProjectOverview
-from typing import List, Dict
+"""This module contains the ProjectsOverview DTO class and its factory constructor."""
 from irodsrulewrapper.cache import CacheTTL
+from irodsrulewrapper.dto.project_overview import ProjectOverview
 
 
 class ProjectsOverview:
-    def __init__(self, projects: List["ProjectOverview"]):
-        self.projects: List["ProjectOverview"] = projects
+    """
+    This class represents a list of iRODS ProjectsOverview DTOs.
+    """
+
+    def __init__(self, projects: list["ProjectOverview"]):
+        self.projects: list["ProjectOverview"] = projects
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> "ProjectsOverview":
+    def create_from_rule_result(cls, result: dict) -> "ProjectsOverview":
         CacheTTL.check_if_cache_expired()
         output = []
         for item in result:

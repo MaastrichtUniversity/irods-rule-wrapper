@@ -1,3 +1,4 @@
+"""This module contains the ContributingProject DTO class and its factory constructor."""
 from dhpythonirodsutils.enums import ProjectAVUs
 
 from irodsrulewrapper.dto.groups import Groups
@@ -5,6 +6,10 @@ from irodsrulewrapper.dto.users import Users
 
 
 class ContributingProject:
+    """
+    This class represents an iRODS project with its attributes and ACL, where the user has contributing access level.
+    """
+
     def __init__(
         self,
         project_id: str,

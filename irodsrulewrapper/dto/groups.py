@@ -1,9 +1,12 @@
+"""This module contains the Users DTO class, its factory constructors and mock_json."""
 import json
 
 from irodsrulewrapper.dto.group import Group
 
 
 class Groups:
+    """This class represents a list of iRODS Group DTOs."""
+
     def __init__(self, groups: list["Group"]):
         self.groups: list["Group"] = groups
 

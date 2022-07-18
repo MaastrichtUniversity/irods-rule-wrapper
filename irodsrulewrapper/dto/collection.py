@@ -1,8 +1,11 @@
+"""This module contains the Collection DTO class and its factory constructor."""
 from dhpythonirodsutils import formatters
 from dhpythonirodsutils.enums import ProjectAVUs
 
 
 class Collection:
+    """This class represents an iRODS project collection with its attributes."""
+
     def __init__(
         self,
         collection_id: str,

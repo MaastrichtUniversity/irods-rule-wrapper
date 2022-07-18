@@ -1,4 +1,9 @@
+"""This module contains the ExternalPID class and its factory constructor."""
+
+
 class ExternalPID:
+    """This class represents an external PID link"""
+
     def __init__(self, pid: str, repository: str):
         self.pid: str = pid
         self.repository: str = repository

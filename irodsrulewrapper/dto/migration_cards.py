@@ -1,7 +1,10 @@
+"""This module contains the MigrationCards DTO class and its factory constructor."""
 from irodsrulewrapper.dto.migration_card import MigrationCard
 
 
 class MigrationCards:
+    """This class represents a list of MigrationCard User DTOs."""
+
     def __init__(self, cards: list["MigrationCard"]):
         self.cards: list["MigrationCard"] = cards
 

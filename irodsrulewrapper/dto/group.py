@@ -1,4 +1,9 @@
+"""This module contains the Group DTO class and its factory constructor."""
+
+
 class Group:
+    """This class represents an iRODS group with its attributes"""
+
     def __init__(self, name: str, group_id: str, display_name: str, description: str):
         self.name: str = name
         self.id: str = group_id

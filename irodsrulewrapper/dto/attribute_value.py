@@ -1,6 +1,4 @@
-"""
-This module contains the AttributeValue DTO class and its factory constructor
-"""
+"""This module contains the AttributeValue DTO class and its factory constructor."""
 
 
 class AttributeValue:

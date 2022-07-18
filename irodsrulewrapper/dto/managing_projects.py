@@ -1,7 +1,12 @@
+"""This module contains the ManagingProjects DTO class, its factory constructors and mock_json."""
 import json
 
 
 class ManagingProjects:
+    """
+    This class represents an iRODS project with its attributes and ACL, where the user has managing access level.
+    """
+
     def __init__(
         self,
         managers: list[str],

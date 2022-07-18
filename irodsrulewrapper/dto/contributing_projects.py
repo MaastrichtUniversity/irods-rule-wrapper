@@ -1,7 +1,10 @@
+"""This module contains the ContributingProjects DTO class and its factory constructor."""
 from irodsrulewrapper.dto.contributing_project import ContributingProject
 
 
 class ContributingProjects:
+    """This class represents a list of iRODS ContributingProject DTOs."""
+
     def __init__(self, projects: list["ContributingProject"]):
         self.projects: list["ContributingProject"] = projects
 

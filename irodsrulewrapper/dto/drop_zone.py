@@ -1,8 +1,11 @@
+"""This module contains the DropZone class and its factory constructor."""
 from dhpythonirodsutils import formatters
 from dhpythonirodsutils.enums import ProjectAVUs
 
 
 class DropZone:
+    """This class represents an iRODS dropzone collection with its attributes"""
+
     def __init__(
         self,
         date: str,

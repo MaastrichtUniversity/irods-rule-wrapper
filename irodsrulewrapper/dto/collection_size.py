@@ -1,4 +1,9 @@
+"""This module contains the CollectionSize DTO class and its factory constructor."""
+
+
 class CollectionSize:
+    """This class represents the data size distribution for an iRODS project collection."""
+
     def __init__(self, resource: str, size: float, relative_size: float):
         self.resource: str = resource
         self.size: float = size

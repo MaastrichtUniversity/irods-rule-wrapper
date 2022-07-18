@@ -1,3 +1,18 @@
+"""
+This module provides rules helpers classes and functions.
+
+Classes:
+    BaseRuleManager
+    RuleInputValidationError
+    RuleInfo
+
+Functions:
+    convert_to_current_timezone
+    publish_message
+    log_error_message
+    log_warning_message
+    log_audit_trail_message
+"""
 import datetime
 import logging
 import os

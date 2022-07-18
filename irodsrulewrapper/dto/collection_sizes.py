@@ -1,7 +1,10 @@
+"""This module contains the CollectionSizes DTO class and its factory constructor."""
 from irodsrulewrapper.dto.collection_size import CollectionSize
 
 
 class CollectionSizes:
+    """This class represents a list of iRODS CollectionSize DTOs."""
+
     def __init__(self, collection_sizes: dict[str, list[CollectionSize]], resources_set: set):
         self.collection_sizes: dict[str, list[CollectionSize]] = collection_sizes
         self.resources_set: set = resources_set

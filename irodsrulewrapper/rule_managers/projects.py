@@ -1,3 +1,4 @@
+"""This module contains the ProjectRuleManager class."""
 from dhpythonirodsutils.enums import ProjectAVUs
 from dhpythonirodsutils import validators, exceptions
 
@@ -22,6 +23,8 @@ from irodsrulewrapper.utils import (
 
 
 class ProjectRuleManager(BaseRuleManager):
+    """This class bundles the project related wrapped rules methods."""
+
     def __init__(self, client_user=None, admin_mode=False):
         BaseRuleManager.__init__(self, client_user, admin_mode=admin_mode)
 

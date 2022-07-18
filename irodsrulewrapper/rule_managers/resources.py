@@ -1,3 +1,4 @@
+"""This module contains the ResourceRuleManager class."""
 from dhpythonirodsutils import validators, exceptions
 
 from irodsrulewrapper.decorator import rule_call
@@ -8,6 +9,8 @@ from irodsrulewrapper.utils import BaseRuleManager, RuleInfo, RuleInputValidatio
 
 
 class ResourceRuleManager(BaseRuleManager):
+    """This class bundles the resource related wrapped rules methods."""
+
     def __init__(self, client_user=None, admin_mode=False):
         BaseRuleManager.__init__(self, client_user, admin_mode=admin_mode)
 

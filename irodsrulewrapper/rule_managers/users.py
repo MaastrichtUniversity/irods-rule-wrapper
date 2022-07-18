@@ -1,3 +1,4 @@
+"""This module contains the UserRuleManager class."""
 from dhpythonirodsutils import validators, exceptions
 
 from irodsrulewrapper.cache import CacheTTL
@@ -12,6 +13,8 @@ from irodsrulewrapper.utils import BaseRuleManager, RuleInfo, RuleInputValidatio
 
 
 class UserRuleManager(BaseRuleManager):
+    """This class bundles the user related wrapped rules methods."""
+
     def __init__(self, client_user=None, admin_mode=False):
         BaseRuleManager.__init__(self, client_user=client_user, admin_mode=admin_mode)
 

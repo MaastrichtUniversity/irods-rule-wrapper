@@ -1,3 +1,4 @@
+"""This module contains the CollectionRuleManager class."""
 import json
 
 from cedarparsingutils.dto.general_instance import GeneralInstance
@@ -15,6 +16,8 @@ from irodsrulewrapper.utils import publish_message, BaseRuleManager, RuleInfo, R
 
 
 class CollectionRuleManager(BaseRuleManager):
+    """This class bundles the collection related wrapped rules and helper methods."""
+
     def __init__(self, client_user=None, admin_mode=False):
         BaseRuleManager.__init__(self, client_user, admin_mode=admin_mode)
 

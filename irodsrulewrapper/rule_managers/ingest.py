@@ -1,3 +1,4 @@
+"""This module contains the IngestRuleManager class."""
 from dhpythonirodsutils import validators, formatters, exceptions
 
 from irodsrulewrapper.decorator import rule_call
@@ -15,6 +16,8 @@ from irodsrulewrapper.utils import (
 
 
 class IngestRuleManager(BaseRuleManager):
+    """This class bundles the dropzone and ingestion related wrapped rules and helper methods."""
+
     def __init__(self, client_user=None, admin_mode=False):
         BaseRuleManager.__init__(self, client_user, admin_mode=admin_mode)
 

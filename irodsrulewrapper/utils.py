@@ -35,6 +35,11 @@ def convert_to_current_timezone(date, date_format="%Y-%m-%d %H:%M:%S"):
 
 
 class BaseRuleManager:
+    """
+    This (abstract) class has the basic methods to set up an iRODS (SSL) connection.
+    The class is inherited by the classes in the sub-package irodsrulewrapper.rule_managers.
+    """
+
     # ssl_context & ssl_settings left as class variables to help with mocking during testing
     ssl_context = ssl.create_default_context(purpose=ssl.Purpose.SERVER_AUTH, cafile=None, capath=None, cadata=None)
     ssl_settings = {
@@ -95,6 +100,11 @@ class RuleInputValidationError(Exception):
 
 
 class RuleInfo:
+    """
+    This class represents the extra information required by the @rule_call decorator to execute an iRODS rule.
+    Its objects are instantiated inside a rule wrapped method inside a RuleManager.
+    """
+
     def __init__(self, name, get_result, session, dto, input_params=None, rule_body=None, parse_to_dto=True):
         self.name = name
         self.get_result = get_result

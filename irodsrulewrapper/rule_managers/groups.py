@@ -1,12 +1,16 @@
+"""This module contains the GroupRuleManager class."""
 from dhpythonirodsutils import validators, exceptions
 
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.dto.groups import Groups
 from irodsrulewrapper.dto.users import Users
+
 from irodsrulewrapper.utils import BaseRuleManager, RuleInfo, RuleInputValidationError
 
 
 class GroupRuleManager(BaseRuleManager):
+    """This class bundles the group related wrapped rules methods."""
+
     def __init__(self, client_user=None, admin_mode=False):
         BaseRuleManager.__init__(self, client_user, admin_mode=admin_mode)
 

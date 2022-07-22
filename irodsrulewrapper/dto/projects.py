@@ -1,15 +1,18 @@
-from .project import Project
-from typing import List, Dict
+"""This module contains the Projects DTO class, its factory constructors and mock_json."""
 import json
+
+from irodsrulewrapper.dto.project import Project
 
 
 class Projects:
-    def __init__(self, projects: List["Project"], has_financial_view_access: bool):
-        self.projects: List["Project"] = projects
+    """This class represents a list of iRODS Project DTOs."""
+
+    def __init__(self, projects: list["Project"], has_financial_view_access: bool):
+        self.projects: list["Project"] = projects
         self.has_financial_view_access: bool = has_financial_view_access
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> "Projects":
+    def create_from_rule_result(cls, result: dict) -> "Projects":
         output = []
         for item in result["projects"]:
             project = Project.create_from_rule_result(item)

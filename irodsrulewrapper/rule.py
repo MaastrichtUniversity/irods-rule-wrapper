@@ -1,24 +1,27 @@
+"""This module contains the user-client Rule managers classes: RuleManager & RuleJSONManager."""
+from dhpythonirodsutils import validators, exceptions
 from irods.exception import CAT_INVALID_CLIENT_USER
-from irods.exception import DataObjectDoesNotExist, CollectionDoesNotExist, NoResultFound, CAT_NO_ACCESS_PERMISSION
-from irods.data_object import irods_basename
-from irods.models import Collection as iRODSCollection
-from irods.models import DataObject
+from irods.exception import DataObjectDoesNotExist, CollectionDoesNotExist
 
 from irodsrulewrapper.rule_managers.collections import CollectionRuleManager
-from irodsrulewrapper.rule_managers.projects import ProjectRuleManager
-from irodsrulewrapper.rule_managers.users import UserRuleManager
 from irodsrulewrapper.rule_managers.groups import GroupRuleManager
-from irodsrulewrapper.rule_managers.resources import ResourceRuleManager
 from irodsrulewrapper.rule_managers.ingest import IngestRuleManager
-
-from dhpythonirodsutils import validators, exceptions
-
+from irodsrulewrapper.rule_managers.projects import ProjectRuleManager
+from irodsrulewrapper.rule_managers.resources import ResourceRuleManager
+from irodsrulewrapper.rule_managers.users import UserRuleManager
 from .utils import *
 
 
 class RuleManager(
     CollectionRuleManager, ProjectRuleManager, UserRuleManager, GroupRuleManager, ResourceRuleManager, IngestRuleManager
 ):
+    """
+    This class provides instances to easily:
+        * set up a new iRODS connection an admin or a proxied user
+        * execute a predefined server-side rule and parse the rule output as a DTO
+        * execute iRODS API features (get user temporary password, download files ...)
+    """
+
     def __init__(self, client_user=None, config=None, admin_mode=False):
         BaseRuleManager.__init__(self, client_user, config, admin_mode)
 
@@ -93,8 +96,7 @@ class RuleManager(
 class RuleJSONManager(RuleManager):
     """
     RuleJSONManager inherit all RuleManager's rule methods. And set parse_to_dto as False.
-    Executing a rule with RuleJSONManager, will return a JSON instead of a DTO
-
+    Executing a rule with RuleJSONManager, will return a JSON instead of a DTO.
     """
 
     def __init__(self, client_user=None, config=None, admin_mode=False):

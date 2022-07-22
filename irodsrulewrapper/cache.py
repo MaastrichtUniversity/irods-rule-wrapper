@@ -1,8 +1,23 @@
+"""
+This module contains CacheTTL class and initialize CacheTTL.CACHE_TIME_STOMP with CacheTTL.set_time_stomp().
+"""
+
 import time
 import os
 
 
 class CacheTTL:
+    """
+    This class has the basic functionalities for a Browser Cache Time To Live (TTL).
+
+    Attributes
+    ----------
+    CACHE_TIME_STOMP: float
+        Timestomp of the cache information last update.
+    CACHE_USERS_GROUPS: dict[str: User|Group]
+        Cached iRODS users and group information.
+    """
+
     CACHE_TIME_STOMP = None
     CACHE_USERS_GROUPS = {}
 

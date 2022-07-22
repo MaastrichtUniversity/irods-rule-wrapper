@@ -1,10 +1,17 @@
+"""This module contains the ProjectsMinimal DTO class, its factory constructors and mock_json."""
 import json
 
-from .project_minimal import ProjectMinimal
 from pydantic import BaseModel
+
+from irodsrulewrapper.dto.project_minimal import ProjectMinimal
 
 
 class ProjectsMinimal(BaseModel):
+    """
+    This class represents a list of iRODS ProjectMinimal DTOs.
+    it overwrites __iter__, __getitem__ & __len__ methods to make the ProjectsMinimal object behave like a list.
+    """
+
     projects: list[ProjectMinimal]
 
     def __iter__(self):

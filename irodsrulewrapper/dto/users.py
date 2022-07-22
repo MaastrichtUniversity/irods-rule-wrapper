@@ -1,14 +1,17 @@
-from .user import User
-from typing import List, Dict
+"""This module contains the Users DTO class, its factory constructors and mock_json."""
 import json
+
+from irodsrulewrapper.dto.user import User
 
 
 class Users:
-    def __init__(self, users: List["User"]):
-        self.users: List["User"] = users
+    """This class represents a list of iRODS User DTOs."""
+
+    def __init__(self, users: list["User"]):
+        self.users: list["User"] = users
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> "Users":
+    def create_from_rule_result(cls, result: dict) -> "Users":
         output = []
         for item in result:
             user = User.create_from_rule_result(item)

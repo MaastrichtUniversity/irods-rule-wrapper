@@ -1,13 +1,16 @@
+"""This module contains the ResourceRuleManager class."""
+from dhpythonirodsutils import validators, exceptions
+
 from irodsrulewrapper.decorator import rule_call
-from irodsrulewrapper.utils import BaseRuleManager, RuleInfo, RuleInputValidationError
-from irodsrulewrapper.dto.resources import Resources
 from irodsrulewrapper.dto.boolean import Boolean
 from irodsrulewrapper.dto.collection_sizes import CollectionSizes
-
-from dhpythonirodsutils import validators, exceptions
+from irodsrulewrapper.dto.resources import Resources
+from irodsrulewrapper.utils import BaseRuleManager, RuleInfo, RuleInputValidationError
 
 
 class ResourceRuleManager(BaseRuleManager):
+    """This class bundles the resource related wrapped rules methods."""
+
     def __init__(self, client_user=None, admin_mode=False):
         BaseRuleManager.__init__(self, client_user, admin_mode=admin_mode)
 
@@ -67,8 +70,8 @@ class ResourceRuleManager(BaseRuleManager):
         """
         try:
             validators.validate_project_id(project)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid project id; eg. P000000001")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid project id; eg. P000000001") from err
 
         return RuleInfo(
             name="get_collection_size_per_resource", get_result=True, session=self.session, dto=CollectionSizes
@@ -77,21 +80,42 @@ class ResourceRuleManager(BaseRuleManager):
     @rule_call
     def get_project_resource_availability(self, project_id, ingest, destination, archive):
         """
+        Get if a project's resource(s) is/are up
 
         Parameters
         ----------
-        project_id
-        ingest
-        destination
-        archive
+        project_id: str
+            The project id, ie 'P000000010'
+        ingest: str
+            If we need to check the 'ingestResource' attribute of the project as well, default True
+        destination: str
+            If we need to check the 'resource' attribute of the project as well, default True
+        archive: str
+            If we need to check the 'archiveDestinationResource' attribute of the project as well, default True
 
         Returns
         -------
-
+        bool
+            If the resource(s) to check are both not down, we return True
         """
         try:
             validators.validate_project_id(project_id)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid project id; eg. P000000001")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid project id; eg. P000000001") from err
+
+        try:
+            validators.validate_string_boolean(ingest)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid value for *ingest: expected 'true' or 'false'") from err
+
+        try:
+            validators.validate_string_boolean(destination)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid value for *destination: expected 'true' or 'false'") from err
+
+        try:
+            validators.validate_string_boolean(archive)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid value for *archive: expected 'true' or 'false'") from err
 
         return RuleInfo(name="get_project_resource_availability", get_result=True, session=self.session, dto=Boolean)

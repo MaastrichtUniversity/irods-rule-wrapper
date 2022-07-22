@@ -1,39 +1,40 @@
-from typing import List, Dict
-
+"""This module contains the ProjectOverview DTO class and its factory constructor."""
 from dhpythonirodsutils.enums import ProjectAVUs
 
-from .users import User
-from .groups import Group
+from irodsrulewrapper.dto.groups import Group
+from irodsrulewrapper.dto.users import User
 from irodsrulewrapper.rule_managers.users import UserRuleManager
 
 
 class ProjectOverview:
+    """This class represents an iRODS project with a few of its attributes and its ACL."""
+
     def __init__(
         self,
-        id: str,
+        project_id: str,
         title: str,
         principal_investigator: str,
         data_steward: str,
         size: int,
-        manager_users: List,
-        contributor_users: List,
-        contributor_groups: List,
-        viewer_users: List,
-        viewer_groups: List,
+        manager_users: list,
+        contributor_users: list,
+        contributor_groups: list,
+        viewer_users: list,
+        viewer_groups: list,
     ):
-        self.id: str = id
+        self.id: str = project_id
         self.title: str = title
         self.principal_investigator: str = principal_investigator
         self.data_steward: str = data_steward
         self.size: int = size
-        self.manager_users: List = manager_users
-        self.contributor_users: List = contributor_users
-        self.contributor_groups: List = contributor_groups
-        self.viewer_users: List = viewer_users
-        self.viewer_groups: List = viewer_groups
+        self.manager_users: list = manager_users
+        self.contributor_users: list = contributor_users
+        self.contributor_groups: list = contributor_groups
+        self.viewer_users: list = viewer_users
+        self.viewer_groups: list = viewer_groups
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> "ProjectOverview":
+    def create_from_rule_result(cls, result: dict) -> "ProjectOverview":
         manager_users = []
         contributor_users = []
         contributor_groups = []

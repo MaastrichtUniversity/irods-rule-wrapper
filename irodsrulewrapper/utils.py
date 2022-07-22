@@ -1,14 +1,27 @@
+"""
+This module provides rules helpers classes and functions.
+
+Classes:
+    BaseRuleManager
+    RuleInputValidationError
+    RuleInfo
+
+Functions:
+    convert_to_current_timezone
+    publish_message
+    log_error_message
+    log_warning_message
+    log_audit_trail_message
+"""
+import datetime
 import logging
-
-from dhpythonirodsutils import loggers
-
-from irods.session import iRODSSession
-
 import os
+import ssl
+
 import pika
 import pytz
-import datetime
-import ssl
+from dhpythonirodsutils import loggers
+from irods.session import iRODSSession
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +35,11 @@ def convert_to_current_timezone(date, date_format="%Y-%m-%d %H:%M:%S"):
 
 
 class BaseRuleManager:
+    """
+    This (abstract) class has the basic methods to set up an iRODS (SSL) connection.
+    The class is inherited by the classes in the sub-package irodsrulewrapper.rule_managers.
+    """
+
     # ssl_context & ssl_settings left as class variables to help with mocking during testing
     ssl_context = ssl.create_default_context(purpose=ssl.Purpose.SERVER_AUTH, cafile=None, capath=None, cadata=None)
     ssl_settings = {
@@ -82,6 +100,11 @@ class RuleInputValidationError(Exception):
 
 
 class RuleInfo:
+    """
+    This class represents the extra information required by the @rule_call decorator to execute an iRODS rule.
+    Its objects are instantiated inside a rule wrapped method inside a RuleManager.
+    """
+
     def __init__(self, name, get_result, session, dto, input_params=None, rule_body=None, parse_to_dto=True):
         self.name = name
         self.get_result = get_result

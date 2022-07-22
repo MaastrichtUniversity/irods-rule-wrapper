@@ -38,7 +38,7 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Run Pylint
         run: |
-          pylint --max-line-length=120 --extension-pkg-whitelist=pydantic --fail-under=8 ./irodsrulewrapper/
+          pylint --max-line-length=120 --extension-pkg-whitelist=pydantic --fail-under=8.50 ./irodsrulewrapper/
 #      - name: Test with pytest
 #        run: |
 #          pytest

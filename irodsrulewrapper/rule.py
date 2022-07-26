@@ -60,16 +60,67 @@ class RuleManager(
             self.session.cleanup()
         return pwd
 
+    def generate_temporary_password(self, irods_user_name, irods_id):
+        """
+        Get a temporary password for a user and delete all existing ones.
+        Must be called with an admin account.
+        Parameters
+        ----------
+        irods_user_name : str
+            The client username
+        irods_id : str
+            The irods id for the user
+        sessions_cleanup: bool
+            If true, the session will be closed after retrieving the values.
+
+        Returns
+        -------
+        json dict :
+            temporary_password : str
+                The temporary password
+            valid_until : int
+                Unix timestamp until which the temporary password is valid
+
+        Example output: {"temporary_password": "ba66856", "valid_until": 1666606633}
+        """
+        if not isinstance(irods_id, int):
+            raise RuleInputValidationError("invalid type for *irods_id: expected a integer")
+
+        if self.session.users.get(irods_user_name).type != 'rodsuser':
+            raise RuleInputValidationError("invalid irods user type for *irods_user_name: expected a rodsuser")
+
+        if self.get_irods_user_id_by_username(irods_user_name) != irods_id:
+            raise RuleInputValidationError("invalid match between *irods_user_name and *irods_id: expected a match")
+
+        number_of_temp_passwords = self.count_user_temporary_passwords(irods_id)
+        if int(number_of_temp_passwords) > 0:
+            self.remove_user_temporary_passwords(irods_id)
+        pwd = self.get_temp_password(irods_user_name, sessions_cleanup=False)
+        ts = self.get_user_temporary_password_creation_timestamp(irods_id)
+        if not ts:
+            raise QueryException
+        # Add the temporary password lifetime (90 days) to the creation timestamp to get it validity date
+        ts = int(ts) + 7776000
+        return {"temporary_password": pwd, "valid_until": ts}
+
     def remove_user_temporary_passwords(self, irods_id):
+
+        if not isinstance(irods_id, int):
+            raise RuleInputValidationError("invalid type for *irods_id: expected a integer")
+
         try:
             query = SpecificQuery(self.session, alias="delete_password", args=[irods_id])
             result = query.execute()
             if result and result[0] != 0:
                 raise QueryException  # TODO maybe also log an error for elastalert??
         except CAT_NO_ROWS_FOUND:
-            print("no rows found, hacky workaround")
+            return
 
     def count_user_temporary_passwords(self, irods_id):
+
+        if not isinstance(irods_id, int):
+            raise RuleInputValidationError("invalid type for *irods_id: expected a integer")
+
         try:
             query = SpecificQuery(self.session, alias="count_password", args=[irods_id])
             for result in query:
@@ -78,12 +129,20 @@ class RuleManager(
             return 0
 
     def get_user_temporary_password_creation_timestamp(self, irods_id):
+
+        if not isinstance(irods_id, int):
+            raise RuleInputValidationError("invalid type for *irods_id: expected a integer")
+
         try:
             query = SpecificQuery(self.session, alias="get_create_ts_password", args=[irods_id])
             for result in query:
                 return result[0]
         except CAT_NO_ROWS_FOUND:
             return 0
+
+    def get_irods_user_id_by_username(self, user_name):
+        user_id = self.session.users.get(user_name).id
+        return user_id
 
     def download_file(self, path):
         """

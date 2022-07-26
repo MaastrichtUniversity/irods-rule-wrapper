@@ -1,9 +1,13 @@
+import pytest
+
 from irodsrulewrapper.dto.user import User
 from irodsrulewrapper.dto.user_extended import UserExtended
 from irodsrulewrapper.dto.users import Users
 from irodsrulewrapper.rule import RuleManager
 import json
 import time
+
+from irodsrulewrapper.utils import RuleInputValidationError
 
 
 def test_rule_get_user_attribute_value():
@@ -39,7 +43,7 @@ def get_user_id_by_username(username):
     ret = RuleManager(admin_mode=True).get_users("false")
     for user in ret.users:
         if user.user_name == username:
-            return user.user_id
+            return int(user.user_id)
     return 10000
 
 
@@ -55,8 +59,30 @@ def test_get_user_temporary_password_creation_timestamp():
     print(f"test result: {result}")
     creation_datetime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(result)))
     print(f"test creation datetime: {creation_datetime}")
-    expiration_datetime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(result) + 86400))  # +24H
+    expiration_datetime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(result) + 7776000))  # +90D
     print(f"test creation datetime: {expiration_datetime}")
+
+def test_generate_temporary_password_valid():
+    user_id = get_user_id_by_username("jmelius")
+    result = RuleManager(admin_mode=True).generate_temporary_password("jmelius",user_id)
+    assert result['temporary_password'] is not None
+    assert result['valid_until'] is not None
+
+def test_generate_temporary_password_invalid_match():
+    with pytest.raises(RuleInputValidationError) as e_info:
+        result = RuleManager(admin_mode=True).generate_temporary_password("jmelius", 2000)
+    assert str(e_info.value) == 'RuleInputValidationError, invalid match between *irods_user_name and *irods_id: expected a match'
+
+def test_generate_temporary_password_invalid_account_type():
+    with pytest.raises(RuleInputValidationError) as e_info:
+        user_id = get_user_id_by_username("rods")
+        result = RuleManager(admin_mode=True).generate_temporary_password("rods", user_id)
+    assert str(e_info.value) == 'RuleInputValidationError, invalid irods user type for *irods_user_name: expected a rodsuser'
+
+def test_generate_temporary_password_invalid_irods_id():
+    with pytest.raises(RuleInputValidationError) as e_info:
+        result = RuleManager(admin_mode=True).generate_temporary_password("rods", "test")
+    assert str(e_info.value) == 'RuleInputValidationError, invalid type for *irods_id: expected a integer'
 
 
 def test_remove_user_temporary_passwords():

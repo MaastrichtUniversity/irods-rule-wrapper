@@ -95,10 +95,11 @@ class RuleManager(
             self.remove_user_temporary_passwords(irods_id)
         pwd = self.get_temp_password(irods_user_name, sessions_cleanup=False)
         ts = self.get_user_temporary_password_creation_timestamp(irods_id)
+        temporary_password_lifetime = self.get_temporary_password_lifetime()
         if not ts:
             raise QueryException
-        # Add the temporary password lifetime (90 days) to the creation timestamp to get it validity date
-        ts = int(ts) + 7776000
+        # Add the temporary password lifetime (from irods server) to the creation timestamp to get it validity date
+        ts = int(ts) + temporary_password_lifetime
         return {"temporary_password": pwd, "valid_until": ts}
 
     def remove_user_temporary_passwords(self, irods_id):

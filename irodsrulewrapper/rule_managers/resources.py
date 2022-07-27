@@ -95,3 +95,16 @@ class ResourceRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid project id; eg. P000000001")
 
         return RuleInfo(name="get_project_resource_availability", get_result=True, session=self.session, dto=Boolean)
+
+    @rule_call
+    def get_temporary_password_lifetime(self):
+        """
+
+        Parameters
+        ----------
+
+        Returns
+        -------
+        Life time of temporary password in seconds
+        """
+        return RuleInfo(name="get_temporary_password_lifetime", get_result=True, session=self.session, dto=None, parse_to_dto=self.parse_to_dto)

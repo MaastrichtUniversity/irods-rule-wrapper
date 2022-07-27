@@ -1,13 +1,15 @@
-from .migration_card import MigrationCard
-from typing import List, Dict
+"""This module contains the MigrationCards DTO class and its factory constructor."""
+from irodsrulewrapper.dto.migration_card import MigrationCard
 
 
 class MigrationCards:
-    def __init__(self, cards: List["MigrationCard"]):
-        self.cards: List["MigrationCard"] = cards
+    """This class represents a list of MigrationCard User DTOs."""
+
+    def __init__(self, cards: list["MigrationCard"]):
+        self.cards: list["MigrationCard"] = cards
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> "MigrationCards":
+    def create_from_rule_result(cls, result: dict) -> "MigrationCards":
         output = []
         for item in result:
             card = MigrationCard.create_from_rule_result(item)

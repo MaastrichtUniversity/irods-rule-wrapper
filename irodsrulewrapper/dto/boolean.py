@@ -1,4 +1,9 @@
+"""This module contains the Boolean DTO class and its factory constructor."""
+
+
 class Boolean:
+    """This class represents a boolean rule output."""
+
     def __init__(self, boolean: bool):
         self.boolean: bool = boolean
 

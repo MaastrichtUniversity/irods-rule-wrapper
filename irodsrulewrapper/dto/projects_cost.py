@@ -1,14 +1,17 @@
-from .project_cost import ProjectCost
-from typing import List, Dict
+"""This module contains the ProjectsCost DTO class, its factory constructors and mock_json."""
 import json
+
+from irodsrulewrapper.dto.project_cost import ProjectCost
 
 
 class ProjectsCost:
-    def __init__(self, projects_cost: List["ProjectCost"]):
-        self.projects_cost: List["ProjectCost"] = projects_cost
+    """This class represents a list of iRODS ProjectCost DTOs."""
+
+    def __init__(self, projects_cost: list["ProjectCost"]):
+        self.projects_cost: list["ProjectCost"] = projects_cost
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> "ProjectsCost":
+    def create_from_rule_result(cls, result: dict) -> "ProjectsCost":
         # get_projects_finance returns an empty list, if the user is not the PI or data steward of the project
         if len(result) == 0:
             return None

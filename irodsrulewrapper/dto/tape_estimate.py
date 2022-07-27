@@ -1,7 +1,9 @@
-from typing import Dict
+"""This module contains the TapeEstimate DTO class and its factory constructor."""
 
 
 class TapeEstimate:
+    """This class represents the tape archival estimation information for an IRODS project collection."""
+
     def __init__(
         self,
         above_threshold_bytes_size: str,
@@ -17,7 +19,7 @@ class TapeEstimate:
         self.status: str = status
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> "TapeEstimate":
+    def create_from_rule_result(cls, result: dict) -> "TapeEstimate":
 
         group = cls(
             result["above_threshold"]["bytes_size"],

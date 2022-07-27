@@ -1,17 +1,8 @@
-from dhpythonirodsutils import validators, exceptions
-from irods.exception import (
-    DataObjectDoesNotExist,
-    CollectionDoesNotExist,
-    CAT_NO_ROWS_FOUND,
-    CAT_INVALID_CLIENT_USER,
-    QueryException,
-)
-from irods.query import SpecificQuery
 """This module contains the user-client Rule managers classes: RuleManager & RuleJSONManager."""
 from dhpythonirodsutils import validators, exceptions
-from irods.exception import CAT_INVALID_CLIENT_USER
+from irods.exception import CAT_INVALID_CLIENT_USER, CAT_NO_ROWS_FOUND, QueryException
 from irods.exception import DataObjectDoesNotExist, CollectionDoesNotExist
-
+from irods.query import SpecificQuery
 from irodsrulewrapper.rule_managers.collections import CollectionRuleManager
 from irodsrulewrapper.rule_managers.groups import GroupRuleManager
 from irodsrulewrapper.rule_managers.ingest import IngestRuleManager
@@ -95,7 +86,7 @@ class RuleManager(
         if not isinstance(irods_id, int):
             raise RuleInputValidationError("invalid type for *irods_id: expected a integer")
 
-        if self.session.users.get(irods_user_name).type != 'rodsuser':
+        if self.session.users.get(irods_user_name).type != "rodsuser":
             raise RuleInputValidationError("invalid irods user type for *irods_user_name: expected a rodsuser")
 
         if self.get_irods_user_id_by_username(irods_user_name) != irods_id:

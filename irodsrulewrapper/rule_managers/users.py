@@ -1,8 +1,5 @@
 """This module contains the UserRuleManager class."""
-import irods.exception
 from dhpythonirodsutils import validators, exceptions
-from irods.query import SpecificQuery
-
 from irodsrulewrapper.cache import CacheTTL
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.dto.attribute_value import AttributeValue

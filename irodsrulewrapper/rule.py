@@ -70,8 +70,6 @@ class RuleManager(
             The client username
         irods_id : str
             The irods id for the user
-        sessions_cleanup: bool
-            If true, the session will be closed after retrieving the values.
 
         Returns
         -------

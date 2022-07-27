@@ -55,12 +55,12 @@ def test_count_user_temporary_passwords():
 
 def test_get_user_temporary_password_creation_timestamp():
     user_id = get_user_id_by_username("jmelius")
+    RuleManager(admin_mode=True).generate_temporary_password("jmelius", user_id)
     result = RuleManager(admin_mode=True).get_user_temporary_password_creation_timestamp(user_id)
-    print(f"test result: {result}")
-    creation_datetime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(result)))
-    print(f"test creation datetime: {creation_datetime}")
-    expiration_datetime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(result) + 7776000))  # +90D
-    print(f"test creation datetime: {expiration_datetime}")
+    t = time.time()
+    ts = int(result)
+    assert isinstance(result, str)
+    assert (ts - t) < 5
 
 def test_generate_temporary_password_valid():
     user_id = get_user_id_by_username("jmelius")

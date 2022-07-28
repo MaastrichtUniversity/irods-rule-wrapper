@@ -1,4 +1,6 @@
 """This module contains the user-client Rule managers classes: RuleManager & RuleJSONManager."""
+from typing import TypedDict
+
 from dhpythonirodsutils import validators, exceptions
 from irods.exception import CAT_INVALID_CLIENT_USER, CAT_NO_ROWS_FOUND, QueryException
 from irods.exception import DataObjectDoesNotExist, CollectionDoesNotExist
@@ -10,6 +12,20 @@ from irodsrulewrapper.rule_managers.projects import ProjectRuleManager
 from irodsrulewrapper.rule_managers.resources import ResourceRuleManager
 from irodsrulewrapper.rule_managers.users import UserRuleManager
 from .utils import *
+
+
+class TemporaryPasswordTTL(TypedDict):
+    """
+    Attributes:
+    ---------
+        temporary_password : str
+            The temporary password
+        valid_until : int
+            Unix's timestamp until which the temporary password is valid
+    """
+
+    temporary_password: str
+    valid_until: int
 
 
 class RuleManager(
@@ -62,26 +78,29 @@ class RuleManager(
             self.session.cleanup()
         return pwd
 
-    def generate_temporary_password(self, irods_user_name, irods_id):
+    def generate_temporary_password(self, irods_user_name: str, irods_id: int) -> TemporaryPasswordTTL:
         """
         Get a temporary password for a user and delete all existing ones.
         Must be called with an admin account.
+
+        Examples
+        output: {"temporary_password": "ba66856", "valid_until": 1666606633}
+
+        Raises
+        ------
+        RuleInputValidationError
+
         Parameters
         ----------
         irods_user_name : str
             The client username
-        irods_id : str
+        irods_id : int
             The irods id for the user
 
         Returns
         -------
-        json dict :
-            temporary_password : str
-                The temporary password
-            valid_until : int
-                Unix timestamp until which the temporary password is valid
-
-        Example output: {"temporary_password": "ba66856", "valid_until": 1666606633}
+        TemporaryPasswordTTL
+            The password and the Time to live (TTL)
         """
         if not isinstance(irods_id, int):
             raise RuleInputValidationError("invalid type for *irods_id: expected a integer")
@@ -97,11 +116,11 @@ class RuleManager(
             self.remove_user_temporary_passwords(irods_id)
         pwd = self.get_temp_password(irods_user_name, sessions_cleanup=False)
         ts = self.get_user_temporary_password_creation_timestamp(irods_id)
-        temporary_password_lifetime = self.get_temporary_password_lifetime()
+        temporary_password_lifetime = int(self.get_temporary_password_lifetime())
         if not ts:
             raise QueryException
         # Add the temporary password lifetime (from irods server) to the creation timestamp to get it validity date
-        ts = int(ts) + temporary_password_lifetime
+        ts = ts + temporary_password_lifetime
         return {"temporary_password": pwd, "valid_until": ts}
 
     def remove_user_temporary_passwords(self, irods_id):
@@ -114,7 +133,7 @@ class RuleManager(
             result = query.execute()
             if result and result[0] != 0:
                 log_error_message(irods_id, "Failed to remove temporary password")
-                raise QueryException  # TODO maybe also log an error for elastalert??
+                raise QueryException
         except CAT_NO_ROWS_FOUND:
             return
 
@@ -126,7 +145,7 @@ class RuleManager(
         try:
             query = SpecificQuery(self.session, alias="count_password", args=[irods_id])
             for result in query:
-                return result[0]
+                return int(result[0])
         except CAT_NO_ROWS_FOUND:
             return 0
 
@@ -138,7 +157,7 @@ class RuleManager(
         try:
             query = SpecificQuery(self.session, alias="get_create_ts_password", args=[irods_id])
             for result in query:
-                return result[0]
+                return int(result[0])
         except CAT_NO_ROWS_FOUND:
             return 0
 

@@ -113,6 +113,7 @@ class RuleManager(
             query = SpecificQuery(self.session, alias="delete_password", args=[irods_id])
             result = query.execute()
             if result and result[0] != 0:
+                log_error_message(irods_id, "Failed to remove temporary password")
                 raise QueryException  # TODO maybe also log an error for elastalert??
         except CAT_NO_ROWS_FOUND:
             return

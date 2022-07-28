@@ -137,10 +137,6 @@ class RuleManager(
         ----------
         irods_id : int
             The irods id for the user
-
-        Returns
-        -------
-
         """
         if not isinstance(irods_id, int):
             raise RuleInputValidationError("invalid type for *irods_id: expected a integer")
@@ -182,7 +178,7 @@ class RuleManager(
         except CAT_NO_ROWS_FOUND:
             return 0
 
-    def get_user_temporary_password_creation_timestamp(self, irods_id: int) -> int:
+    def get_user_temporary_password_creation_timestamp(self, irods_id: int) -> int | None:
         """
         Get the timestamp of creation for the temporary password for a specific user
 
@@ -197,7 +193,7 @@ class RuleManager(
 
         Returns
         -------
-        int:
+        int | None:
             Epoch timestamp for the creation of the temporary password
         """
         if not isinstance(irods_id, int):
@@ -208,7 +204,7 @@ class RuleManager(
             for result in query:
                 return int(result[0])
         except CAT_NO_ROWS_FOUND:
-            return 0
+            return None
 
     def get_irods_user_id_by_username(self, user_name: str) -> int:
         """

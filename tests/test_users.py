@@ -51,12 +51,12 @@ def test_get_user_temporary_password_creation_timestamp():
     rule_manager = RuleJSONManager(admin_mode=True)
     user_id = rule_manager.get_irods_user_id_by_username("jmelius")
     rule_manager.generate_temporary_password("jmelius", user_id)
-    result = rule_manager.get_user_temporary_password_creation_timestamp(user_id)
+    time_stamp = rule_manager.get_user_temporary_password_creation_timestamp(user_id)
     rule_manager.session.cleanup()
+    # Check if the timestamp of the generated temp password is within 5 seconds of the current time
     t = time.time()
-    ts = int(result)
-    assert isinstance(ts, int)
-    assert (ts - t) < 5
+    assert isinstance(time_stamp, int)
+    assert (time_stamp - t) < 5
 
 
 def test_generate_temporary_password_valid():

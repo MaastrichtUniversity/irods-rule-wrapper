@@ -11,7 +11,7 @@ from irodsrulewrapper.rule_managers.ingest import IngestRuleManager
 from irodsrulewrapper.rule_managers.projects import ProjectRuleManager
 from irodsrulewrapper.rule_managers.resources import ResourceRuleManager
 from irodsrulewrapper.rule_managers.users import UserRuleManager
-from .utils import *
+from irodsrulewrapper.utils import BaseRuleManager, RuleInputValidationError, log_error_message
 
 
 class TemporaryPasswordTTL(TypedDict):
@@ -89,6 +89,7 @@ class RuleManager(
         Raises
         ------
         RuleInputValidationError
+        QueryException
 
         Parameters
         ----------
@@ -115,16 +116,32 @@ class RuleManager(
         if int(number_of_temp_passwords) > 0:
             self.remove_user_temporary_passwords(irods_id)
         pwd = self.get_temp_password(irods_user_name, sessions_cleanup=False)
-        ts = self.get_user_temporary_password_creation_timestamp(irods_id)
+        creation_time_stamp = self.get_user_temporary_password_creation_timestamp(irods_id)
         temporary_password_lifetime = int(self.get_temporary_password_lifetime())
-        if not ts:
+        if not creation_time_stamp:
             raise QueryException
         # Add the temporary password lifetime (from irods server) to the creation timestamp to get it validity date
-        ts = ts + temporary_password_lifetime
-        return {"temporary_password": pwd, "valid_until": ts}
+        time_stamp = creation_time_stamp + temporary_password_lifetime
+        return {"temporary_password": pwd, "valid_until": time_stamp}
 
-    def remove_user_temporary_passwords(self, irods_id):
+    def remove_user_temporary_passwords(self, irods_id: int):
+        """
+        Removes all existing temporary passwords
 
+        Raises
+        ------
+        RuleInputValidationError
+        QueryException
+
+        Parameters
+        ----------
+        irods_id : int
+            The irods id for the user
+
+        Returns
+        -------
+
+        """
         if not isinstance(irods_id, int):
             raise RuleInputValidationError("invalid type for *irods_id: expected a integer")
 
@@ -137,8 +154,24 @@ class RuleManager(
         except CAT_NO_ROWS_FOUND:
             return
 
-    def count_user_temporary_passwords(self, irods_id):
+    def count_user_temporary_passwords(self, irods_id: int) -> int:
+        """
+        Count the number of temporary passwords for a user
 
+        Raises
+        ------
+        RuleInputValidationError
+
+        Parameters
+        ----------
+        irods_id : int
+            The irods id for the user
+
+        Returns
+        -------
+        int:
+            the number of temporary passwords for a user
+        """
         if not isinstance(irods_id, int):
             raise RuleInputValidationError("invalid type for *irods_id: expected a integer")
 
@@ -149,8 +182,24 @@ class RuleManager(
         except CAT_NO_ROWS_FOUND:
             return 0
 
-    def get_user_temporary_password_creation_timestamp(self, irods_id):
+    def get_user_temporary_password_creation_timestamp(self, irods_id: int) -> int:
+        """
+        Get the timestamp of creation for the temporary password for a specific user
 
+        Raises
+        ------
+        RuleInputValidationError
+
+        Parameters
+        ----------
+        irods_id : int
+            The irods id for the user
+
+        Returns
+        -------
+        int:
+            Epoch timestamp for the creation of the temporary password
+        """
         if not isinstance(irods_id, int):
             raise RuleInputValidationError("invalid type for *irods_id: expected a integer")
 
@@ -161,7 +210,24 @@ class RuleManager(
         except CAT_NO_ROWS_FOUND:
             return 0
 
-    def get_irods_user_id_by_username(self, user_name):
+    def get_irods_user_id_by_username(self, user_name: str) -> int:
+        """
+        Get the irods user id for a give irods username
+
+        Raises
+        ------
+        UserDoesNotExist
+
+        Parameters
+        ----------
+        user_name : str
+            The irods user_name
+
+        Returns
+        -------
+        int:
+            irods user id
+        """
         user_id = self.session.users.get(user_name).id
         return user_id
 

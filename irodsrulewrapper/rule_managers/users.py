@@ -173,3 +173,21 @@ class UserRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid type for *username: expected a string")
 
         return RuleInfo(name="get_user_internal_affiliation_status", get_result=True, session=self.session, dto=Boolean)
+
+    @rule_call
+    def get_temporary_password_lifetime(self):
+        """
+        Query the temporary password lifetime in the server configuration
+
+        Returns
+        -------
+        str
+            Life time of temporary password in seconds
+        """
+        return RuleInfo(
+            name="get_temporary_password_lifetime",
+            get_result=True,
+            session=self.session,
+            dto=None,
+            parse_to_dto=self.parse_to_dto,
+        )

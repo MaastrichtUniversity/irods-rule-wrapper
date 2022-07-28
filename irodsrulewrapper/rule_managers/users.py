@@ -181,7 +181,7 @@ class UserRuleManager(BaseRuleManager):
 
         Returns
         -------
-        str
+        int
             Life time of temporary password in seconds
         """
         return RuleInfo(

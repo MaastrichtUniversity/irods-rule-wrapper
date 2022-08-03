@@ -1,6 +1,5 @@
 """This module contains the UserRuleManager class."""
 from dhpythonirodsutils import validators, exceptions
-
 from irodsrulewrapper.cache import CacheTTL
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.dto.attribute_value import AttributeValue
@@ -174,3 +173,21 @@ class UserRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid type for *username: expected a string")
 
         return RuleInfo(name="get_user_internal_affiliation_status", get_result=True, session=self.session, dto=Boolean)
+
+    @rule_call
+    def get_temporary_password_lifetime(self):
+        """
+        Query the temporary password lifetime in the server configuration
+
+        Returns
+        -------
+        int
+            Life time of temporary password in seconds
+        """
+        return RuleInfo(
+            name="get_temporary_password_lifetime",
+            get_result=True,
+            session=self.session,
+            dto=None,
+            parse_to_dto=self.parse_to_dto,
+        )

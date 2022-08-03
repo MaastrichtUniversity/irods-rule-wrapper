@@ -57,7 +57,7 @@ class ResourceRuleManager(BaseRuleManager):
     @rule_call
     def get_collection_size_per_resource(self, project):
         """
-        List cllection size per resource
+        List collection size per resource
 
         Parameters
         project : str
@@ -119,3 +119,4 @@ class ResourceRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid value for *archive: expected 'true' or 'false'") from err
 
         return RuleInfo(name="get_project_resource_availability", get_result=True, session=self.session, dto=Boolean)
+

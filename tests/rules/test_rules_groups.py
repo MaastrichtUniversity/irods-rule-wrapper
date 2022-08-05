@@ -25,3 +25,8 @@ def test_rule_get_users_in_group():
     assert users[0].user_name is not None
     assert users[0].user_id is not None
     assert users[0].display_name is not None
+
+
+def test_rule_get_user_group_memberships():
+    result = RuleManager(admin_mode=True).get_user_group_memberships("true", "jmelius")
+    assert result.groups is not None

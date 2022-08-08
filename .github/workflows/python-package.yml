@@ -39,9 +39,9 @@ jobs:
       - name: Run Pylint
         run: |
           pylint --max-line-length=120 --extension-pkg-whitelist=pydantic --fail-under=8.50 ./irodsrulewrapper/
-#      - name: Test with pytest
-#        run: |
-#          pytest
+      - name: Test with pytest
+        run: |
+          pytest --ignore=./tests/rules
       - name: Report Status to Dean
         if: ${{ always() && github.event.pusher.name == 'deanlinssen' }}
         uses: ravsamhq/notify-slack-action@master

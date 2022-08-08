@@ -2,6 +2,7 @@ import json
 
 from irodsrulewrapper.dto.data_stewards import DataStewards, DataSteward
 from irodsrulewrapper.dto.user_extended import UserExtended
+from irodsrulewrapper.dto.user_or_group import UserOrGroup
 from irodsrulewrapper.dto.users import Users, User
 
 
@@ -52,6 +53,40 @@ def test_dto_data_stewards():
     assert result.data_stewards[0].user_name == "opalmen"
     assert result.data_stewards[1].user_name == "pvanschay2"
 
+
+def test_dto_user_or_group():
+    user = UserOrGroup.create_from_rule_result(json.loads(USER)).result
+    assert user is not None
+    assert user["userName"] == "jmelius"
+    assert user["userId"] == "10045"
+    assert user["account_type"] == "rodsuser"
+
+    group = UserOrGroup.create_from_rule_result(json.loads(GROUP)).result
+    assert group is not None
+    assert group["groupName"] == "datahub"
+    assert group["groupId"] == "10129"
+    assert group["account_type"] == "rodsgroup"
+
+
+USER = """
+{
+    "account_type": "rodsuser",
+    "displayName": "Jonathan M\u00e9lius",
+    "userId": "10045",
+    "userName": "jmelius"
+}
+
+"""
+
+GROUP = """
+{
+    "account_type": "rodsgroup",
+    "description": "It's DataHub! The place to store your data.",
+    "displayName": "DataHub",
+    "groupId": "10129",
+    "groupName": "datahub"
+}
+"""
 
 DATA_STEWARD = """
 {

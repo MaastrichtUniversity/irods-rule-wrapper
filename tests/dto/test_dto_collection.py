@@ -1,10 +1,14 @@
 import json
 
+from irodsrulewrapper.dto.tape_estimate import TapeEstimate
+
 from irodsrulewrapper.dto.boolean import Boolean
 from irodsrulewrapper.dto.collection import Collection
 from irodsrulewrapper.dto.collection_details import CollectionDetails
 from irodsrulewrapper.dto.collection_sizes import CollectionSizes, CollectionSize
 from irodsrulewrapper.dto.collections import Collections
+from irodsrulewrapper.dto.external_pid import ExternalPID
+from irodsrulewrapper.dto.metadata_pid import MetadataPID
 
 
 # AttributeValue
@@ -66,6 +70,34 @@ def test_dto_collections_sizes():
     assert result.collection_sizes["C000000003"][0].relative_size == 100.0
     assert result.collection_sizes["C000000003"][0].resource == "replRescUM01"
     assert result.collection_sizes["C000000003"][0].size == 3734
+
+
+def test_dto_metadata_pid():
+    result = MetadataPID.create_from_rule_result(json.loads(METADATA_PID))
+    assert result.collection["handle"] == "21.T12996/P000000014C000000001.1"
+    assert result.collection["url"] == "http://mdr.local.dh.unimaas.nl/hdl/P000000014/C000000001.1"
+
+    assert result.instance["handle"] == "21.T12996/P000000014C000000001instance.1"
+    assert result.instance["url"] == "http://mdr.local.dh.unimaas.nl/hdl/P000000014/C000000001/instance.1"
+
+    assert result.schema["handle"] == "21.T12996/P000000014C000000001schema.1"
+    assert result.schema["url"] == "http://mdr.local.dh.unimaas.nl/hdl/P000000014/C000000001/schema.1"
+
+
+def test_dto_external_pid():
+    pid = ExternalPID.create_from_rule_result(json.loads(EXTERNAL_PID))
+    assert pid is not None
+    assert pid.pid == "https://doi.org/10.34894/UMF5VF"
+    assert pid.repository == "DataverseNL"
+
+
+def test_dto_tape_estimate():
+    estimate = TapeEstimate.create_from_rule_result(json.loads(PROJECT_COLLECTION_TAPE_ESTIMATE))
+    assert estimate.above_threshold_bytes_size == 521638758
+    assert estimate.above_threshold_number_files == 1
+    assert estimate.archivable_bytes_size == 521638758
+    assert estimate.archivable_number_files == 1
+    assert estimate.status == "online"
 
 
 COLLECTION_SIZE_PER_RESOURCE = """
@@ -221,4 +253,44 @@ COLLECTION_DETAILS = """
         ]
     }
 }
+"""
+
+METADATA_PID = """
+{
+    "collection": {
+        "handle": "21.T12996/P000000014C000000001.1",
+        "url": "http://mdr.local.dh.unimaas.nl/hdl/P000000014/C000000001.1"
+    },
+    "instance": {
+        "handle": "21.T12996/P000000014C000000001instance.1",
+        "url": "http://mdr.local.dh.unimaas.nl/hdl/P000000014/C000000001/instance.1"
+    },
+    "schema": {
+        "handle": "21.T12996/P000000014C000000001schema.1",
+        "url": "http://mdr.local.dh.unimaas.nl/hdl/P000000014/C000000001/schema.1"
+    }
+}
+
+"""
+
+EXTERNAL_PID = """
+{
+    "value": "doi:10.34894/UMF5VF",
+    "unit": "DataverseNL"
+}
+"""
+
+PROJECT_COLLECTION_TAPE_ESTIMATE = """
+{
+    "above_threshold": {
+        "bytes_size": 521638758,
+        "number_files": 1
+    },
+    "archivable": {
+        "bytes_size": 521638758,
+        "number_files": 1
+    },
+    "status": "online"
+}
+
 """

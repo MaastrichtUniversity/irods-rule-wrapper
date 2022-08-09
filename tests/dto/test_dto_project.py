@@ -1,19 +1,20 @@
 import json
-
-from irodsrulewrapper.dto.projects_overview import ProjectsOverview
-
-from irodsrulewrapper.dto.project_contributors import ProjectContributors
+from unittest.mock import patch
 
 from irodsrulewrapper.dto.contributing_project import ContributingProject
 from irodsrulewrapper.dto.contributing_projects import ContributingProjects
 from irodsrulewrapper.dto.create_project import CreateProject
+from irodsrulewrapper.dto.group import Group
 from irodsrulewrapper.dto.managing_projects import ManagingProjects
 from irodsrulewrapper.dto.migration_cards import MigrationCards, MigrationCard
 from irodsrulewrapper.dto.project import Project
+from irodsrulewrapper.dto.project_contributors import ProjectContributors
 from irodsrulewrapper.dto.project_contributors_metadata import ProjectContributorsMetadata
 from irodsrulewrapper.dto.projects import Projects
 from irodsrulewrapper.dto.projects_cost import ProjectsCost
 from irodsrulewrapper.dto.projects_minimal import ProjectsMinimal
+from irodsrulewrapper.dto.projects_overview import ProjectsOverview
+from irodsrulewrapper.dto.user import User
 
 
 def test_dto_managing_projects():
@@ -120,25 +121,73 @@ def test_dto_project_contributors():
     assert project.contributors_groups == ["datahub"]
 
 
-# def test_dto_projects_overview():
-#     projects = ProjectsOverview.create_from_rule_result(json.loads(PROJECTS_OVERVIEW)).projects
-#     assert projects[3].id == "P000000015"
-#     assert projects[3].title == "Your society will be sought by people of taste and refinement."
-#     assert projects[3].principal_investigator == "psuppers"
-#     assert projects[3].data_steward == "opalmen"
-#     assert projects[3].size == 0.0
-#     # assert projects[1].manager_users.users[0].user_name == "psuppers"
-#     # assert projects[1].contributor_users.users == []
-#     # assert projects[1].contributor_groups.groups[0].name == ""
-#     # assert projects[1].contributor_groups.groups[0].display_name == "DataHub"
-#     # assert projects[1].viewer_users.users == []
-#     # assert projects[1].viewer_groups.groups == []
-#
-#     # manager_users: list,
-#     # contributor_users: list,
-#     # contributor_groups: list,
-#     # viewer_users: list,
-#     # viewer_groups: list,
+def test_dto_projects_overview():
+    mock_user_rule_manager = patch("irodsrulewrapper.dto.project_overview.UserRuleManager").start()
+    instance_user_rule_manager = mock_user_rule_manager.return_value
+    instance_user_rule_manager.get_user_or_group.side_effect = get_user_or_group_side_effect
+
+    projects = ProjectsOverview.create_from_rule_result(json.loads(PROJECTS_OVERVIEW)).projects
+
+    assert projects[0].id == "P000000012"
+    assert projects[0].title == "You recoil from the crude; you tend naturally toward the exquisite."
+    assert projects[0].principal_investigator == "pvanschay2"
+    assert projects[0].data_steward == "pvanschay2"
+    assert projects[0].size == 0.0
+    assert projects[0].manager_users[0].user_name == "pvanschay2"
+    assert projects[0].manager_users[0].user_id == "10055"
+    assert projects[0].manager_users[0].display_name == "Paul van Schayck"
+    assert projects[0].contributor_users == []
+    assert projects[0].contributor_groups[0].name == "m4i-nanoscopy"
+    assert projects[0].contributor_groups[0].id == "10126"
+    assert projects[0].contributor_groups[0].display_name == "Nanoscopy"
+    assert projects[0].viewer_users == []
+    assert projects[0].viewer_groups == []
+
+    assert projects[3].id == "P000000015"
+    assert projects[3].title == "Your society will be sought by people of taste and refinement."
+    assert projects[3].principal_investigator == "psuppers"
+    assert projects[3].data_steward == "opalmen"
+    assert projects[3].size == 0.0
+    assert projects[3].manager_users[0].user_name == "psuppers"
+    assert projects[3].manager_users[0].user_id == "10060"
+    assert projects[3].manager_users[0].display_name == "Pascal Suppers"
+    assert projects[3].manager_users[1].user_name == "opalmen"
+    assert projects[3].manager_users[1].user_id == "10085"
+    assert projects[3].manager_users[1].display_name == "Olav Palmen"
+    assert projects[3].contributor_users == []
+    assert projects[3].contributor_groups[0].name == "datahub"
+    assert projects[3].contributor_groups[0].id == "10129"
+    assert projects[3].contributor_groups[0].display_name == "DataHub"
+    assert projects[3].viewer_users == []
+    assert projects[3].viewer_groups == []
+
+
+def get_user_or_group_side_effect(uid):
+    if uid == "10055":
+        user = {"displayName": "Paul van Schayck", "userId": "10055", "userName": "pvanschay2"}
+        return User.create_from_rule_result(user)
+    elif uid == "10060":
+        user = {"displayName": "Pascal Suppers", "userId": "10060", "userName": "psuppers"}
+        return User.create_from_rule_result(user)
+    elif uid == "10085":
+        user = {"displayName": "Olav Palmen", "userId": "10085", "userName": "opalmen"}
+        return User.create_from_rule_result(user)
+    elif uid == "10126":
+        group = {
+            "description": "CO for all of nanoscopy",
+            "displayName": "Nanoscopy",
+            "userId": "10126",
+            "userName": "m4i-nanoscopy",
+        }
+        return Group.create_from_rule_result(group)
+    elif uid == "10129":
+        group = {
+            "description": "It's DataHub! The place to store your data.",
+            "displayName": "DataHub",
+            "userId": "10129",
+            "userName": "datahub",
+        }
+        return Group.create_from_rule_result(group)
 
 
 MIGRATION_CARD = """

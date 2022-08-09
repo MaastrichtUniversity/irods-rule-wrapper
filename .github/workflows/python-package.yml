@@ -6,6 +6,9 @@ name: DataHub iRODS rule-wrapper - Python package
 
 on: [ push, workflow_dispatch ]
 
+env:
+    CACHE_TTL_VALUE: 86400
+
 jobs:
   build:
     runs-on: ubuntu-latest

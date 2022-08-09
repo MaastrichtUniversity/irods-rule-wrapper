@@ -1,7 +1,6 @@
 import pytest
 
 from dhpythonirodsutils import validators
-from dhpythonirodsutils.exceptions import ValidationError
 
 
 @pytest.mark.parametrize(
@@ -19,6 +18,6 @@ def test_is_safe_path(path, expected_result):
     result = True
     try:
         validators.validate_path_safety(basedir, path)
-    except ValidationError:
+    except:
         result = False
     assert result is expected_result

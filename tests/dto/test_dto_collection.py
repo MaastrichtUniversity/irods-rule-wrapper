@@ -1,7 +1,7 @@
 import json
 
 from irodsrulewrapper.dto.tape_estimate import TapeEstimate
-
+from irodsrulewrapper.dto.attribute_value import AttributeValue
 from irodsrulewrapper.dto.boolean import Boolean
 from irodsrulewrapper.dto.collection import Collection
 from irodsrulewrapper.dto.collection_details import CollectionDetails
@@ -45,6 +45,11 @@ def test_collections():
 def test_boolean():
     result = Boolean.create_from_rule_result(BOOLEAN_RESULT)
     assert result.boolean is True
+
+
+def test_dto_attribute_value():
+    ret = AttributeValue.create_from_rule_result(json.loads('{"value": "foobar"}'))
+    assert ret.value == "foobar"
 
 
 def test_dto_collection_size():

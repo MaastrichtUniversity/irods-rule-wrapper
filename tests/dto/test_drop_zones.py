@@ -1,6 +1,5 @@
 import json
 
-from irodsrulewrapper.dto.attribute_value import AttributeValue
 from irodsrulewrapper.dto.drop_zone import DropZone
 from irodsrulewrapper.dto.drop_zones import DropZones
 from irodsrulewrapper.dto.token import Token
@@ -14,11 +13,6 @@ def test_dto_dropzone():
 def test_dto_dropzones():
     dropzones = DropZones.create_from_rule_result(json.loads(DROPZONES)).drop_zones
     assert dropzones[0].state == "open"
-
-
-def test_dto_attribute_value():
-    ret = AttributeValue.create_from_rule_result(json.loads('{"value": "foobar"}'))
-    assert ret.value == "foobar"
 
 
 def test_dto_token():

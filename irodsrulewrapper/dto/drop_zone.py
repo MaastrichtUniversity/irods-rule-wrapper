@@ -1,4 +1,6 @@
 """This module contains the DropZone class and its factory constructor."""
+import json
+
 from dhpythonirodsutils import formatters
 from dhpythonirodsutils.enums import ProjectAVUs
 
@@ -63,3 +65,32 @@ class DropZone:
             formatters.format_string_to_boolean(result[ProjectAVUs.ENABLE_DROPZONE_SHARING.value]),
         )
         return user
+
+    @classmethod
+    def create_from_mock_result(cls, mock_json=None) -> "DropZone":
+        if mock_json is None:
+            mock_json = DROPZONE
+        return DropZone.create_from_rule_result(json.loads(mock_json))
+
+
+DROPZONE = """
+  {
+    "totalSize": "521844260",
+    "token": "prickly-caracal",
+    "type": "mounted",
+    "sharedWithMe": "true",
+    "state": "error-post-ingestion",
+    "validateMsg": "N/A",
+    "project": "P000000014",
+    "title": "Test sprint 1",
+    "validateState": "N/A",
+    "projectTitle": "Hope that the day after you die is a nice day.",
+    "enableDropzoneSharing": "true",
+    "date": "01659701010",
+    "creator": "jmelius",
+    "destination": "C000000001",
+    "startDate": "2022-08-05",
+    "userName": "N/A",
+    "endDate": "2022-11-03"
+  }
+"""

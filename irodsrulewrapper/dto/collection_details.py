@@ -1,4 +1,6 @@
 """This module contains the CollectionDetails DTO class and its factory constructor."""
+import json
+
 from dhpythonirodsutils import formatters
 from dhpythonirodsutils.enums import ProjectAVUs
 
@@ -83,3 +85,84 @@ class CollectionDetails:
             external_pid_list,
         )
         return collection
+
+    @classmethod
+    def create_from_mock_result(cls, mock_json=None) -> "CollectionDetails":
+        if mock_json is None:
+            mock_json = COLLECTION_DETAILS
+        return CollectionDetails.create_from_rule_result(json.loads(mock_json))
+
+
+COLLECTION_DETAILS = """
+{
+    "PID": "21.T12996/P000000014C000000001",
+    "byteSize": 554400,
+    "collection": "C000000001",
+    "contributors": {
+        "groupObjects": [
+            {
+                "description": "It's DataHub! The place to store your data.",
+                "displayName": "DataHub",
+                "groupId": "10122",
+                "groupName": "datahub"
+            }
+        ],
+        "groups": [
+            "datahub"
+        ],
+        "userObjects": [
+            {
+                "displayName": "service-pid",
+                "userId": "10107",
+                "userName": "service-pid"
+            }
+        ],
+        "users": [
+            "service-pid"
+        ]
+    },
+    "creator": "jonathan.melius@maastrichtuniversity.nl",
+    "enableArchive": "true",
+    "enableOpenAccessExport": "true",
+    "enableUnarchive": "true",
+    "exporterState": "no-state-set",
+    "externals": "no-externalPID-set",
+    "managers": {
+        "groupObjects": [],
+        "groups": [],
+        "userObjects": [
+            {
+                "displayName": "Pascal Suppers",
+                "userId": "10058",
+                "userName": "psuppers"
+            },
+            {
+                "displayName": "Olav Palmen",
+                "userId": "10083",
+                "userName": "opalmen"
+            }
+        ],
+        "users": [
+            "psuppers",
+            "opalmen"
+        ]
+    },
+    "numFiles": "4",
+    "project": "P000000014",
+    "title": "Dataset Title1",
+    "viewers": {
+        "groupObjects": [],
+        "groups": [],
+        "userObjects": [
+            {
+                "displayName": "service-disqover",
+                "userId": "10110",
+                "userName": "service-disqover"
+            }
+        ],
+        "users": [
+            "service-disqover"
+        ]
+    }
+}
+"""

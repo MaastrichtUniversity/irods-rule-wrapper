@@ -1,0 +1,114 @@
+{
+  "projects": [
+    {
+      "id": "P000000012",
+      "title": "You recoil from the crude; you tend naturally toward the exquisite.",
+      "principal_investigator": "pvanschay2",
+      "data_steward": "pvanschay2",
+      "size": 12,
+      "manager_users": [
+        {
+          "user_name": "pvanschay2",
+          "user_id": "10055",
+          "display_name": "Paul van Schayck2"
+        }
+      ],
+      "contributor_users": [],
+      "contributor_groups": [
+        {
+          "name": "m4i-nanoscopy",
+          "id": "10126",
+          "display_name": "Nanoscopy",
+          "description": "CO for all of nanoscopy"
+        }
+      ],
+      "viewer_users": [],
+      "viewer_groups": []
+    },
+    {
+      "id": "P000000013",
+      "title": "You will soon forget this.",
+      "principal_investigator": "pvanschay2",
+      "data_steward": "pvanschay2",
+      "size": 10,
+      "manager_users": [
+        {
+          "user_name": "pvanschay2",
+          "user_id": "10055",
+          "display_name": "Paul van Schayck"
+        }
+      ],
+      "contributor_users": [],
+      "contributor_groups": [
+        {
+          "name": "m4i-nanoscopy",
+          "id": "10126",
+          "display_name": "Nanoscopy",
+          "description": "CO for all of nanoscopy"
+        }
+      ],
+      "viewer_users": [],
+      "viewer_groups": []
+    },
+    {
+      "id": "P000000014",
+      "title": "Hope that the day after you die is a nice day.",
+      "principal_investigator": "psuppers",
+      "data_steward": "opalmen",
+      "size": 0,
+      "manager_users": [
+        {
+          "user_name": "psuppers",
+          "user_id": "10060",
+          "display_name": "Pascal Suppers"
+        },
+        {
+          "user_name": "opalmen",
+          "user_id": "10085",
+          "display_name": "Olav Palmen"
+        }
+      ],
+      "contributor_users": [],
+      "contributor_groups": [
+        {
+          "name": "datahub",
+          "id": "10129",
+          "display_name": "DataHub",
+          "description": "It's DataHub! The place to store your data."
+        }
+      ],
+      "viewer_users": [],
+      "viewer_groups": []
+    },
+    {
+      "id": "P000000015",
+      "title": "Your society will be sought by people of taste and refinement.",
+      "principal_investigator": "psuppers",
+      "data_steward": "opalmen",
+      "size": 0,
+      "manager_users": [
+        {
+          "user_name": "psuppers",
+          "user_id": "10060",
+          "display_name": "Pascal Suppers"
+        },
+        {
+          "user_name": "opalmen",
+          "user_id": "10085",
+          "display_name": "Olav Palmen"
+        }
+      ],
+      "contributor_users": [],
+      "contributor_groups": [
+        {
+          "name": "datahub",
+          "id": "10129",
+          "display_name": "DataHub",
+          "description": "It's DataHub! The place to store your data."
+        }
+      ],
+      "viewer_users": [],
+      "viewer_groups": []
+    }
+  ]
+}

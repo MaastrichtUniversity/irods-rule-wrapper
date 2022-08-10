@@ -1,4 +1,5 @@
 """This module contains the AttributeValue DTO class and its factory constructor."""
+import json
 
 
 class AttributeValue:
@@ -15,3 +16,9 @@ class AttributeValue:
     def create_from_rule_result(cls, result: dict) -> "AttributeValue":
         value = cls(result["value"])
         return value
+
+    @classmethod
+    def create_from_mock_result(cls, mock_json=None) -> "AttributeValue":
+        if mock_json is None:
+            mock_json = '{"value": "50"}'
+        return AttributeValue.create_from_rule_result(json.loads(mock_json))

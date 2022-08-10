@@ -4,7 +4,7 @@ import json
 from cedarparsingutils.dto.general_instance import GeneralInstance
 from dhpythonirodsutils import validators, exceptions, formatters
 
-from irodsrulewrapper.decorator import rule_call
+from irodsrulewrapper.decorator import rule_call, api_call, INSTANCE_JSON, SCHEMA_JSON
 from irodsrulewrapper.dto.attribute_value import AttributeValue
 from irodsrulewrapper.dto.boolean import Boolean
 from irodsrulewrapper.dto.collection_details import CollectionDetails
@@ -296,6 +296,7 @@ class CollectionRuleManager(BaseRuleManager):
         """
         return RuleInfo(name="prepareExportProjectCollection", get_result=False, session=self.session, dto=None)
 
+    @api_call(mock=SCHEMA_JSON)
     def read_schema_from_collection(self, project_id: str, collection_id: str) -> dict:
         """
         Returns the object version of the schema.json on the collections root
@@ -348,6 +349,7 @@ class CollectionRuleManager(BaseRuleManager):
         except exceptions.ValidationError as err:
             raise RuleInputValidationError("invalid schema path provided") from err
 
+    @api_call(mock=INSTANCE_JSON)
     def read_instance_from_collection(self, project_id: str, collection_id: str) -> dict:
         """
         Returns the object version of the instance.json on the collections root

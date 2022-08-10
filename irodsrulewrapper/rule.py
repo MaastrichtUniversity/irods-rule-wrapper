@@ -5,6 +5,8 @@ from dhpythonirodsutils import validators, exceptions
 from irods.exception import CAT_INVALID_CLIENT_USER, CAT_NO_ROWS_FOUND, QueryException
 from irods.exception import DataObjectDoesNotExist, CollectionDoesNotExist
 from irods.query import SpecificQuery
+
+from irodsrulewrapper.decorator import api_call
 from irodsrulewrapper.rule_managers.collections import CollectionRuleManager
 from irodsrulewrapper.rule_managers.groups import GroupRuleManager
 from irodsrulewrapper.rule_managers.ingest import IngestRuleManager
@@ -78,6 +80,7 @@ class RuleManager(
             self.session.cleanup()
         return pwd
 
+    @api_call(mock={"temporary_password": "pwd", "valid_until": 10042})
     def generate_temporary_password(self, irods_user_name: str, irods_id: int) -> TemporaryPasswordTTL:
         """
         Get a temporary password for a user and delete all existing ones.
@@ -124,6 +127,7 @@ class RuleManager(
         time_stamp = creation_time_stamp + temporary_password_lifetime
         return {"temporary_password": pwd, "valid_until": time_stamp}
 
+    @api_call(mock=None)
     def remove_user_temporary_passwords(self, irods_id: int):
         """
         Removes all existing temporary passwords
@@ -150,6 +154,7 @@ class RuleManager(
         except CAT_NO_ROWS_FOUND:
             return
 
+    @api_call(mock=42)
     def count_user_temporary_passwords(self, irods_id: int) -> int:
         """
         Count the number of temporary passwords for a user
@@ -178,6 +183,7 @@ class RuleManager(
         except CAT_NO_ROWS_FOUND:
             return 0
 
+    @api_call(mock=10042)
     def get_user_temporary_password_creation_timestamp(self, irods_id: int) -> int | None:
         """
         Get the timestamp of creation for the temporary password for a specific user
@@ -206,6 +212,7 @@ class RuleManager(
         except CAT_NO_ROWS_FOUND:
             return None
 
+    @api_call(mock=10042)
     def get_irods_user_id_by_username(self, user_name: str) -> int:
         """
         Get the irods user id for a give irods username
@@ -225,7 +232,7 @@ class RuleManager(
             irods user id
         """
         user_id = self.session.users.get(user_name).id
-        return user_id
+        return int(user_id)
 
     def download_file(self, path):
         """

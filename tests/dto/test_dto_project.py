@@ -126,7 +126,9 @@ def test_dto_projects_overview():
     instance_user_rule_manager = mock_user_rule_manager.return_value
     instance_user_rule_manager.get_user_or_group.side_effect = get_user_or_group_side_effect
 
-    projects = ProjectsOverview.create_from_rule_result(json.loads(PROJECTS_OVERVIEW)).projects
+    result = ProjectsOverview.create_from_rule_result(json.loads(PROJECTS_OVERVIEW))
+    projects = result.projects
+    print(result.json(indent=2))
 
     assert projects[0].id == "P000000012"
     assert projects[0].title == "You recoil from the crude; you tend naturally toward the exquisite."

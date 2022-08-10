@@ -1,4 +1,5 @@
 """This module contains the UserOrGroup DTO class and its factory constructor."""
+import json
 
 
 class UserOrGroup:
@@ -18,3 +19,19 @@ class UserOrGroup:
             return None
         output = cls(result)
         return output
+
+    @classmethod
+    def create_from_mock_result(cls, mock_json=None) -> "UserOrGroup":
+        if mock_json is None:
+            mock_json = USER
+        return UserOrGroup.create_from_rule_result(json.loads(mock_json))
+
+
+USER = """
+{
+    "account_type": "rodsuser",
+    "displayName": "Jonathan M\u00e9lius",
+    "userId": "10045",
+    "userName": "jmelius"
+}
+"""

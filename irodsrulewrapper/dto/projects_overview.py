@@ -1,15 +1,20 @@
 """This module contains the ProjectsOverview DTO class and its factory constructor."""
+import json
+
+from pydantic import BaseModel
+
 from irodsrulewrapper.cache import CacheTTL
 from irodsrulewrapper.dto.project_overview import ProjectOverview
 
 
-class ProjectsOverview:
+class ProjectsOverview(BaseModel):
     """
     This class represents a list of iRODS ProjectsOverview DTOs.
     """
 
-    def __init__(self, projects: list["ProjectOverview"]):
-        self.projects: list["ProjectOverview"] = projects
+    projects: list[ProjectOverview]
+    # def __init__(self, projects: list["ProjectOverview"]):
+    #     self.projects: list["ProjectOverview"] = projects
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "ProjectsOverview":
@@ -20,5 +25,139 @@ class ProjectsOverview:
                 item,
             )
             output.append(project)
-        projects = cls(output)
+        projects = cls(projects=output)
         return projects
+
+    @classmethod
+    def create_from_mock_result(cls, projects_json=None) -> "ProjectsOverview":
+        if projects_json is None:
+            projects_json = PROJECTS_OVERVIEW
+        return ProjectsOverview.create_from_rule_result(json.loads(projects_json))
+
+    @classmethod
+    def create_from_mock_json(cls) -> "ProjectsOverview":
+        import pathlib
+        import os
+
+        dto_folder = pathlib.Path(__file__).parent.resolve()
+        mock_path = os.path.join(dto_folder, "mocks", f"{cls.__name__}.mock.json")
+        with open(mock_path, "r", encoding="utf-8") as file:
+            return ProjectsOverview(**json.load(file))
+
+
+PROJECTS_OVERVIEW = """
+[
+    {
+        "OBI:0000103": "pvanschay2",
+        "archiveDestinationResource": "arcRescSURF01",
+        "authorizationPeriodEndDate": "1-1-2018",
+        "collectionMetadataSchemas": "DataHub_general_schema,DataHub_extended_schema",
+        "contributors": [
+            "10126"
+        ],
+        "dataRetentionPeriodEndDate": "1-1-2018",
+        "dataSizeGiB": 0.0,
+        "dataSteward": "pvanschay2",
+        "enableArchive": "true",
+        "enableContributorEditMetadata": "false",
+        "enableDropzoneSharing": "true",
+        "enableOpenAccessExport": "false",
+        "enableUnarchive": "true",
+        "ingestResource": "iresResource",
+        "managers": [
+            "10055"
+        ],
+        "path": "P000000012",
+        "resource": "replRescUM01",
+        "responsibleCostCenter": "UM-12345678901B",
+        "storageQuotaGb": "10",
+        "title": "You recoil from the crude; you tend naturally toward the exquisite.",
+        "viewers": []
+    },
+    {
+        "OBI:0000103": "pvanschay2",
+        "archiveDestinationResource": "arcRescSURF01",
+        "authorizationPeriodEndDate": "1-1-2018",
+        "collectionMetadataSchemas": "DataHub_general_schema,DataHub_extended_schema",
+        "contributors": [
+            "10126"
+        ],
+        "dataRetentionPeriodEndDate": "1-1-2018",
+        "dataSizeGiB": 0.0,
+        "dataSteward": "pvanschay2",
+        "enableArchive": "true",
+        "enableContributorEditMetadata": "false",
+        "enableDropzoneSharing": "true",
+        "enableOpenAccessExport": "false",
+        "enableUnarchive": "true",
+        "ingestResource": "iresResource",
+        "managers": [
+            "10055"
+        ],
+        "path": "P000000013",
+        "resource": "replRescUM01",
+        "responsibleCostCenter": "UM-12345678901B",
+        "storageQuotaGb": "10",
+        "title": "You will soon forget this.",
+        "viewers": []
+    },
+    {
+        "OBI:0000103": "psuppers",
+        "archiveDestinationResource": "arcRescSURF01",
+        "archiveState": "archive-done",
+        "authorizationPeriodEndDate": "1-1-2018",
+        "collectionMetadataSchemas": "DataHub_general_schema,DataHub_extended_schema",
+        "contributors": [
+            "10129"
+        ],
+        "dataRetentionPeriodEndDate": "1-1-2018",
+        "dataSizeGiB": 0.9723356142640114,
+        "dataSteward": "opalmen",
+        "enableArchive": "true",
+        "enableContributorEditMetadata": "false",
+        "enableDropzoneSharing": "true",
+        "enableOpenAccessExport": "true",
+        "enableUnarchive": "true",
+        "exporterState": "DataverseNL:in-queue-for-export",
+        "ingestResource": "iresResource",
+        "managers": [
+            "10060",
+            "10085"
+        ],
+        "path": "P000000014",
+        "resource": "replRescUM01",
+        "responsibleCostCenter": "UM-01234567890X",
+        "storageQuotaGb": "10",
+        "title": "Hope that the day after you die is a nice day.",
+        "viewers": []
+    },
+    {
+        "OBI:0000103": "psuppers",
+        "archiveDestinationResource": "arcRescSURF01",
+        "authorizationPeriodEndDate": "1-1-2018",
+        "collectionMetadataSchemas": "DataHub_general_schema,DataHub_extended_schema",
+        "contributors": [
+            "10129"
+        ],
+        "dataRetentionPeriodEndDate": "1-1-2018",
+        "dataSizeGiB": 0.0,
+        "dataSteward": "opalmen",
+        "enableArchive": "true",
+        "enableContributorEditMetadata": "false",
+        "enableDropzoneSharing": "true",
+        "enableOpenAccessExport": "true",
+        "enableUnarchive": "true",
+        "ingestResource": "iresResource",
+        "managers": [
+            "10060",
+            "10085"
+        ],
+        "path": "P000000015",
+        "resource": "replRescUM01",
+        "responsibleCostCenter": "UM-01234567890X",
+        "storageQuotaGb": "10",
+        "title": "Your society will be sought by people of taste and refinement.",
+        "viewers": []
+    }
+]
+"""

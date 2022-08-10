@@ -38,6 +38,16 @@ class ProjectsMinimal(BaseModel):
             projects_json = PROJECTS_MINIMAL_JSON
         return ProjectsMinimal.create_from_rule_result(json.loads(projects_json))
 
+    @classmethod
+    def create_from_mock_json(cls) -> "ProjectsMinimal":
+        import pathlib
+        import os
+
+        dto_folder = pathlib.Path(__file__).parent.resolve()
+        mock_path = os.path.join(dto_folder, "mocks", f"{cls.__name__}.mock.json")
+        with open(mock_path, "r", encoding="utf-8") as file:
+            return ProjectsMinimal(**json.load(file))
+
 
 PROJECTS_MINIMAL_JSON: str = """
 [
@@ -66,7 +76,7 @@ PROJECTS_MINIMAL_JSON: str = """
         "title": "You will feel hungry again in another hour."
     },
     {
-        "id": "P000000016",
+        "id": "P000000019",
         "title": "(ScaNxs) The lunatic, the lover, and the poet,"
     }
 ]

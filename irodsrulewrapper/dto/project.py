@@ -93,7 +93,7 @@ class Project:
 
     PROJECT_JSON = """
     {
-        "project": "test_project",
+        "project": "P000000015",
         "title": "test_title",
         "enableOpenAccessExport": false,
         "enableArchive": true,
@@ -104,7 +104,7 @@ class Project:
         "respCostCenter": "test_cost2",
         "storageQuotaGiB": 11,
         "dataSizeGiB": 99,
-        "collectionMetadataSchemas": ["test-schema-1", "test-schema-2"],
+        "collectionMetadataSchemas": "test-schema-1, test-schema-2",
         "enableDropzoneSharing": false,
         "has_financial_view_access": true,
         "managers": {

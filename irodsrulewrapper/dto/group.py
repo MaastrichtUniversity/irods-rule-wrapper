@@ -9,11 +9,6 @@ class Group(BaseModel):
     id: str
     display_name: str
     description: str
-    # def __init__(self, name: str, group_id: str, display_name: str, description: str):
-    #     self.name: str = name
-    #     self.id: str = group_id
-    #     self.display_name: str = display_name
-    #     self.description: str = description
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "Group":

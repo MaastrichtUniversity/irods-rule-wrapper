@@ -1,12 +1,11 @@
 """This module contains the ProjectsMinimal DTO class, its factory constructors and mock_json."""
 import json
 
-from pydantic import BaseModel
-
+from irodsrulewrapper.dto.dto_base_model import DTOBaseModel
 from irodsrulewrapper.dto.project_minimal import ProjectMinimal
 
 
-class ProjectsMinimal(BaseModel):
+class ProjectsMinimal(DTOBaseModel):
     """
     This class represents a list of iRODS ProjectMinimal DTOs.
     it overwrites __iter__, __getitem__ & __len__ methods to make the ProjectsMinimal object behave like a list.
@@ -37,16 +36,6 @@ class ProjectsMinimal(BaseModel):
         if projects_json is None:
             projects_json = PROJECTS_MINIMAL_JSON
         return ProjectsMinimal.create_from_rule_result(json.loads(projects_json))
-
-    @classmethod
-    def create_from_mock_json(cls) -> "ProjectsMinimal":
-        import pathlib
-        import os
-
-        dto_folder = pathlib.Path(__file__).parent.resolve()
-        mock_path = os.path.join(dto_folder, "mocks", f"{cls.__name__}.mock.json")
-        with open(mock_path, "r", encoding="utf-8") as file:
-            return ProjectsMinimal(**json.load(file))
 
 
 PROJECTS_MINIMAL_JSON: str = """

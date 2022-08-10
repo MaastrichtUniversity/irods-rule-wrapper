@@ -1,8 +1,8 @@
 """This module contains the ProjectMinimal DTO class and its factory constructor."""
-from pydantic import BaseModel
+from irodsrulewrapper.dto.dto_base_model import DTOBaseModel
 
 
-class ProjectMinimal(BaseModel):
+class ProjectMinimal(DTOBaseModel):
     """This class represents an iRODS project with its minimal attributes."""
 
     id: str

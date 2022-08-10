@@ -1,13 +1,13 @@
 """This module contains the ProjectOverview DTO class and its factory constructor."""
 from dhpythonirodsutils.enums import ProjectAVUs
-from pydantic import BaseModel
+from irodsrulewrapper.dto.dto_base_model import DTOBaseModel
 
 from irodsrulewrapper.dto.groups import Group
 from irodsrulewrapper.dto.users import User
 from irodsrulewrapper.rule_managers.users import UserRuleManager
 
 
-class ProjectOverview(BaseModel):
+class ProjectOverview(DTOBaseModel):
     """This class represents an iRODS project with a few of its attributes and its ACL."""
 
     id: str
@@ -20,29 +20,6 @@ class ProjectOverview(BaseModel):
     contributor_groups: list[Group]
     viewer_users: list[User]
     viewer_groups: list[Group]
-    # def __init__(
-    #     self,
-    #     project_id: str,
-    #     title: str,
-    #     principal_investigator: str,
-    #     data_steward: str,
-    #     size: int,
-    #     manager_users: list,
-    #     contributor_users: list,
-    #     contributor_groups: list,
-    #     viewer_users: list,
-    #     viewer_groups: list,
-    # ):
-    #     self.id: str = project_id
-    #     self.title: str = title
-    #     self.principal_investigator: str = principal_investigator
-    #     self.data_steward: str = data_steward
-    #     self.size: int = size
-    #     self.manager_users: list = manager_users
-    #     self.contributor_users: list = contributor_users
-    #     self.contributor_groups: list = contributor_groups
-    #     self.viewer_users: list = viewer_users
-    #     self.viewer_groups: list = viewer_groups
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "ProjectOverview":

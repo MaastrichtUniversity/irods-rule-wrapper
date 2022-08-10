@@ -169,10 +169,10 @@ def api_call(mock):
     def get_mock_result(func: Callable):
         def mock_api_call(*args, **kwargs):
             if strtobool(os.environ["MOCK_RULE_WRAPPER"]):
-                print("mock")
+                # print("mock")
                 result = mock
             else:
-                print("func")
+                # print("func")
                 result = func(*args, **kwargs)
 
             return result

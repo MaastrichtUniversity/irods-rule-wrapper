@@ -6,6 +6,7 @@ from irodsrulewrapper.dto.attribute_value import AttributeValue
 from irodsrulewrapper.dto.boolean import Boolean
 from irodsrulewrapper.dto.data_stewards import DataStewards
 from irodsrulewrapper.dto.group import Group
+from irodsrulewrapper.dto.integer_value import IntegerValue
 from irodsrulewrapper.dto.user_or_group import UserOrGroup
 from irodsrulewrapper.dto.users import Users, User
 from irodsrulewrapper.utils import BaseRuleManager, RuleInfo, RuleInputValidationError
@@ -188,6 +189,6 @@ class UserRuleManager(BaseRuleManager):
             name="get_temporary_password_lifetime",
             get_result=True,
             session=self.session,
-            dto=None,
+            dto=IntegerValue,
             parse_to_dto=self.parse_to_dto,
         )

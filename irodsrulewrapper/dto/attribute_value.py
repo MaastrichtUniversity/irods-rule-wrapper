@@ -20,5 +20,5 @@ class AttributeValue:
     @classmethod
     def create_from_mock_result(cls, mock_json=None) -> "AttributeValue":
         if mock_json is None:
-            mock_json = '{"value": "50"}'
+            mock_json = '{"value": "3"}'
         return AttributeValue.create_from_rule_result(json.loads(mock_json))

@@ -1,20 +1,17 @@
 """This module contains the ProjectsOverview DTO class and its factory constructor."""
 import json
 
-from pydantic import BaseModel
-
+from irodsrulewrapper.dto.dto_base_model import DTOBaseModel
 from irodsrulewrapper.cache import CacheTTL
 from irodsrulewrapper.dto.project_overview import ProjectOverview
 
 
-class ProjectsOverview(BaseModel):
+class ProjectsOverview(DTOBaseModel):
     """
     This class represents a list of iRODS ProjectsOverview DTOs.
     """
 
     projects: list[ProjectOverview]
-    # def __init__(self, projects: list["ProjectOverview"]):
-    #     self.projects: list["ProjectOverview"] = projects
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "ProjectsOverview":
@@ -33,16 +30,6 @@ class ProjectsOverview(BaseModel):
         if projects_json is None:
             projects_json = PROJECTS_OVERVIEW
         return ProjectsOverview.create_from_rule_result(json.loads(projects_json))
-
-    @classmethod
-    def create_from_mock_json(cls) -> "ProjectsOverview":
-        import pathlib
-        import os
-
-        dto_folder = pathlib.Path(__file__).parent.resolve()
-        mock_path = os.path.join(dto_folder, "mocks", f"{cls.__name__}.mock.json")
-        with open(mock_path, "r", encoding="utf-8") as file:
-            return ProjectsOverview(**json.load(file))
 
 
 PROJECTS_OVERVIEW = """

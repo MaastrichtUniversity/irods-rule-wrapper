@@ -35,5 +35,5 @@ class Resources:
             "comment": "Replicated-resource-for-AZM",
             "name": "replRescAZM01"
         }
-    ]    
+    ]
     """

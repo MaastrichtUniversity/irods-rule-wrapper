@@ -1,3 +1,4 @@
+"""This module contains the custom class DTOBaseModel"""
 import json
 import os
 import pathlib

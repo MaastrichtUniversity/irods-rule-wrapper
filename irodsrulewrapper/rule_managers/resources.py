@@ -119,4 +119,3 @@ class ResourceRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid value for *archive: expected 'true' or 'false'") from err
 
         return RuleInfo(name="get_project_resource_availability", get_result=True, session=self.session, dto=Boolean)
-

@@ -143,13 +143,13 @@ def rule_call(func: Callable):
     def mock_rule_wrapper_result(rule_info):
         if not rule_info.parse_to_dto and rule_info.get_result:
             return {}
-        elif rule_info.parse_to_dto and rule_info.get_result:
+        if rule_info.parse_to_dto and rule_info.get_result:
             try:
                 return rule_info.dto.create_from_mock_json()
             except AttributeError:
                 return rule_info.dto.create_from_mock_result()
-        elif not rule_info.get_result:
-            return
+
+        return
 
     def wrapper_decorator(*args):
         rule_info = func(*args)
@@ -174,6 +174,20 @@ def rule_call(func: Callable):
 
 
 def api_call(func: Callable):
+    """
+    Decorator function to enable mock result for api function call (=python irods API client call)
+
+    Parameters
+    ----------
+    func: Callable
+        The function to decorate
+
+    Returns
+    -------
+    Any
+        The api mock result
+    """
+
     def get_mock_result(*args, **kwargs):
         if MOCK_RULE_WRAPPER:
             result = get_api_mock_result(func.__name__)

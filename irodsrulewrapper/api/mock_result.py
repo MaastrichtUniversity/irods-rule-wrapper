@@ -1,3 +1,4 @@
+"""This module contains function to help to return mock api call result"""
 import json
 import os
 import pathlib
@@ -16,7 +17,7 @@ def read_mock_json_file(base_file_name):
 def get_api_mock_result(function_name):
     if "read_instance" in function_name:
         return read_mock_json_file("instance")
-    elif "read_schema" in function_name:
+    if "read_schema" in function_name:
         return read_mock_json_file("schema")
 
     return read_mock_json_file(f"{function_name}.mock")

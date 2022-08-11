@@ -1,28 +1,30 @@
+"""This module contains the ProjectRuleManager class."""
 from dhpythonirodsutils.enums import ProjectAVUs
+from dhpythonirodsutils import validators, exceptions
 
 from irodsrulewrapper.decorator import rule_call
+from irodsrulewrapper.dto.boolean import Boolean
+from irodsrulewrapper.dto.contributing_project import ContributingProject
+from irodsrulewrapper.dto.contributing_projects import ContributingProjects
+from irodsrulewrapper.dto.create_project import CreateProject
+from irodsrulewrapper.dto.managing_projects import ManagingProjects
+from irodsrulewrapper.dto.migration_cards import MigrationCards
+from irodsrulewrapper.dto.project_contributors import ProjectContributors
 from irodsrulewrapper.dto.project_contributors_metadata import ProjectContributorsMetadata
 from irodsrulewrapper.dto.projects_minimal import ProjectsMinimal
+from irodsrulewrapper.dto.projects import Projects, Project
+from irodsrulewrapper.dto.projects_cost import ProjectsCost
+from irodsrulewrapper.dto.projects_overview import ProjectsOverview
 from irodsrulewrapper.utils import (
     BaseRuleManager,
     RuleInfo,
     RuleInputValidationError,
 )
-from irodsrulewrapper.dto.projects import Projects, Project
-from irodsrulewrapper.dto.projects_overview import ProjectsOverview
-from irodsrulewrapper.dto.managing_projects import ManagingProjects
-from irodsrulewrapper.dto.contributing_projects import ContributingProjects
-from irodsrulewrapper.dto.projects_cost import ProjectsCost
-from irodsrulewrapper.dto.create_project import CreateProject
-from irodsrulewrapper.dto.migration_cards import MigrationCards
-from irodsrulewrapper.dto.project_contributors import ProjectContributors
-from irodsrulewrapper.dto.contributing_project import ContributingProject
-from irodsrulewrapper.dto.boolean import Boolean
-
-from dhpythonirodsutils import validators, exceptions
 
 
 class ProjectRuleManager(BaseRuleManager):
+    """This class bundles the project related wrapped rules methods."""
+
     def __init__(self, client_user=None, admin_mode=False):
         BaseRuleManager.__init__(self, client_user, admin_mode=admin_mode)
 
@@ -46,12 +48,14 @@ class ProjectRuleManager(BaseRuleManager):
         """
         try:
             validators.validate_project_path(project_path)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010") from err
         try:
             validators.validate_string_boolean(show_service_accounts)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError(
+                "invalid value for *show_service_accounts: expected 'true' or 'false'"
+            ) from err
 
         return RuleInfo(
             name="get_project_details",
@@ -81,12 +85,14 @@ class ProjectRuleManager(BaseRuleManager):
         """
         try:
             validators.validate_project_id(project_id)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid project's path format: e.g P000000010")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid project's path format: e.g P000000010") from err
         try:
             validators.validate_string_boolean(show_service_accounts)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid value for *showServiceAccounts: expected 'true' or 'false'")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError(
+                "invalid value for *showServiceAccounts: expected 'true' or 'false'"
+            ) from err
 
         return RuleInfo(
             name="get_project_acl_for_manager",
@@ -114,8 +120,10 @@ class ProjectRuleManager(BaseRuleManager):
         """
         try:
             validators.validate_string_boolean(show_service_accounts)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError(
+                "invalid value for *show_service_accounts: expected 'true' or 'false'"
+            ) from err
 
         return RuleInfo(
             name="list_contributing_projects", get_result=True, session=self.session, dto=ContributingProjects
@@ -138,10 +146,10 @@ class ProjectRuleManager(BaseRuleManager):
         """
         try:
             validators.validate_project_id(project_id)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010") from err
 
-        if type(users) != str:
+        if not isinstance(users, str):
             raise RuleInputValidationError("invalid type for *users: expected a string")
 
         return RuleInfo(name="changeProjectPermissions", get_result=False, session=self.session, dto=None)
@@ -162,13 +170,13 @@ class ProjectRuleManager(BaseRuleManager):
         path : str
             The absolute path of the collection
         """
-        if mode != "default" and mode != "recursive":
+        if mode not in ["default", "recursive"]:
             raise RuleInputValidationError("invalid value for *mode: expected 'default' or 'recursive'")
         if access_level not in ["own", "write", "read", "null", "admin:own", "admin:write", "admin:read", "admin:null"]:
             raise RuleInputValidationError("invalid value for *access_level: expected 'read', 'write', 'own, 'null'")
-        if type(user) != str:
+        if not isinstance(user, str):
             raise RuleInputValidationError("invalid type for *user: expected a string")
-        if type(path) != str:
+        if not isinstance(path, str):
             raise RuleInputValidationError("invalid type for *path: expected a string")
 
         return RuleInfo(name="set_acl", get_result=False, session=self.session, dto=None)
@@ -213,8 +221,10 @@ class ProjectRuleManager(BaseRuleManager):
         """
         try:
             validators.validate_string_boolean(show_service_accounts)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError(
+                "invalid value for *show_service_accounts: expected 'true' or 'false'"
+            ) from err
 
         return RuleInfo(name="list_projects", get_result=True, session=self.session, dto=Projects)
 
@@ -247,8 +257,8 @@ class ProjectRuleManager(BaseRuleManager):
         """
         try:
             validators.validate_project_path(project_path)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010") from err
 
         return RuleInfo(name="get_project_migration_status", get_result=True, session=self.session, dto=MigrationCards)
 
@@ -306,45 +316,45 @@ class ProjectRuleManager(BaseRuleManager):
             dto.CreateProject object
         """
 
-        if type(ingest_resource) != str:
+        if not isinstance(ingest_resource, str):
             raise RuleInputValidationError(f"invalid type for *{ProjectAVUs.INGEST_RESOURCE.value}: expected a string")
 
-        if type(resource) != str:
+        if not isinstance(resource, str):
             raise RuleInputValidationError(f"invalid type for *{ProjectAVUs.RESOURCE.value}: expected a string")
 
-        if type(title) != str:
+        if not isinstance(title, str):
             raise RuleInputValidationError(f"invalid type for *{ProjectAVUs.TITLE.value}: expected a string")
 
-        if type(principal_investigator) != str:
+        if not isinstance(principal_investigator, str):
             raise RuleInputValidationError("invalid type for *principalInvestigator: expected a string")
 
-        if type(data_steward) != str:
+        if not isinstance(data_steward, str):
             raise RuleInputValidationError(f"invalid type for *{ProjectAVUs.DATA_STEWARD.value}: expected a string")
 
-        if type(responsible_cost_center) != str:
+        if not isinstance(responsible_cost_center, str):
             raise RuleInputValidationError(
                 f"invalid type for *{ProjectAVUs.RESPONSIBLE_COST_CENTER.value}: expected a string"
             )
 
         if not isinstance(extra_parameters, dict):
-            raise RuleInputValidationError("invalid type for *extraParameters: expected a string")
+            raise RuleInputValidationError("invalid type for *extraParameters: expected a dict")
 
         if ProjectAVUs.AUTHORIZATION_PERIOD_END_DATE.value in extra_parameters:
             # TODO check data format
-            if type(extra_parameters[ProjectAVUs.AUTHORIZATION_PERIOD_END_DATE.value]) != str:
+            if not isinstance(extra_parameters[ProjectAVUs.AUTHORIZATION_PERIOD_END_DATE.value], str):
                 raise RuleInputValidationError(
                     f"invalid type for *{ProjectAVUs.AUTHORIZATION_PERIOD_END_DATE.value}: expected a string"
                 )
 
         if ProjectAVUs.DATA_RETENTION_PERIOD_END_DATE.value in extra_parameters:
             # TODO check data format
-            if type(extra_parameters[ProjectAVUs.DATA_RETENTION_PERIOD_END_DATE.value]) != str:
+            if not isinstance(extra_parameters[ProjectAVUs.DATA_RETENTION_PERIOD_END_DATE.value], str):
                 raise RuleInputValidationError(
                     f"invalid type for *{ProjectAVUs.DATA_RETENTION_PERIOD_END_DATE.value}: expected a string"
                 )
 
         if ProjectAVUs.STORAGE_QUOTA_GB.value in extra_parameters:
-            if type(extra_parameters[ProjectAVUs.STORAGE_QUOTA_GB.value]) != int:
+            if not isinstance(extra_parameters[ProjectAVUs.STORAGE_QUOTA_GB.value], int):
                 raise RuleInputValidationError(
                     f"invalid type for *{ProjectAVUs.STORAGE_QUOTA_GB.value}: expected an integer"
                 )
@@ -352,34 +362,34 @@ class ProjectRuleManager(BaseRuleManager):
         if ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value in extra_parameters:
             try:
                 validators.validate_string_boolean(extra_parameters[ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value])
-            except exceptions.ValidationError:
+            except exceptions.ValidationError as err:
                 raise RuleInputValidationError(
                     f"invalid value for *{ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value}: expected 'true' or 'false'"
-                )
+                ) from err
 
         if ProjectAVUs.ENABLE_ARCHIVE.value in extra_parameters:
             try:
                 validators.validate_string_boolean(extra_parameters[ProjectAVUs.ENABLE_ARCHIVE.value])
-            except exceptions.ValidationError:
+            except exceptions.ValidationError as err:
                 raise RuleInputValidationError(
                     f"invalid value for *{ProjectAVUs.ENABLE_ARCHIVE.value}: expected 'true' or 'false'"
-                )
+                ) from err
 
         if ProjectAVUs.ENABLE_UNARCHIVE.value in extra_parameters:
             try:
                 validators.validate_string_boolean(extra_parameters[ProjectAVUs.ENABLE_UNARCHIVE.value])
-            except exceptions.ValidationError:
+            except exceptions.ValidationError as err:
                 raise RuleInputValidationError(
                     f"invalid value for *{ProjectAVUs.ENABLE_UNARCHIVE.value}: expected 'true' or 'false'"
-                )
+                ) from err
 
         if ProjectAVUs.ENABLE_DROPZONE_SHARING.value in extra_parameters:
             try:
                 validators.validate_string_boolean(extra_parameters[ProjectAVUs.ENABLE_DROPZONE_SHARING.value])
-            except exceptions.ValidationError:
+            except exceptions.ValidationError as err:
                 raise RuleInputValidationError(
                     f"invalid value for *{ProjectAVUs.ENABLE_DROPZONE_SHARING.value}: expected 'true' or 'false'"
-                )
+                ) from err
 
         if ProjectAVUs.COLLECTION_METADATA_SCHEMAS.value in extra_parameters:
             if not isinstance(extra_parameters[ProjectAVUs.COLLECTION_METADATA_SCHEMAS.value], str):
@@ -400,8 +410,10 @@ class ProjectRuleManager(BaseRuleManager):
             The project's id path; eg. 000000010
         inherited : str
             Role inheritance
-            * inherited='true' cumulates authorizations to designate the role. i.e. A contributor has OWN or WRITE access
-            * inherited='false' only shows explicit contributors. i.e. A contributor only has WRITE access
+            * inherited='true' cumulates authorizations to designate the role.
+                i.e. A contributor has 'OWN' or 'WRITE' access
+            * inherited='false' only shows explicit contributors.
+                i.e. A contributor only has 'WRITE' access
         show_service_accounts: str
             'true'/'false' expected; If true, hide the service accounts in the result
 
@@ -412,16 +424,18 @@ class ProjectRuleManager(BaseRuleManager):
         """
         try:
             validators.validate_project_id(project_id)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid project's id format: eg. P000000010") from err
         try:
             validators.validate_string_boolean(inherited)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid value for *inherited: expected 'true' or 'false'")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid value for *inherited: expected 'true' or 'false'") from err
         try:
             validators.validate_string_boolean(show_service_accounts)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError(
+                "invalid value for *show_service_accounts: expected 'true' or 'false'"
+            ) from err
 
         return RuleInfo(
             name="list_project_contributors", get_result=True, session=self.session, dto=ProjectContributors
@@ -447,13 +461,15 @@ class ProjectRuleManager(BaseRuleManager):
 
         try:
             validators.validate_project_id(project_id)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid project id; eg. P000000001")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid project id; eg. P000000001") from err
 
         try:
             validators.validate_string_boolean(show_service_accounts)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid value for *show_service_accounts: expected 'true' or 'false'")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError(
+                "invalid value for *show_service_accounts: expected 'true' or 'false'"
+            ) from err
 
         return RuleInfo(name="get_contributing_project", get_result=True, session=self.session, dto=ContributingProject)
 
@@ -498,8 +514,10 @@ class ProjectRuleManager(BaseRuleManager):
             The project's id path; eg. P000000010.
         inherited : str
             Role inheritance
-            * inherited='true' cumulates authorizations to designate the role. i.e. A contributor has OWN or WRITE access
-            * inherited='false' only shows explicit contributors. i.e. A contributor only has WRITE access
+            * inherited='true' cumulates authorizations to designate the role.
+                i.e. A contributor has 'OWN' or 'WRITE' access
+            * inherited='false' only shows explicit contributors.
+                i.e. A contributor only has 'WRITE' access
 
         Returns
         -------
@@ -509,12 +527,12 @@ class ProjectRuleManager(BaseRuleManager):
 
         try:
             validators.validate_project_id(project_id)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid project id; eg. P000000001")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid project id; eg. P000000001") from err
         try:
             validators.validate_string_boolean(inherited)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid value for *inherited: expected 'true' or 'false'")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid value for *inherited: expected 'true' or 'false'") from err
 
         return RuleInfo(
             name="detailsProject", get_result=True, session=self.session, dto=None, parse_to_dto=self.parse_to_dto
@@ -538,8 +556,8 @@ class ProjectRuleManager(BaseRuleManager):
 
         try:
             validators.validate_project_id(project_id)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid project id; eg. P000000001")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid project id; eg. P000000001") from err
 
         return RuleInfo(
             name="get_project_contributors_metadata",
@@ -570,8 +588,8 @@ class ProjectRuleManager(BaseRuleManager):
 
         try:
             validators.validate_project_collections_action_avu(attribute)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid value for *attribute; e.g: 'enableArchive'")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid value for *attribute; e.g: 'enableArchive'") from err
 
         return RuleInfo(
             name="list_contributing_projects_by_attribute",

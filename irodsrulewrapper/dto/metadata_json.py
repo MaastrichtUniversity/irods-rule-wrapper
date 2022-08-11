@@ -1,3 +1,4 @@
+"""This module contains the MetadataJSON helper class."""
 import errno
 import time
 import os
@@ -10,6 +11,8 @@ from irodsrulewrapper.utils import log_error_message
 
 
 class MetadataJSON:
+    """This class has the helper functions to write/read metadata json files from iRODS."""
+
     def __init__(self, session: iRODSSession):
         self.session = session
 

@@ -1,6 +1,8 @@
+"""This module contains the CollectionRuleManager class."""
 import json
 
 from cedarparsingutils.dto.general_instance import GeneralInstance
+from dhpythonirodsutils import validators, exceptions, formatters
 
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.dto.attribute_value import AttributeValue
@@ -12,10 +14,10 @@ from irodsrulewrapper.dto.metadata_json import MetadataJSON
 from irodsrulewrapper.dto.tape_estimate import TapeEstimate
 from irodsrulewrapper.utils import publish_message, BaseRuleManager, RuleInfo, RuleInputValidationError
 
-from dhpythonirodsutils import validators, exceptions, formatters
-
 
 class CollectionRuleManager(BaseRuleManager):
+    """This class bundles the collection related wrapped rules and helper methods."""
+
     def __init__(self, client_user=None, admin_mode=False):
         BaseRuleManager.__init__(self, client_user, admin_mode=admin_mode)
 
@@ -38,8 +40,8 @@ class CollectionRuleManager(BaseRuleManager):
         try:
             validators.validate_project_id(project)
             validators.validate_collection_id(project_collection)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid project or collection id; eg. P000000001")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid project or collection id; eg. P000000001") from err
 
         if not isinstance(user, str):
             raise RuleInputValidationError("invalid type for *user: expected a string")
@@ -64,8 +66,8 @@ class CollectionRuleManager(BaseRuleManager):
         try:
             validators.validate_project_id(project)
             validators.validate_collection_id(project_collection)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid project or collection id; eg. P000000001")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid project or collection id; eg. P000000001") from err
 
         return RuleInfo(name="closeProjectCollection", get_result=False, session=self.session, dto=None)
 
@@ -85,13 +87,13 @@ class CollectionRuleManager(BaseRuleManager):
         """
         try:
             validators.validate_irods_collection(collection_path)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid path format")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid path format") from err
 
-        if type(attribute) != str:
+        if not isinstance(attribute, str):
             raise RuleInputValidationError("invalid type for *attribute: expected a string")
 
-        if type(value) != str:
+        if not isinstance(value, str):
             raise RuleInputValidationError("invalid type for *value: expected a string")
 
         return RuleInfo(name="setCollectionAVU", get_result=False, session=self.session, dto=None)
@@ -145,13 +147,13 @@ class CollectionRuleManager(BaseRuleManager):
         try:
             validators.validate_project_id(project)
             validators.validate_collection_id(collection)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid project or collection id; eg. P000000001")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid project or collection id; eg. P000000001") from err
 
         try:
             validators.validate_string_boolean(inherited)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid value for *inherited: expected 'true' or 'false'")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid value for *inherited: expected 'true' or 'false'") from err
 
         return RuleInfo(name="detailsProjectCollection", get_result=True, session=self.session, dto=CollectionDetails)
 
@@ -170,13 +172,13 @@ class CollectionRuleManager(BaseRuleManager):
         Returns
         -------
         dict
-            The project collection tape status, above_threshold and archivable
+            The project collection tape status, above_threshold and achievable
         """
         try:
             validators.validate_project_id(project)
             validators.validate_collection_id(collection)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid project or collection id; eg. P000000001")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid project or collection id; eg. P000000001") from err
 
         return RuleInfo(
             name="get_project_collection_tape_estimate", get_result=True, session=self.session, dto=TapeEstimate
@@ -194,8 +196,8 @@ class CollectionRuleManager(BaseRuleManager):
         """
         try:
             validators.validate_project_collection_path(collection)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid collection id; eg. C000000001")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid collection id; eg. C000000001") from err
 
         return RuleInfo(name="prepareTapeArchive", get_result=False, session=self.session, dto=None)
 
@@ -232,10 +234,10 @@ class CollectionRuleManager(BaseRuleManager):
             dto.AttributeValue object
         """
 
-        if type(path) != str:
+        if not isinstance(path, str):
             raise RuleInputValidationError("invalid type for *path: expected a string")
 
-        if type(attribute) != str:
+        if not isinstance(attribute, str):
             raise RuleInputValidationError("invalid type for *attribute: expected a string")
 
         return RuleInfo(
@@ -266,8 +268,8 @@ class CollectionRuleManager(BaseRuleManager):
         try:
             validators.validate_project_id(project)
             validators.validate_collection_id(collection)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid project or collection id; eg. P000000001")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid project or collection id; eg. P000000001") from err
 
         # This rule can only be executed by 'rodsadmin', so validating on that here
         if self.session.username != "rods":
@@ -316,8 +318,8 @@ class CollectionRuleManager(BaseRuleManager):
             validators.validate_file_path(schema_irods_path)
             validators.validate_full_path_safety(schema_irods_path)
             return metadata_json.read_irods_json_file(schema_irods_path)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid schema path provided")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid schema path provided") from err
 
     def read_schema_version_from_collection(self, project_id: str, collection_id: str, version: str) -> dict:
         """
@@ -343,8 +345,8 @@ class CollectionRuleManager(BaseRuleManager):
             validators.validate_file_path(schema_irods_path)
             validators.validate_full_path_safety(schema_irods_path)
             return metadata_json.read_irods_json_file(schema_irods_path)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid schema path provided")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid schema path provided") from err
 
     def read_instance_from_collection(self, project_id: str, collection_id: str) -> dict:
         """
@@ -368,11 +370,24 @@ class CollectionRuleManager(BaseRuleManager):
             validators.validate_file_path(instance_irods_path)
             validators.validate_full_path_safety(instance_irods_path)
             return metadata_json.read_irods_json_file(instance_irods_path)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid instance path provided")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid instance path provided") from err
 
     @staticmethod
     def parse_general_instance(instance: dict) -> GeneralInstance:
+        """
+        Parse an instance.json as dict to a GeneralInstance DTO.
+
+        Parameters
+        ----------
+        instance: dict
+            The instance.json as dict to parse
+
+        Returns
+        -------
+        GeneralInstance
+            The parsed instance as a GeneralInstance DTO
+        """
         return GeneralInstance.create_from_dict(instance)
 
     def read_instance_version_from_collection(self, project_id: str, collection_id: str, version: str) -> dict:
@@ -399,8 +414,8 @@ class CollectionRuleManager(BaseRuleManager):
             validators.validate_file_path(instance_irods_path)
             validators.validate_full_path_safety(instance_irods_path)
             return metadata_json.read_irods_json_file(instance_irods_path)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid instance path provided")  # Raise different error
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid instance path provided") from err  # Raise different error
 
     @rule_call
     def set_collection_size(self, project_id, collection_id, open_collection, close_collection):
@@ -421,8 +436,8 @@ class CollectionRuleManager(BaseRuleManager):
         try:
             validators.validate_project_id(project_id)
             validators.validate_collection_id(collection_id)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid project or collection id; eg. P000000001")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid project or collection id; eg. P000000001") from err
 
         expected_values = ["false", "true"]
         if open_collection not in expected_values and close_collection not in expected_values:
@@ -433,6 +448,19 @@ class CollectionRuleManager(BaseRuleManager):
 
     @rule_call
     def get_collection_tree(self, relative_path):
+        """
+        Lists the folders and files attributes at the input 'path'
+
+        Parameters
+        ----------
+        relative_path : str
+           Relative path to collection; e.g: P000000014/C000000001/.metadata_versions
+
+        Returns
+        -------
+        dict
+           The folders and files attributes at the requested path
+        """
         return RuleInfo(
             name="get_collection_tree", get_result=True, session=self.session, dto=None, parse_to_dto=self.parse_to_dto
         )
@@ -463,8 +491,8 @@ class CollectionRuleManager(BaseRuleManager):
         try:
             validators.validate_project_id(project_id)
             validators.validate_collection_id(collection_id)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid project or collection id; eg. P000000001")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid project or collection id; eg. P000000001") from err
 
         return RuleInfo(name="create_collection_metadata_snapshot", get_result=True, session=self.session, dto=Boolean)
 
@@ -497,8 +525,8 @@ class CollectionRuleManager(BaseRuleManager):
         try:
             validators.validate_project_id(project_id)
             validators.validate_collection_id(collection_id)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid project id; eg. P000000001")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid project id; eg. P000000001") from err
 
         collection_path = formatters.format_project_collection_path(project_id, collection_id)
         schema_irods_path = formatters.format_schema_collection_path(project_id, collection_id)
@@ -545,8 +573,8 @@ class CollectionRuleManager(BaseRuleManager):
         try:
             validators.validate_project_id(project_id)
             validators.validate_collection_id(collection_id)
-        except exceptions.ValidationError:
-            raise RuleInputValidationError("invalid project or collection id; eg. P000000001")
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid project or collection id; eg. P000000001") from err
 
         if not isinstance(user, str):
             raise RuleInputValidationError("invalid type for *user: expected a string")

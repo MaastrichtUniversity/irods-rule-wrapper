@@ -1,8 +1,13 @@
+import json
+import time
+
+import pytest
+
 from irodsrulewrapper.dto.user import User
 from irodsrulewrapper.dto.user_extended import UserExtended
 from irodsrulewrapper.dto.users import Users
-from irodsrulewrapper.rule import RuleManager
-import json
+from irodsrulewrapper.rule import RuleManager, RuleJSONManager
+from irodsrulewrapper.utils import RuleInputValidationError
 
 
 def test_rule_get_user_attribute_value():
@@ -25,13 +30,80 @@ def test_rule_get_user_group_memberships():
     assert result.groups is not None
 
 
-def test_rule_get_users():
+def test_rule_get_user_internal_affiliation_status():
     result = RuleManager(admin_mode=True).get_user_internal_affiliation_status("jmelius")
     is_internal = result.boolean
     assert is_internal is True
     result = RuleManager(admin_mode=True).get_user_internal_affiliation_status("auser")
     is_internal = result.boolean
     assert is_internal is False
+
+
+def test_count_user_temporary_passwords():
+    rule_manager = RuleJSONManager(admin_mode=True)
+    user_id = rule_manager.get_irods_user_id_by_username("jmelius")
+    result = rule_manager.count_user_temporary_passwords(user_id)
+    rule_manager.session.cleanup()
+    assert result is not None
+
+
+def test_get_user_temporary_password_creation_timestamp():
+    rule_manager = RuleJSONManager(admin_mode=True)
+    user_id = rule_manager.get_irods_user_id_by_username("jmelius")
+    rule_manager.generate_temporary_password("jmelius", user_id)
+    time_stamp = rule_manager.get_user_temporary_password_creation_timestamp(user_id)
+    rule_manager.session.cleanup()
+    # Check if the timestamp of the generated temp password is within 5 seconds of the current time
+    t = time.time()
+    assert isinstance(time_stamp, int)
+    assert (time_stamp - t) < 5
+
+
+def test_generate_temporary_password_valid():
+    rule_manager = RuleJSONManager(admin_mode=True)
+    user_id = rule_manager.get_irods_user_id_by_username("jmelius")
+    result = rule_manager.generate_temporary_password("jmelius", user_id)
+    rule_manager.session.cleanup()
+    assert result["temporary_password"] is not None
+    assert result["valid_until"] is not None
+
+
+def test_generate_temporary_password_invalid_match():
+    rule_manager = RuleJSONManager(admin_mode=True)
+    with pytest.raises(RuleInputValidationError) as e_info:
+        rule_manager.generate_temporary_password("jmelius", 2000)
+    rule_manager.session.cleanup()
+    assert (
+        str(e_info.value)
+        == "RuleInputValidationError, invalid match between *irods_user_name and *irods_id: expected a match"
+    )
+
+
+def test_generate_temporary_password_invalid_account_type():
+    rule_manager = RuleJSONManager(admin_mode=True)
+    user_id = rule_manager.get_irods_user_id_by_username("rods")
+    with pytest.raises(RuleInputValidationError) as e_info:
+        rule_manager.generate_temporary_password("rods", user_id)
+    rule_manager.session.cleanup()
+    assert (
+        str(e_info.value)
+        == "RuleInputValidationError, invalid irods user type for *irods_user_name: expected a rodsuser"
+    )
+
+
+def test_generate_temporary_password_invalid_irods_id():
+    with pytest.raises(RuleInputValidationError) as e_info:
+        RuleJSONManager(admin_mode=True).generate_temporary_password("rods", "test")
+    assert str(e_info.value) == "RuleInputValidationError, invalid type for *irods_id: expected a integer"
+
+
+def test_remove_user_temporary_passwords():
+    rule_manager = RuleJSONManager(admin_mode=True)
+    user_id = rule_manager.get_irods_user_id_by_username("jmelius")
+    rule_manager.remove_user_temporary_passwords(user_id)
+    result = rule_manager.count_user_temporary_passwords(user_id)
+    rule_manager.session.cleanup()
+    assert result == 0
 
 
 def test_rule_get_users():

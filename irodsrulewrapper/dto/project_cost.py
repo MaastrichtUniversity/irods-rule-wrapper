@@ -1,4 +1,9 @@
+"""This module contains the ProjectCost DTO class and its factory constructor."""
+
+
 class ProjectCost:
+    """This class represents the cost information for an iRODS project."""
+
     def __init__(
         self,
         project_id: str,

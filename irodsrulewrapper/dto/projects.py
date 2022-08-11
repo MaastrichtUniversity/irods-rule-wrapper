@@ -44,7 +44,7 @@ class Projects:
           "respCostCenter": "test_cost2",
           "storageQuotaGiB": 11,
           "dataSizeGiB": 99,
-          "collectionMetadataSchemas": ["test-schema-1", "test-schema-2"],
+          "collectionMetadataSchemas": "test-schema-1,test-schema-2",
           "managers": {
             "userObjects": [
               {
@@ -111,7 +111,7 @@ class Projects:
           "respCostCenter": "test_cost2",
           "storageQuotaGiB": 11,
           "dataSizeGiB": 99,
-          "collectionMetadataSchemas": ["test-schema-1", "test-schema-2"],
+          "collectionMetadataSchemas": "test-schema-1,test-schema-2",
           "managers": {
             "userObjects": [
               {

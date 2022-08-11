@@ -1,0 +1,68 @@
+{
+  "id": "P000000015",
+  "title": "test_title",
+  "enable_open_access_export": false,
+  "enable_archive": false,
+  "enable_unarchive": false,
+  "enable_contributor_edit_metadata": false,
+  "principal_investigator_display_name": "Pascal Suppers",
+  "data_steward_display_name": "Olav Palmen",
+  "responsible_cost_center": "XXXXXXXXX",
+  "storage_quota_gb": 11,
+  "size": 99,
+  "collection_metadata_schemas": "test-schema-1,test-schema-2",
+  "enable_dropzone_sharing": false,
+  "manager_users": {
+    "users": [
+      {
+        "user_name": "psuppers",
+        "user_id": "42",
+        "display_name": "Pascal Suppers"
+      },
+      {
+        "user_name": "opalmen",
+        "user_id": "43",
+        "display_name": "Olav Palmen"
+      }
+    ]
+  },
+  "contributor_users": {
+    "users": [
+      {
+        "user_name": "test_contributor",
+        "user_id": "1",
+        "display_name": "test_contributor"
+      }
+    ]
+  },
+  "contributor_groups": {
+    "groups": [
+      {
+        "name": "",
+        "id": "1",
+        "display_name": "Suppers en co",
+        "description": "some more details here"
+      }
+    ]
+  },
+  "viewer_users": {
+    "users": [
+      {
+        "user_name": "test_viewer",
+        "user_id": "2",
+        "display_name": "test_viewer"
+      }
+    ]
+  },
+  "viewer_groups": {
+    "groups": [
+      {
+        "name": "",
+        "id": "2",
+        "display_name": "Suppers en co",
+        "description": "some more details here"
+      }
+    ]
+  },
+  "has_financial_view_access": true
+}

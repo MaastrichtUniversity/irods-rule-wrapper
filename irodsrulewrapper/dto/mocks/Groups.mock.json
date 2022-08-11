@@ -1,0 +1,34 @@
+{
+  "groups": [
+    {
+      "name": "m4i-nanoscopy-phd0815",
+      "id": "10199",
+      "display_name": "Novel approach for smashing ions",
+      "description": "CO for PhD project of P7000815"
+    },
+    {
+      "name": "m4i-nanoscopy",
+      "id": "10124",
+      "display_name": "Nanoscopy",
+      "description": "CO for all of nanoscopy"
+    },
+    {
+      "name": "scannexus",
+      "id": "10133",
+      "display_name": "SCANNEXUS",
+      "description": "UM-SCANNEXUS"
+    },
+    {
+      "name": "datahub",
+      "id": "10127",
+      "display_name": "DataHub",
+      "description": "It's DataHub! The place to store your data."
+    },
+    {
+      "name": "m4i-massspec",
+      "id": "10192",
+      "display_name": "m4i-massspec",
+      "description": ""
+    }
+  ]
+}

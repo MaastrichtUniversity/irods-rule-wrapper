@@ -1,0 +1,104 @@
+{
+  "users": [
+    {
+      "user_name": "jmelius",
+      "user_id": "10043",
+      "display_name": "Jonathan Melius"
+    },
+    {
+      "user_name": "pvanschay2",
+      "user_id": "10053",
+      "display_name": "Paul van Schayck"
+    },
+    {
+      "user_name": "mcoonen2",
+      "user_id": "10033",
+      "display_name": "Dr. Maarten Coonen (MUMC+)"
+    },
+    {
+      "user_name": "opalmen",
+      "user_id": "10088",
+      "display_name": "Olav Palmen"
+    },
+    {
+      "user_name": "service-mdl",
+      "user_id": "10112",
+      "display_name": "service-mdl"
+    },
+    {
+      "user_name": "minimalist",
+      "user_id": "10093",
+      "display_name": "minimalist"
+    },
+    {
+      "user_name": "auser",
+      "user_id": "10103",
+      "display_name": "Additional User newly created in LDAP"
+    },
+    {
+      "user_name": "service-dropzones",
+      "user_id": "10108",
+      "display_name": "service-dropzones"
+    },
+    {
+      "user_name": "kheinen",
+      "user_id": "10073",
+      "display_name": "Koert Heinen"
+    },
+    {
+      "user_name": "rbrecheis",
+      "user_id": "10068",
+      "display_name": "Ralph Brecheisen"
+    },
+    {
+      "user_name": "mcoonen",
+      "user_id": "10028",
+      "display_name": "Maarten Coonen"
+    },
+    {
+      "user_name": "dtheuniss",
+      "user_id": "10038",
+      "display_name": "Daniel Theunissen"
+    },
+    {
+      "user_name": "psuppers",
+      "user_id": "10058",
+      "display_name": "Pascal Suppers"
+    },
+    {
+      "user_name": "rvoncken",
+      "user_id": "10098",
+      "display_name": "Rickest Rick"
+    },
+    {
+      "user_name": "rravelli",
+      "user_id": "10078",
+      "display_name": "Raimond Ravelli"
+    },
+    {
+      "user_name": "service-disqover",
+      "user_id": "10118",
+      "display_name": "service-disqover"
+    },
+    {
+      "user_name": "service-pid",
+      "user_id": "10115",
+      "display_name": "service-pid"
+    },
+    {
+      "user_name": "dlinssen",
+      "user_id": "10048",
+      "display_name": "Dean Linssen"
+    },
+    {
+      "user_name": "pahles",
+      "user_id": "10083",
+      "display_name": "Patrick Ahles"
+    },
+    {
+      "user_name": "delnoy",
+      "user_id": "10063",
+      "display_name": "delnoy"
+    }
+  ]
+}

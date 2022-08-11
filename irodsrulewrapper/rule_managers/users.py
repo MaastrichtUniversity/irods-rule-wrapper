@@ -4,7 +4,6 @@ from irodsrulewrapper.cache import CacheTTL
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.dto.attribute_value import AttributeValue
 from irodsrulewrapper.dto.boolean import Boolean
-from irodsrulewrapper.dto.data_stewards import DataStewards
 from irodsrulewrapper.dto.group import Group
 from irodsrulewrapper.dto.integer_value import IntegerValue
 from irodsrulewrapper.dto.user_or_group import UserOrGroup
@@ -50,10 +49,10 @@ class UserRuleManager(BaseRuleManager):
 
         Returns
         -------
-        DataStewards
-            dto.DataStewards object
+        Users
+            dto.Users object
         """
-        return RuleInfo(name="getDataStewards", get_result=True, session=self.session, dto=DataStewards)
+        return RuleInfo(name="getDataStewards", get_result=True, session=self.session, dto=Users)
 
     @rule_call
     def get_user_attribute_value(self, username, attribute, fatal):

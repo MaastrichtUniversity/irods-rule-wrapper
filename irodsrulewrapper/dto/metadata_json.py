@@ -17,7 +17,7 @@ class MetadataJSON:
     def __init__(self, session: iRODSSession):
         self.session = session
 
-    @api_call(mock=None)
+    @api_call
     def write_schema(self, schema_path: str, schema_irods_path: str):
         """
         Put the schema.json from the schema_path inside the drop-zone
@@ -31,7 +31,7 @@ class MetadataJSON:
         """
         self.session.data_objects.put(schema_path, schema_irods_path)
 
-    @api_call(mock=None)
+    @api_call
     def write_instance(self, instance: dict, instance_irods_path: str):
         """
         Put the instance.json from the schema_path inside the drop-zone.
@@ -53,7 +53,6 @@ class MetadataJSON:
         self.session.data_objects.put(instance_path, instance_irods_path)
         os.remove(instance_path)
 
-    @api_call(mock=None)
     def read_irods_json_file(self, irods_file_path) -> dict:
         """
         Open the json file at the iRODS path and parse it JSON.

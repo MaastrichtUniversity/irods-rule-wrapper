@@ -80,7 +80,7 @@ class RuleManager(
             self.session.cleanup()
         return pwd
 
-    @api_call(mock={"temporary_password": "pwd", "valid_until": 10042})
+    @api_call
     def generate_temporary_password(self, irods_user_name: str, irods_id: int) -> TemporaryPasswordTTL:
         """
         Get a temporary password for a user and delete all existing ones.
@@ -120,14 +120,13 @@ class RuleManager(
             self.remove_user_temporary_passwords(irods_id)
         pwd = self.get_temp_password(irods_user_name, sessions_cleanup=False)
         creation_time_stamp = self.get_user_temporary_password_creation_timestamp(irods_id)
-        temporary_password_lifetime = int(self.get_temporary_password_lifetime())
+        temporary_password_lifetime = int(self.get_temporary_password_lifetime().result)
         if not creation_time_stamp:
             raise QueryException
         # Add the temporary password lifetime (from irods server) to the creation timestamp to get it validity date
         time_stamp = creation_time_stamp + temporary_password_lifetime
         return {"temporary_password": pwd, "valid_until": time_stamp}
 
-    @api_call(mock=None)
     def remove_user_temporary_passwords(self, irods_id: int):
         """
         Removes all existing temporary passwords
@@ -154,7 +153,6 @@ class RuleManager(
         except CAT_NO_ROWS_FOUND:
             return
 
-    @api_call(mock=42)
     def count_user_temporary_passwords(self, irods_id: int) -> int:
         """
         Count the number of temporary passwords for a user
@@ -183,7 +181,7 @@ class RuleManager(
         except CAT_NO_ROWS_FOUND:
             return 0
 
-    @api_call(mock=10042)
+    @api_call
     def get_user_temporary_password_creation_timestamp(self, irods_id: int) -> int | None:
         """
         Get the timestamp of creation for the temporary password for a specific user
@@ -212,7 +210,7 @@ class RuleManager(
         except CAT_NO_ROWS_FOUND:
             return None
 
-    @api_call(mock=10042)
+    @api_call
     def get_irods_user_id_by_username(self, user_name: str) -> int:
         """
         Get the irods user id for a give irods username

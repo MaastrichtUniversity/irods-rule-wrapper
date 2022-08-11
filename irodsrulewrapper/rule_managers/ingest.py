@@ -1,7 +1,7 @@
 """This module contains the IngestRuleManager class."""
 from dhpythonirodsutils import validators, formatters, exceptions
 
-from irodsrulewrapper.decorator import rule_call, api_call, SCHEMA_JSON, INSTANCE_JSON
+from irodsrulewrapper.decorator import rule_call, api_call
 from irodsrulewrapper.dto.drop_zones import DropZones, DropZone
 from irodsrulewrapper.dto.metadata_json import MetadataJSON
 from irodsrulewrapper.dto.metadata_pid import MetadataPID
@@ -215,7 +215,7 @@ class IngestRuleManager(BaseRuleManager):
         if dropzone_type == "direct":
             self.set_acl("default", f"{prefix}read", self.session.username, instance_irods_path)
 
-    @api_call(mock=SCHEMA_JSON)
+    @api_call
     def read_schema_from_dropzone(self, token, dropzone_type) -> dict:
         """
         Save the schema.json to the indicated iRODS path.
@@ -237,7 +237,7 @@ class IngestRuleManager(BaseRuleManager):
 
         return schema
 
-    @api_call(mock=INSTANCE_JSON)
+    @api_call
     def read_instance_from_dropzone(self, token, dropzone_type) -> dict:
         """
         Read the instance.json from the indicated iRODS path.

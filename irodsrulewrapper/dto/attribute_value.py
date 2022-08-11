@@ -1,20 +1,21 @@
 """This module contains the AttributeValue DTO class and its factory constructor."""
 import json
 
+from irodsrulewrapper.dto.dto_base_model import DTOBaseModel
 
-class AttributeValue:
+
+class AttributeValue(DTOBaseModel):
     """
     This class represents the output value of an AVU query by attribute.
 
     TO_REFACTOR: AttributeValue & Token are very similar, refactor them as a StringValue DTO (same a Boolean)
     """
 
-    def __init__(self, value: str):
-        self.value: str = value
+    value: str
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "AttributeValue":
-        value = cls(result["value"])
+        value = cls(value=result["value"])
         return value
 
     @classmethod

@@ -2,13 +2,13 @@
 import json
 
 from irodsrulewrapper.dto.collection import Collection
+from irodsrulewrapper.dto.dto_base_model import DTOBaseModel
 
 
-class Collections:
+class Collections(DTOBaseModel):
     """This class represents a list of iRODS Collection DTOs."""
 
-    def __init__(self, collections: list["Collection"]):
-        self.collections: list["Collection"] = collections
+    collections: list[Collection]
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "Collections":
@@ -16,7 +16,7 @@ class Collections:
         for item in result:
             collection = Collection.create_from_rule_result(item)
             collections.append(collection)
-        output = cls(collections)
+        output = cls(collections=collections)
         return output
 
     @classmethod

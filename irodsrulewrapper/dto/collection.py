@@ -2,34 +2,22 @@
 from dhpythonirodsutils import formatters
 from dhpythonirodsutils.enums import ProjectAVUs
 
+from irodsrulewrapper.dto.dto_base_model import DTOBaseModel
 
-class Collection:
+
+class Collection(DTOBaseModel):
     """This class represents an iRODS project collection with its attributes."""
 
-    def __init__(
-        self,
-        collection_id: str,
-        creator: str,
-        size: float,
-        title: str,
-        pid: str,
-        num_files: int,
-        num_user_files: int,
-        enable_archive: bool,
-        enable_unarchive: bool,
-        enable_open_access_export: bool,
-    ):
-
-        self.id: str = collection_id
-        self.creator: str = creator
-        self.size: float = size
-        self.title: str = title
-        self.pid: str = pid
-        self.num_files: int = num_files
-        self.num_user_files: int = num_user_files
-        self.enable_archive: bool = enable_archive
-        self.enable_unarchive: bool = enable_unarchive
-        self.enable_open_access_export: bool = enable_open_access_export
+    id: str
+    creator: str
+    size: float
+    title: str
+    pid: str
+    num_files: int
+    num_user_files: int
+    enable_archive: bool
+    enable_unarchive: bool
+    enable_open_access_export: bool
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "Collection":
@@ -45,7 +33,7 @@ class Collection:
         elif "byteSize" in result:
             size = result["byteSize"]
 
-        enable_archive = None
+        enable_archive = False
         if ProjectAVUs.ENABLE_ARCHIVE.value in result and formatters.format_string_to_boolean(
             result[ProjectAVUs.ENABLE_ARCHIVE.value]
         ):
@@ -55,7 +43,7 @@ class Collection:
         ):
             enable_archive = False
 
-        enable_unarchive = None
+        enable_unarchive = False
         if ProjectAVUs.ENABLE_UNARCHIVE.value in result and formatters.format_string_to_boolean(
             result[ProjectAVUs.ENABLE_UNARCHIVE.value]
         ):
@@ -65,7 +53,7 @@ class Collection:
         ):
             enable_unarchive = False
 
-        enable_open_access_export = None
+        enable_open_access_export = False
         if ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value in result and formatters.format_string_to_boolean(
             result[ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value]
         ):
@@ -76,15 +64,15 @@ class Collection:
             enable_open_access_export = False
 
         collection = cls(
-            collection_id,
-            result["creator"],
-            size,
-            result["title"],
-            result["PID"],
-            result["numFiles"],
-            result["numUserFiles"],
-            enable_archive,
-            enable_unarchive,
-            enable_open_access_export,
+            id=collection_id,
+            creator=result["creator"],
+            size=size,
+            title=result["title"],
+            pid=result["PID"],
+            num_files=result["numFiles"],
+            num_user_files=result["numUserFiles"],
+            enable_archive=enable_archive,
+            enable_unarchive=enable_unarchive,
+            enable_open_access_export=enable_open_access_export,
         )
         return collection

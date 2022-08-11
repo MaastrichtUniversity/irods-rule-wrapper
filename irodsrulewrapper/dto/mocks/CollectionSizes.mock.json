@@ -1,0 +1,34 @@
+{
+    "collection_sizes": {
+        "C000000001": [
+            {
+                "resource": "replRescUM01",
+                "size": 270572544.0,
+                "relative_size": 72.9
+            },
+            {
+                "resource": "arcRescSURF01",
+                "size": 100719825.0,
+                "relative_size": 27.1
+            }
+        ],
+        "C000000002": [
+            {
+                "resource": "replRescUM01",
+                "size": 371251334.0,
+                "relative_size": 100.0
+            }
+        ],
+        "C000000003": [
+            {
+                "resource": "replRescUM01",
+                "size": 37340000.0,
+                "relative_size": 100.0
+            }
+        ]
+    },
+    "resources_set": [
+        "arcRescSURF01",
+        "replRescUM01"
+    ]
+}

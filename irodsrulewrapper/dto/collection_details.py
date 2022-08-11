@@ -4,36 +4,23 @@ import json
 from dhpythonirodsutils import formatters
 from dhpythonirodsutils.enums import ProjectAVUs
 
+from irodsrulewrapper.dto.dto_base_model import DTOBaseModel
 from irodsrulewrapper.dto.external_pid import ExternalPID
 
 
-class CollectionDetails:
+class CollectionDetails(DTOBaseModel):
     """This class represents an iRODS project collection with its extended attributes."""
 
-    def __init__(
-        self,
-        collection_id: str,
-        creator: str,
-        size: float,
-        title: str,
-        pid: str,
-        num_files: str,
-        enable_archive: bool,
-        enable_unarchive: bool,
-        enable_open_access_export: bool,
-        external_pid_list: list,
-    ):
-
-        self.id: str = collection_id
-        self.creator: str = creator
-        self.size: float = size
-        self.title: str = title
-        self.pid: str = pid
-        self.num_files: str = num_files
-        self.enable_archive: bool = enable_archive
-        self.enable_unarchive: bool = enable_unarchive
-        self.enable_open_access_export: bool = enable_open_access_export
-        self.external_pid_list: list = external_pid_list
+    id: str
+    creator: str
+    size: float
+    title: str
+    pid: str
+    num_files: str
+    enable_archive: bool
+    enable_unarchive: bool
+    enable_open_access_export: bool
+    external_pid_list: list[ExternalPID]
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "CollectionDetails":
@@ -73,16 +60,16 @@ class CollectionDetails:
             enable_open_access_export = False
 
         collection = cls(
-            result["collection"],
-            result["creator"],
-            result["byteSize"],
-            result["title"],
-            result["PID"],
-            result["numFiles"],
-            enable_archive,
-            enable_unarchive,
-            enable_open_access_export,
-            external_pid_list,
+            id=result["collection"],
+            creator=result["creator"],
+            size=result["byteSize"],
+            title=result["title"],
+            pid=result["PID"],
+            num_files=result["numFiles"],
+            enable_archive=enable_archive,
+            enable_unarchive=enable_unarchive,
+            enable_open_access_export=enable_open_access_export,
+            external_pid_list=external_pid_list,
         )
         return collection
 

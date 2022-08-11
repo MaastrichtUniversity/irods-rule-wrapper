@@ -1,5 +1,4 @@
 """This module contains the IntegerValue DTO class and its factory constructor."""
-
 from irodsrulewrapper.dto.dto_base_model import DTOBaseModel
 
 

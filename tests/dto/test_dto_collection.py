@@ -31,7 +31,7 @@ def test_collection():
     assert collection.pid == "21.T12996/P000000010C000000001"
     assert collection.creator == "jonathan.melius@maastrichtuniversity.nl"
     assert collection.size == 2793.9677238464355
-    assert collection.num_files == "1253"
+    assert collection.num_files == 1253
 
 
 def test_collections():

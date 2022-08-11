@@ -1,0 +1,21 @@
+{
+  "id": "C000000001",
+  "creator": "jonathan.melius@maastrichtuniversity.nl",
+  "size": 554400.0,
+  "title": "Dataset Title1",
+  "pid": "21.T12996/P000000014C000000001",
+  "num_files": "4",
+  "enable_archive": true,
+  "enable_unarchive": true,
+  "enable_open_access_export": true,
+  "external_pid_list": [
+    {
+      "pid": "https://doi.org/toto",
+      "repository": "foobar"
+    },
+    {
+      "pid": "https://doi.org/tyty",
+      "repository": "hola"
+    }
+  ]
+}

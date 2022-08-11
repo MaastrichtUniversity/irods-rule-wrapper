@@ -62,7 +62,7 @@ def test_dto_projects_minimal():
     assert projects[0].id == "P000000010"
     assert projects[0].title == "(MDL) Placeholder project"
     assert projects[1].title == "(HVC) Placeholder project"
-    assert projects[6].id == "P000000016"
+    assert projects[6].id == "P000000019"
 
 
 def test_dto_migration_card():
@@ -128,7 +128,6 @@ def test_dto_projects_overview():
 
     result = ProjectsOverview.create_from_rule_result(json.loads(PROJECTS_OVERVIEW))
     projects = result.projects
-    print(result.json(indent=2))
 
     assert projects[0].id == "P000000012"
     assert projects[0].title == "You recoil from the crude; you tend naturally toward the exquisite."

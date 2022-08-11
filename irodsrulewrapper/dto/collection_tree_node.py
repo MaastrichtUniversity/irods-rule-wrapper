@@ -8,7 +8,7 @@ class CollectionTreeNode(DTOBaseModel):
     ctime: str
     mtime: str
     name: str
-    offlineResource: bool
+    offlineResource: bool | None
     path: str
     rescname: str
     size: str
@@ -16,6 +16,9 @@ class CollectionTreeNode(DTOBaseModel):
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "CollectionTreeNode":
+        # if type == folder, offlineResource is null
+        if "offlineResource" not in result:
+            result["offlineResource"] = None
         item = cls(
             ctime=result["ctime"],
             mtime=result["mtime"],

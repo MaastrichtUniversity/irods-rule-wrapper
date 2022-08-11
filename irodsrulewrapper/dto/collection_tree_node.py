@@ -2,7 +2,7 @@
 from irodsrulewrapper.dto.dto_base_model import DTOBaseModel
 
 
-class CollectionItemTree(DTOBaseModel):
+class CollectionTreeNode(DTOBaseModel):
     """CollectionFolderTree CollectionFileTree"""
 
     ctime: str
@@ -15,7 +15,7 @@ class CollectionItemTree(DTOBaseModel):
     type: str
 
     @classmethod
-    def create_from_rule_result(cls, result: dict) -> "CollectionItemTree":
+    def create_from_rule_result(cls, result: dict) -> "CollectionTreeNode":
         item = cls(
             ctime=result["ctime"],
             mtime=result["mtime"],

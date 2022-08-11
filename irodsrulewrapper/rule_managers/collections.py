@@ -5,11 +5,10 @@ from cedarparsingutils.dto.general_instance import GeneralInstance
 from dhpythonirodsutils import validators, exceptions, formatters
 
 from irodsrulewrapper.decorator import rule_call, api_call, INSTANCE_JSON, SCHEMA_JSON
-from irodsrulewrapper.dto.CollectionFolderTree import CollectionFolderTree
 from irodsrulewrapper.dto.attribute_value import AttributeValue
 from irodsrulewrapper.dto.boolean import Boolean
 from irodsrulewrapper.dto.collection_details import CollectionDetails
-from irodsrulewrapper.dto.collections import Collection
+from irodsrulewrapper.dto.collection_tree_root import CollectionTreeRoot
 from irodsrulewrapper.dto.collections import Collections
 from irodsrulewrapper.dto.metadata_json import MetadataJSON
 from irodsrulewrapper.dto.tape_estimate import TapeEstimate
@@ -141,7 +140,7 @@ class CollectionRuleManager(BaseRuleManager):
 
         Returns
         -------
-        Collection
+        CollectionDetails
             The collection avu & acl
 
         """
@@ -468,7 +467,7 @@ class CollectionRuleManager(BaseRuleManager):
             name="get_collection_tree",
             get_result=True,
             session=self.session,
-            dto=CollectionFolderTree,
+            dto=CollectionTreeRoot,
             parse_to_dto=self.parse_to_dto,
         )
 

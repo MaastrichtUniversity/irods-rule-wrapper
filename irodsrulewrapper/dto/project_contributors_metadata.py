@@ -25,10 +25,10 @@ class ProjectContributorsMetadata(DTOBaseModel):
         return project
 
     @classmethod
-    def create_from_mock_result(cls, project_json=None) -> "ProjectContributorsMetadata":
-        if project_json is None:
-            project_json = CONTRIBUTORS_METADATA
-        return ProjectContributorsMetadata.create_from_rule_result(json.loads(project_json))
+    def create_from_mock_result(cls, mock_json=None) -> "ProjectContributorsMetadata":
+        if mock_json is None:
+            mock_json = CONTRIBUTORS_METADATA
+        return ProjectContributorsMetadata.create_from_rule_result(json.loads(mock_json))
 
 
 CONTRIBUTORS_METADATA = """

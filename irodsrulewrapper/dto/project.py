@@ -68,16 +68,16 @@ class Project(DTOBaseModel):
         return project_details
 
     @classmethod
-    def create_from_mock_result(cls, project_json=None) -> "Project":
-        if project_json is None:
-            project_json = PROJECT_JSON
-        return Project.create_from_rule_result(json.loads(project_json))
+    def create_from_mock_result(cls, mock_json=None) -> "Project":
+        if mock_json is None:
+            mock_json = PROJECT_JSON
+        return Project.create_from_rule_result(json.loads(mock_json))
 
 
 PROJECT_JSON = """
     {
         "project": "P000000015",
-        "title": "test_title",
+        "title": "test title",
         "enableOpenAccessExport": false,
         "enableArchive": true,
         "enableUnarchive": true,

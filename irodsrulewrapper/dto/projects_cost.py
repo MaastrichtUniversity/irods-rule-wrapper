@@ -24,10 +24,10 @@ class ProjectsCost(DTOBaseModel):
         return projects
 
     @classmethod
-    def create_from_mock_result(cls, projects_cost_json=None) -> "ProjectsCost":
-        if projects_cost_json is None:
-            projects_cost_json = PROJECTS_COST_JSON
-        return ProjectsCost.create_from_rule_result(json.loads(projects_cost_json))
+    def create_from_mock_result(cls, mock_json=None) -> "ProjectsCost":
+        if mock_json is None:
+            mock_json = PROJECTS_COST_JSON
+        return ProjectsCost.create_from_rule_result(json.loads(mock_json))
 
 
 PROJECTS_COST_JSON = """

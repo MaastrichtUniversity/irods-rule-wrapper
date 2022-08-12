@@ -32,10 +32,10 @@ class ProjectsMinimal(DTOBaseModel):
         return output
 
     @classmethod
-    def create_from_mock_result(cls, projects_json=None) -> "ProjectsMinimal":
-        if projects_json is None:
-            projects_json = PROJECTS_MINIMAL_JSON
-        return ProjectsMinimal.create_from_rule_result(json.loads(projects_json))
+    def create_from_mock_result(cls, mock_json=None) -> "ProjectsMinimal":
+        if mock_json is None:
+            mock_json = PROJECTS_MINIMAL_JSON
+        return ProjectsMinimal.create_from_rule_result(json.loads(mock_json))
 
 
 PROJECTS_MINIMAL_JSON: str = """

@@ -34,7 +34,7 @@ def test_dto_project():
     assert project_details.manager_users.users[0].display_name == "test_manager"
     assert project_details.contributor_users.users[0].display_name == "test_contributor"
     assert project_details.viewer_users.users[0].display_name == "test_viewer"
-    assert project_details.title == "test_title"
+    assert project_details.title == "test title"
     assert project_details.enable_open_access_export is False
     assert project_details.enable_archive is False
     assert project_details.has_financial_view_access is True

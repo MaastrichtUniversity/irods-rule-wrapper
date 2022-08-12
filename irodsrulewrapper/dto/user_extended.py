@@ -26,11 +26,11 @@ class UserExtended(DTOBaseModel):
         return user
 
     @classmethod
-    def create_from_mock_result(cls, user_json=None) -> "UserExtended":
-        if user_json is None:
-            user_json = USER_METADATA
+    def create_from_mock_result(cls, mock_json=None) -> "UserExtended":
+        if mock_json is None:
+            mock_json = USER_METADATA
 
-        return UserExtended.create_from_rule_result(json.loads(user_json))
+        return UserExtended.create_from_rule_result(json.loads(mock_json))
 
 
 USER_METADATA = """

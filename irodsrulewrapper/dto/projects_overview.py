@@ -26,10 +26,10 @@ class ProjectsOverview(DTOBaseModel):
         return projects
 
     @classmethod
-    def create_from_mock_result(cls, projects_json=None) -> "ProjectsOverview":
-        if projects_json is None:
-            projects_json = PROJECTS_OVERVIEW
-        return ProjectsOverview.create_from_rule_result(json.loads(projects_json))
+    def create_from_mock_result(cls, mock_json=None) -> "ProjectsOverview":
+        if mock_json is None:
+            mock_json = PROJECTS_OVERVIEW
+        return ProjectsOverview.create_from_rule_result(json.loads(mock_json))
 
 
 PROJECTS_OVERVIEW = """

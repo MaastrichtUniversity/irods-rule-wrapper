@@ -1,8 +1,8 @@
 """This module contains the User DTO class and its factory constructor."""
-from pydantic import BaseModel
+from irodsrulewrapper.dto.dto_base_model import DTOBaseModel
 
 
-class User(BaseModel):
+class User(DTOBaseModel):
     """This class represents an iRODS user with its minimal attributes"""
 
     user_name: str

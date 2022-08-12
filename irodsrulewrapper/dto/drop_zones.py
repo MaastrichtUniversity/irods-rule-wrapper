@@ -1,14 +1,14 @@
 """This module contains the DropZones class and its factory constructor."""
 import json
 
+from irodsrulewrapper.dto.dto_base_model import DTOBaseModel
 from irodsrulewrapper.dto.drop_zone import DropZone
 
 
-class DropZones:
+class DropZones(DTOBaseModel):
     """This class represents a list of iRODS DropZones DTOs."""
 
-    def __init__(self, users: list["DropZone"]):
-        self.drop_zones: list["DropZone"] = users
+    drop_zones: list[DropZone]
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "DropZones":
@@ -16,7 +16,7 @@ class DropZones:
         for item in result:
             drop_zone = DropZone.create_from_rule_result(item)
             output.append(drop_zone)
-        drop_zones = cls(output)
+        drop_zones = cls(drop_zones=output)
         return drop_zones
 
     @classmethod

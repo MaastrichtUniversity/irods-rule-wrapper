@@ -1,8 +1,10 @@
 """This module contains the UserOrGroup DTO class and its factory constructor."""
 import json
 
+from irodsrulewrapper.dto.dto_base_model import DTOBaseModel
 
-class UserOrGroup:
+
+class UserOrGroup(DTOBaseModel):
     """
     This class is part of the Browser Cache Time To Live (TTL) flow.
     It represents the rule output of UserRuleManager.get_user_or_group_by_id().
@@ -10,14 +12,13 @@ class UserOrGroup:
     The DTO is then stored in the dictionary CacheTTL.CACHE_USERS_GROUPS.
     """
 
-    def __init__(self, result: dict):
-        self.result: dict = result
+    result: dict
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "UserOrGroup":
         if result is None:
             return None
-        output = cls(result)
+        output = cls(result=result)
         return output
 
     @classmethod

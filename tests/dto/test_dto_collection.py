@@ -79,14 +79,14 @@ def test_dto_collections_sizes():
 
 def test_dto_metadata_pid():
     result = MetadataPID.create_from_rule_result(json.loads(METADATA_PID))
-    assert result.collection["handle"] == "21.T12996/P000000014C000000001.1"
-    assert result.collection["url"] == "http://mdr.local.dh.unimaas.nl/hdl/P000000014/C000000001.1"
+    assert result.collection_pid["handle"] == "21.T12996/P000000014C000000001.1"
+    assert result.collection_pid["url"] == "http://mdr.local.dh.unimaas.nl/hdl/P000000014/C000000001.1"
 
-    assert result.instance["handle"] == "21.T12996/P000000014C000000001instance.1"
-    assert result.instance["url"] == "http://mdr.local.dh.unimaas.nl/hdl/P000000014/C000000001/instance.1"
+    assert result.instance_pid["handle"] == "21.T12996/P000000014C000000001instance.1"
+    assert result.instance_pid["url"] == "http://mdr.local.dh.unimaas.nl/hdl/P000000014/C000000001/instance.1"
 
-    assert result.schema["handle"] == "21.T12996/P000000014C000000001schema.1"
-    assert result.schema["url"] == "http://mdr.local.dh.unimaas.nl/hdl/P000000014/C000000001/schema.1"
+    assert result.schema_pid["handle"] == "21.T12996/P000000014C000000001schema.1"
+    assert result.schema_pid["url"] == "http://mdr.local.dh.unimaas.nl/hdl/P000000014/C000000001/schema.1"
 
 
 def test_dto_external_pid():

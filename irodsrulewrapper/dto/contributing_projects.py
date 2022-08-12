@@ -1,14 +1,14 @@
 """This module contains the ContributingProjects DTO class and its factory constructor."""
 import json
 
+from irodsrulewrapper.dto.dto_base_model import DTOBaseModel
 from irodsrulewrapper.dto.contributing_project import ContributingProject
 
 
-class ContributingProjects:
+class ContributingProjects(DTOBaseModel):
     """This class represents a list of iRODS ContributingProject DTOs."""
 
-    def __init__(self, projects: list["ContributingProject"]):
-        self.projects: list["ContributingProject"] = projects
+    projects: list[ContributingProject]
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "ContributingProjects":
@@ -20,7 +20,7 @@ class ContributingProjects:
         for item in result:
             drop_zone = ContributingProject.create_from_rule_result(item)
             output.append(drop_zone)
-        projects = cls(output)
+        projects = cls(projects=output)
         return projects
 
     @classmethod

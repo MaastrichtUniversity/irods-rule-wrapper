@@ -1,36 +1,27 @@
 """This module contains the ProjectCost DTO class and its factory constructor."""
+from irodsrulewrapper.dto.dto_base_model import DTOBaseModel
 
 
-class ProjectCost:
+class ProjectCost(DTOBaseModel):
     """This class represents the cost information for an iRODS project."""
 
-    def __init__(
-        self,
-        project_id: str,
-        project_cost_yearly: float,
-        project_cost_monthly: float,
-        project_size_gb: float,
-        project_size_gib: float,
-        budget_number: str,
-        title: str,
-    ):
-        self.project_id: str = project_id
-        self.project_cost_yearly: float = project_cost_yearly
-        self.project_cost_monthly: float = project_cost_monthly
-        self.project_size_gb: float = project_size_gb
-        self.project_size_gib: float = project_size_gib
-        self.budget_number: str = budget_number
-        self.title: str = title
+    project_id: str
+    project_cost_yearly: float
+    project_cost_monthly: float
+    project_size_gb: float
+    project_size_gib: float
+    budget_number: str
+    title: str
 
     @classmethod
     def create_from_rule_result(cls, result):
         user = cls(
-            result["project_id"],
-            result["project_cost_yearly"],
-            result["project_cost_monthly"],
-            result["project_size_gb"],
-            result["project_size_gib"],
-            result["budget_number"],
-            result["title"],
+            project_id=result["project_id"],
+            project_cost_yearly=result["project_cost_yearly"],
+            project_cost_monthly=result["project_cost_monthly"],
+            project_size_gb=result["project_size_gb"],
+            project_size_gib=result["project_size_gib"],
+            budget_number=result["budget_number"],
+            title=result["title"],
         )
         return user

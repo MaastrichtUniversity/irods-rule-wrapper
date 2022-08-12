@@ -1,17 +1,17 @@
 """This module contains the Resource DTO class and its factory constructor."""
+from irodsrulewrapper.dto.dto_base_model import DTOBaseModel
 
 
-class Resource:
+class Resource(DTOBaseModel):
     """This class represents an iRODS resource with its minimal attributes."""
 
-    def __init__(self, name: str, comment: str, available: bool):
-        self.name: str = name
-        self.comment: str = comment
-        self.available: bool = available
+    name: str
+    comment: str
+    available: bool
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "Resource":
         if "available" not in result:
             result["available"] = False
-        resource = cls(result["name"], result["comment"], result["available"])
+        resource = cls(name=result["name"], comment=result["comment"], available=result["available"])
         return resource

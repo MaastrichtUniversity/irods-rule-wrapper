@@ -1,8 +1,8 @@
 """This module contains the Group DTO class and its factory constructor."""
-from pydantic import BaseModel
+from irodsrulewrapper.dto.dto_base_model import DTOBaseModel
 
 
-class Group(BaseModel):
+class Group(DTOBaseModel):
     """This class represents an iRODS group with its attributes"""
 
     name: str

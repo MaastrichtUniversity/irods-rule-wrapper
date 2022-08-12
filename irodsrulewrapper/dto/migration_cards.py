@@ -1,14 +1,14 @@
 """This module contains the MigrationCards DTO class and its factory constructor."""
 import json
 
+from irodsrulewrapper.dto.dto_base_model import DTOBaseModel
 from irodsrulewrapper.dto.migration_card import MigrationCard
 
 
-class MigrationCards:
+class MigrationCards(DTOBaseModel):
     """This class represents a list of MigrationCard User DTOs."""
 
-    def __init__(self, cards: list["MigrationCard"]):
-        self.cards: list["MigrationCard"] = cards
+    cards: list[MigrationCard]
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "MigrationCards":
@@ -16,7 +16,7 @@ class MigrationCards:
         for item in result:
             card = MigrationCard.create_from_rule_result(item)
             output.append(card)
-        cards = cls(output)
+        cards = cls(cards=output)
         return cards
 
     @classmethod

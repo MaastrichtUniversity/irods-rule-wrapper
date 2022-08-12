@@ -1,14 +1,14 @@
 """This module contains the CreateProject DTO class and its factory constructor."""
+from irodsrulewrapper.dto.dto_base_model import DTOBaseModel
 
 
-class CreateProject:
+class CreateProject(DTOBaseModel):
     """This class represents newly created iRODS project with minimal attributes"""
 
-    def __init__(self, project_path: str, project_id: str):
-        self.project_path: str = project_path
-        self.project_id: str = project_id
+    project_path: str
+    project_id: str
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "CreateProject":
-        project = cls(result["project_path"], result["project_id"])
+        project = cls(project_path=result["project_path"], project_id=result["project_id"])
         return project

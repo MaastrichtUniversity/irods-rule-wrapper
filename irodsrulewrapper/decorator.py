@@ -10,6 +10,9 @@ from irods.rule import Rule
 
 from irodsrulewrapper.api.mock_result import get_api_mock_result
 
+# MOCK_RULE_WRAPPER mode
+# Set the rule wrapper into a mock mode, meaning return mock up dto instead of trying to connect to iRODS
+# to execute server rules.
 MOCK_RULE_WRAPPER = strtobool(os.environ.get("MOCK_RULE_WRAPPER", "False"))
 
 
@@ -146,10 +149,10 @@ def rule_call(func: Callable):
         if rule_info.parse_to_dto and rule_info.get_result:
             try:
                 return rule_info.dto.create_from_mock_json()
-            except AttributeError:
+            except (AttributeError, FileNotFoundError):
                 return rule_info.dto.create_from_mock_result()
 
-        return
+        return None
 
     def wrapper_decorator(*args):
         rule_info = func(*args)

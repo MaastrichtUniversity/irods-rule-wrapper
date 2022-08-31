@@ -116,10 +116,10 @@ class IngestRuleManager(BaseRuleManager):
         dropzone_type : str
             The type of dropzone, 'mounted' or 'direct'
         """
-        try:
-            self.set_total_size_dropzone(token, dropzone_type)
-        except RuntimeError as err:
-            log_warning_message(user, f"set_total_size_dropzone failed with error: {err}")
+       # try:
+       #     self.set_total_size_dropzone(token, dropzone_type)
+       # except RuntimeError as err:
+       #     log_warning_message(user, f"set_total_size_dropzone failed with error: {err}")
         if dropzone_type == "direct":
             # CAUTION: This is an admin level rule call
             admin_rule_manager = ProjectRuleManager(admin_mode=True)

@@ -1,10 +1,11 @@
-from typing import Dict
-
+"""This module contains the DropZone class and its factory constructor."""
 from dhpythonirodsutils import formatters
 from dhpythonirodsutils.enums import ProjectAVUs
 
 
 class DropZone:
+    """This class represents an iRODS dropzone collection with its attributes"""
+
     def __init__(
         self,
         date: str,
@@ -40,7 +41,7 @@ class DropZone:
         self.dropzone_sharing_enabled: bool = dropzone_sharing_enabled
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> "DropZone":
+    def create_from_rule_result(cls, result: dict) -> "DropZone":
         if "resourceStatus" not in result:
             result["resourceStatus"] = ""
 

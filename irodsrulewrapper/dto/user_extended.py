@@ -1,9 +1,10 @@
+"""This module contains the UserExtended DTO class, its factory constructors and mock_json."""
 import json
-
-from typing import Dict
 
 
 class UserExtended:
+    """This class represents an iRODS user with its extended attributes."""
+
     def __init__(self, username: str, display_name: str, given_name: str, family_name: str, email: str):
         self.username: str = username
         self.display_name: str = display_name
@@ -12,7 +13,7 @@ class UserExtended:
         self.email: str = email
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> "UserExtended":
+    def create_from_rule_result(cls, result: dict) -> "UserExtended":
         user = cls(
             result["username"], result["displayName"], result["givenName"], result["familyName"], result["email"]
         )
@@ -32,6 +33,6 @@ class UserExtended:
         "email": "o.palmen@maastrichtuniversity.nl",
         "familyName": "Palmen",
         "givenName": "Olav",
-        "username": "opalmen"     
+        "username": "opalmen"
     }
     """

@@ -1,5 +1,4 @@
-from typing import List, Dict
-
+"""This module contains the CollectionDetails DTO class and its factory constructor."""
 from dhpythonirodsutils import formatters
 from dhpythonirodsutils.enums import ProjectAVUs
 
@@ -7,9 +6,11 @@ from irodsrulewrapper.dto.external_pid import ExternalPID
 
 
 class CollectionDetails:
+    """This class represents an iRODS project collection with its extended attributes."""
+
     def __init__(
         self,
-        id: str,
+        collection_id: str,
         creator: str,
         size: float,
         title: str,
@@ -18,10 +19,10 @@ class CollectionDetails:
         enable_archive: bool,
         enable_unarchive: bool,
         enable_open_access_export: bool,
-        external_pid_list: List,
+        external_pid_list: list,
     ):
 
-        self.id: str = id
+        self.id: str = collection_id
         self.creator: str = creator
         self.size: float = size
         self.title: str = title
@@ -30,10 +31,10 @@ class CollectionDetails:
         self.enable_archive: bool = enable_archive
         self.enable_unarchive: bool = enable_unarchive
         self.enable_open_access_export: bool = enable_open_access_export
-        self.external_pid_list: List = external_pid_list
+        self.external_pid_list: list = external_pid_list
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> "CollectionDetails":
+    def create_from_rule_result(cls, result: dict) -> "CollectionDetails":
         external_pid_list = []
         if result["externals"] != "no-externalPID-set":
             for external in result["externals"]:

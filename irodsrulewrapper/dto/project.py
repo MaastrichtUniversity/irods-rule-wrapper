@@ -1,17 +1,19 @@
+"""This module contains the Project DTO class, its factory constructors and mock_json."""
 import json
-from typing import Dict
 
 from dhpythonirodsutils import formatters
 from dhpythonirodsutils.enums import ProjectAVUs
 
-from irodsrulewrapper.dto.users import Users
 from irodsrulewrapper.dto.groups import Groups
+from irodsrulewrapper.dto.users import Users
 
 
 class Project:
+    """This class represents an iRODS project with its extended attributes and its ACL."""
+
     def __init__(
         self,
-        id: str,
+        project_id: str,
         title: str,
         enable_open_access_export: bool,
         enable_archive: bool,
@@ -32,7 +34,7 @@ class Project:
         viewer_groups: Groups,
         has_financial_view_access: bool,
     ):
-        self.id: str = id
+        self.id: str = project_id
         self.title: str = title
         self.enable_open_access_export: bool = enable_open_access_export
         self.enable_archive: bool = enable_archive
@@ -54,7 +56,7 @@ class Project:
         self.has_financial_view_access = has_financial_view_access
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> "Project":
+    def create_from_rule_result(cls, result: dict) -> "Project":
         if "principalInvestigatorDisplayName" not in result:
             result["principalInvestigatorDisplayName"] = ""
         if "dataStewardDisplayName" not in result:

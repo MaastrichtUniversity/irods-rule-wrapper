@@ -30,16 +30,6 @@ And add this to `/etc/hosts`:
 127.0.0.1	irods.dh.local
 ```
 
-Alternatively, if you install pytest-dotenv you can set the environment variables creating a .env file in the tests folder.
-```shell script
-IRODS_HOST=irods.dh.local
-IRODS_USER=rods
-IRODS_PASS=irods
-IRODS_CLIENT_SERVER_POLICY=CS_NEG_REQUIRE
-CACHE_TTL_VALUE=86400
-```
-
-
 ### Run the tests in PyCharm
 
 * All the tests: Right-click on the sub folder irods-rule-wrapper/tests and then "Run 'pytest in tests"

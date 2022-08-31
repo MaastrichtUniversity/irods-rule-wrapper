@@ -27,5 +27,5 @@ setuptools.setup(
         "pytz>=2021.3",
         "pydantic>=1.9.1,<2.0.0",
     ],
-    tests_requires=["pytest", "pytest-dotenv"],
+    tests_requires=["pytest"],
 )

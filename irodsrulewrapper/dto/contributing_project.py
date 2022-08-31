@@ -1,15 +1,18 @@
-from typing import List, Dict
-
+"""This module contains the ContributingProject DTO class and its factory constructor."""
 from dhpythonirodsutils.enums import ProjectAVUs
 
-from .users import Users
-from .groups import Groups
+from irodsrulewrapper.dto.groups import Groups
+from irodsrulewrapper.dto.users import Users
 
 
 class ContributingProject:
+    """
+    This class represents an iRODS project with its attributes and ACL, where the user has contributing access level.
+    """
+
     def __init__(
         self,
-        id: str,
+        project_id: str,
         title: str,
         managers: Users,
         contributors_users: Users,
@@ -19,7 +22,7 @@ class ContributingProject:
         resource: str,
         collection_metadata_schemas,
     ):
-        self.id: str = id
+        self.id: str = project_id
         self.title: str = title
         self.managers: Users = managers
         self.contributors_users: Users = contributors_users
@@ -30,7 +33,7 @@ class ContributingProject:
         self.collection_metadata_schemas = collection_metadata_schemas
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> "ContributingProject":
+    def create_from_rule_result(cls, result: dict) -> "ContributingProject":
         # get_contributing_project returns an empty list, if the user is not a contributor for the project
         if len(result) == 0:
             return None

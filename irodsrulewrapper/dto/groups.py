@@ -1,14 +1,17 @@
-from .group import Group
-from typing import List, Dict
+"""This module contains the Users DTO class, its factory constructors and mock_json."""
 import json
+
+from irodsrulewrapper.dto.group import Group
 
 
 class Groups:
-    def __init__(self, groups: List["Group"]):
-        self.groups: List["Group"] = groups
+    """This class represents a list of iRODS Group DTOs."""
+
+    def __init__(self, groups: list["Group"]):
+        self.groups: list["Group"] = groups
 
     @classmethod
-    def create_from_rule_result(cls, result: Dict) -> "Groups":
+    def create_from_rule_result(cls, result: dict) -> "Groups":
         output = []
         for item in result:
             group = Group.create_from_rule_result(item)

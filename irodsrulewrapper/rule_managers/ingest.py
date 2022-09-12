@@ -384,12 +384,6 @@ class IngestRuleManager(BaseRuleManager):
         return RuleInfo(name="create_ingest_metadata_snapshot", get_result=False, session=self.session, dto=None)
 
     @rule_call
-    def get_dropzone_tree(self, token):
-        return RuleInfo(
-            name="get_dropzone_tree", get_result=True, session=self.session, dto=None, parse_to_dto=self.parse_to_dto
-        )
-
-    @rule_call
     def get_dropzone_folders(self, token, path):
         return RuleInfo(
             name="get_dropzone_folders", get_result=True, session=self.session, dto=None, parse_to_dto=self.parse_to_dto

@@ -386,7 +386,7 @@ class IngestRuleManager(BaseRuleManager):
     @rule_call
     def get_dropzone_folders(self, token, path):
         """
-        Lists recursively the folders and files attributes at the input 'path'
+        Lists recursively the folders at the input 'path'
 
         Parameters
         ----------

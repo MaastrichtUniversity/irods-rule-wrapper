@@ -384,6 +384,60 @@ class IngestRuleManager(BaseRuleManager):
         return RuleInfo(name="create_ingest_metadata_snapshot", get_result=False, session=self.session, dto=None)
 
     @rule_call
+    def get_dropzone_folders(self, token, path):
+        """
+        Lists recursively the folders at the input 'path'
+
+        Parameters
+        ----------
+        token: str
+           The dropzone token
+        path: str
+           Relative path in dropzone for folder
+
+        Returns
+        -------
+        list
+           The recursive folders list at the requested path
+        """
+        try:
+            validators.validate_dropzone_token(token)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid dropzone token: e.g crazy-frog") from err
+        if not isinstance(path, str):
+            raise RuleInputValidationError("invalid type for *path: expected a string")
+        return RuleInfo(
+            name="get_dropzone_folders", get_result=True, session=self.session, dto=None, parse_to_dto=self.parse_to_dto
+        )
+
+    @rule_call
+    def get_dropzone_files(self, token, directory):
+        """
+        Lists the folders and files attributes at the input 'directory'
+
+        Parameters
+        ----------
+        token : str
+           The dropzone token
+        directory: str
+            The directory to list the folders and files of
+
+        Returns
+        -------
+        list
+           The folders and files attributes at the requested path
+        """
+        try:
+            validators.validate_dropzone_token(token)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid dropzone token: e.g crazy-frog") from err
+        if not isinstance(directory, str):
+            raise RuleInputValidationError("invalid type for *path: expected a string")
+        return RuleInfo(
+            name="get_dropzone_files", get_result=True, session=self.session, dto=None, parse_to_dto=self.parse_to_dto
+        )
+
+    @rule_call
     def set_project_acl_to_dropzones(self, project_id):
         """
         This rule transfers the ACLs that exist on a project level to all of its dropzones

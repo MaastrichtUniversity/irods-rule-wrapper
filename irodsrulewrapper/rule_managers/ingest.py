@@ -491,3 +491,28 @@ class IngestRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid value for new_dropzone: expected 'true' or 'false'") from err
 
         return RuleInfo(name="set_project_acl_to_dropzone", get_result=False, session=self.session, dto=None)
+
+    @rule_call
+    def calculate_direct_dropzone_size_files(self, token ):
+        """
+        Calculate the number of files and the total size in bytes for a direct dropzone
+
+        Parameters
+        ----------
+       token : str
+           The dropzone token
+
+        Returns
+        -------
+        dict
+         "total_file_count" : The total number of files in the dropzone
+         "total_file_size" : The dropzone size in bytes
+        """
+        try:
+            validators.validate_dropzone_token(token)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid dropzone token: e.g crazy-frog") from err
+
+        return RuleInfo(
+            name="calculate_direct_dropzone_size_files", get_result=True, session=self.session, dto=None, parse_to_dto=self.parse_to_dto
+        )

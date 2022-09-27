@@ -6,6 +6,7 @@ from irodsrulewrapper.dto.boolean import Boolean
 from irodsrulewrapper.dto.collection import Collection
 from irodsrulewrapper.dto.collection_details import CollectionDetails
 from irodsrulewrapper.dto.collection_sizes import CollectionSizes, CollectionSize
+from irodsrulewrapper.dto.collection_stats import CollectionStats
 from irodsrulewrapper.dto.collections import Collections
 from irodsrulewrapper.dto.external_pid import ExternalPID
 from irodsrulewrapper.dto.metadata_pid import MetadataPID
@@ -76,6 +77,10 @@ def test_dto_collections_sizes():
     assert result.collection_sizes["C000000003"][0].resource == "replRescUM01"
     assert result.collection_sizes["C000000003"][0].size == 3734
 
+def test_dto_collection_stats():
+    result = CollectionStats.create_from_rule_result(json.loads(COLLECTION_STATS))
+    assert result.total_file_size == 205503
+    assert result.total_file_count == 2
 
 def test_dto_metadata_pid():
     result = MetadataPID.create_from_rule_result(json.loads(METADATA_PID))
@@ -257,6 +262,13 @@ COLLECTION_DETAILS = """
             "service-disqover"
         ]
     }
+}
+"""
+
+COLLECTION_STATS = """
+{
+    "total_file_count": 2,
+    "total_file_size": 205503
 }
 """
 

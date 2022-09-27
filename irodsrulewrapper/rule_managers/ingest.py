@@ -2,6 +2,7 @@
 from dhpythonirodsutils import validators, formatters, exceptions
 
 from irodsrulewrapper.decorator import rule_call
+from irodsrulewrapper.dto.collection_stats import CollectionStats
 from irodsrulewrapper.dto.drop_zones import DropZones, DropZone
 from irodsrulewrapper.dto.metadata_json import MetadataJSON
 from irodsrulewrapper.dto.metadata_pid import MetadataPID
@@ -116,10 +117,10 @@ class IngestRuleManager(BaseRuleManager):
         dropzone_type : str
             The type of dropzone, 'mounted' or 'direct'
         """
-       # try:
-       #     self.set_total_size_dropzone(token, dropzone_type)
-       # except RuntimeError as err:
-       #     log_warning_message(user, f"set_total_size_dropzone failed with error: {err}")
+        # try:
+        #     self.set_total_size_dropzone(token, dropzone_type)
+        # except RuntimeError as err:
+        #     log_warning_message(user, f"set_total_size_dropzone failed with error: {err}")
         if dropzone_type == "direct":
             # CAUTION: This is an admin level rule call
             admin_rule_manager = ProjectRuleManager(admin_mode=True)
@@ -493,20 +494,19 @@ class IngestRuleManager(BaseRuleManager):
         return RuleInfo(name="set_project_acl_to_dropzone", get_result=False, session=self.session, dto=None)
 
     @rule_call
-    def calculate_direct_dropzone_size_files(self, token ):
+    def calculate_direct_dropzone_size_files(self, token):
         """
-        Calculate the number of files and the total size in bytes for a direct dropzone
+         Calculate the number of files and the total size in bytes for a direct dropzone
 
-        Parameters
-        ----------
-       token : str
-           The dropzone token
+         Parameters
+         ----------
+        token : str
+            The dropzone token
 
-        Returns
-        -------
-        dict
-         "total_file_count" : The total number of files in the dropzone
-         "total_file_size" : The dropzone size in bytes
+         Returns
+         -------
+        CollectionStats
+            A DTO CollectionStats object
         """
         try:
             validators.validate_dropzone_token(token)
@@ -514,5 +514,5 @@ class IngestRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid dropzone token: e.g crazy-frog") from err
 
         return RuleInfo(
-            name="calculate_direct_dropzone_size_files", get_result=True, session=self.session, dto=None, parse_to_dto=self.parse_to_dto
+            name="calculate_direct_dropzone_size_files", get_result=True, session=self.session, dto=CollectionStats
         )

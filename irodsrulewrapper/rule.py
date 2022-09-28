@@ -278,7 +278,17 @@ class RuleManager(
         -------
         bool
             True, if the path matches an existing iRODS collection/directory
+
+        Raises
+        ------
+        NetworkException
+        RuleInputValidationError
         """
+        try:
+            validators.validate_full_path_safety(full_path)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("Invalid path provided") from err
+
         return self.session.collections.exists(full_path)
 
     @retry_api_call
@@ -295,7 +305,17 @@ class RuleManager(
         -------
         bool
             True, if the path matches an existing iRODS data object/file.
+
+        Raises
+        ------
+        NetworkException
+        RuleInputValidationError
         """
+        try:
+            validators.validate_full_path_safety(full_path)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("Invalid path provided") from err
+
         return self.session.data_objects.exists(full_path)
 
     @retry_api_call
@@ -309,7 +329,18 @@ class RuleManager(
             The absolute path to locate the collection in iRODS
         destination_path: str
             The absolute path to move the existing collection to its new destination path in iRODS
+
+        Raises
+        ------
+        NetworkException
+        RuleInputValidationError
         """
+        try:
+            validators.validate_full_path_safety(source_path)
+            validators.validate_full_path_safety(destination_path)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("Invalid path provided") from err
+
         self.session.collections.move(source_path, destination_path)
 
     @retry_api_call
@@ -323,7 +354,18 @@ class RuleManager(
             The absolute path to locate the collection in iRODS
         destination_path: str
             The absolute path to move the existing data object to its new destination path in iRODS
+
+        Raises
+        ------
+        NetworkException
+        RuleInputValidationError
         """
+        try:
+            validators.validate_full_path_safety(source_path)
+            validators.validate_full_path_safety(destination_path)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("Invalid path provided") from err
+
         self.session.data_objects.move(source_path, destination_path)
 
     @retry_api_call
@@ -337,7 +379,20 @@ class RuleManager(
             The absolute path to the collection to delete in iRODS
         force: bool
             If true, Immediate removal of the collection without putting them in trash
+
+        Raises
+        ------
+        NetworkException
+        RuleInputValidationError
         """
+        try:
+            validators.validate_full_path_safety(full_path)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("Invalid path provided") from err
+
+        if not isinstance(force, bool):
+            raise RuleInputValidationError("invalid type for *force: expected a bool")
+
         self.session.collections.remove(full_path, force=force)
 
     @retry_api_call
@@ -351,7 +406,20 @@ class RuleManager(
             The absolute path to the data object to delete in iRODS
         force: bool
             If true, Immediate removal of the data-objects without putting them in trash
+
+        Raises
+        ------
+        NetworkException
+        RuleInputValidationError
         """
+        try:
+            validators.validate_full_path_safety(full_path)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("Invalid path provided") from err
+
+        if not isinstance(force, bool):
+            raise RuleInputValidationError("invalid type for *force: expected a bool")
+
         self.session.data_objects.unlink(full_path, force=force)
 
     @retry_api_call
@@ -363,7 +431,17 @@ class RuleManager(
         ----------
         full_path: str
             The absolute path to the collection to create in iRODS
+
+        Raises
+        ------
+        NetworkException
+        RuleInputValidationError
         """
+        try:
+            validators.validate_full_path_safety(full_path)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("Invalid path provided") from err
+
         self.session.collections.create(full_path)
 
     @retry_api_call
@@ -375,7 +453,17 @@ class RuleManager(
         ----------
         full_path: str
             The absolute path to the data object to create in iRODS
+
+        Raises
+        ------
+        NetworkException
+        RuleInputValidationError
         """
+        try:
+            validators.validate_full_path_safety(full_path)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("Invalid path provided") from err
+
         self.session.data_objects.create(full_path)
 
     @retry_api_call
@@ -388,12 +476,60 @@ class RuleManager(
         full_path: str
             The absolute path to the data object to retrieve in iRODS
 
+        Raises
+        ------
+        NetworkException
+        RuleInputValidationError
+
         Returns
         -------
         iRODSDataObject
             Requested data object properties
         """
+        try:
+            validators.validate_full_path_safety(full_path)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("Invalid path provided") from err
+
         return self.session.data_objects.get(full_path)
+
+    @retry_api_call
+    def open_data_object(self, full_path, mode):
+        """
+        Query the iRODS data object properties.
+
+        Parameters
+        ----------
+        full_path: str
+            The absolute path to the data object to retrieve in iRODS
+        mode: str
+            The mode while opening a file: read, write or append
+            'r': (self.O_RDONLY, False),
+            'r+': (self.O_RDWR, False),
+            'w': (self.O_WRONLY | createFlag | self.O_TRUNC, False),
+            'w+': (self.O_RDWR | createFlag | self.O_TRUNC, False),
+            'a': (self.O_WRONLY | createFlag, True),
+            'a+': (self.O_RDWR | createFlag, True)
+
+        Raises
+        ------
+        NetworkException
+        RuleInputValidationError
+
+        Returns
+        -------
+        io.BufferedRandom
+            Data object buffer
+        """
+        try:
+            validators.validate_full_path_safety(full_path)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("Invalid path provided") from err
+
+        if mode not in ["r", "r+", "w", "w+", "a", "a+"]:
+            raise RuleInputValidationError("Invalid data object open mode provided")
+
+        return self.session.data_objects.open(full_path, mode)
 
 
 class RuleJSONManager(RuleManager):

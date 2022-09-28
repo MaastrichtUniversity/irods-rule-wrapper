@@ -77,10 +77,12 @@ def test_dto_collections_sizes():
     assert result.collection_sizes["C000000003"][0].resource == "replRescUM01"
     assert result.collection_sizes["C000000003"][0].size == 3734
 
+
 def test_dto_collection_stats():
     result = CollectionStats.create_from_rule_result(json.loads(COLLECTION_STATS))
     assert result.total_file_size == 205503
     assert result.total_file_count == 2
+
 
 def test_dto_metadata_pid():
     result = MetadataPID.create_from_rule_result(json.loads(METADATA_PID))

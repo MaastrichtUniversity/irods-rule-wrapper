@@ -4,6 +4,7 @@ This module contains the decorator function to execute iRODS rule
 import json
 from typing import Callable
 
+from irods.exception import NetworkException
 from irods.rule import Rule
 
 
@@ -151,3 +152,38 @@ def rule_call(func: Callable):
         return result
 
     return wrapper_decorator
+
+
+MAX_RETRY_API_CALL = 5
+
+
+def retry_api_call(func: Callable):
+    """
+    Decorator function to wrap a python irods API client call with a retry mechanism on iRODS NetworkException.
+
+    Parameters
+    ----------
+    func: Callable
+        The function to decorate
+
+    Raises
+    ------
+    NetworkException
+        Raised if the call failed more time than MAX_RETRY_API_CALL number
+
+    Returns
+    -------
+    Any
+        The api result
+    """
+
+    def retry(*args, **kwargs):
+        for retry_index in range(MAX_RETRY_API_CALL):
+            try:
+                return func(*args, **kwargs)
+            except NetworkException as error:
+                if retry_index < MAX_RETRY_API_CALL - 1:
+                    continue
+                raise NetworkException() from error
+
+    return retry

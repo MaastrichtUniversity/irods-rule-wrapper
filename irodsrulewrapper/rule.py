@@ -7,7 +7,7 @@ from irods.exception import CAT_INVALID_CLIENT_USER, CAT_NO_ROWS_FOUND, QueryExc
 from irods.exception import DataObjectDoesNotExist, CollectionDoesNotExist
 from irods.query import SpecificQuery
 
-from irodsrulewrapper.decorator import retry_api_call
+from irodsrulewrapper.decorator import retry_api_call, MAX_RETRY_API_CALL
 from irodsrulewrapper.rule_managers.collections import CollectionRuleManager
 from irodsrulewrapper.rule_managers.groups import GroupRuleManager
 from irodsrulewrapper.rule_managers.ingest import IngestRuleManager
@@ -442,7 +442,15 @@ class RuleManager(
         except exceptions.ValidationError as err:
             raise RuleInputValidationError("Invalid path provided") from err
 
-        self.session.collections.create(full_path)
+        # On folder upload with multiple sub-folders, CollectionDoesNotExist can be triggered
+        # Add retry mechanism, to fix the concurrent collection creation
+        for retry_index in range(MAX_RETRY_API_CALL):
+            try:
+                self.session.collections.create(full_path)
+            except CollectionDoesNotExist as error:
+                if retry_index < MAX_RETRY_API_CALL - 1:
+                    continue
+                raise CollectionDoesNotExist(full_path) from error
 
     @retry_api_call
     def create_data_object(self, full_path):

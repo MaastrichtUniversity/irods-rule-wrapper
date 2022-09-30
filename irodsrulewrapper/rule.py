@@ -2,9 +2,12 @@
 from typing import TypedDict
 
 from dhpythonirodsutils import validators, exceptions
+from irods.data_object import iRODSDataObject
 from irods.exception import CAT_INVALID_CLIENT_USER, CAT_NO_ROWS_FOUND, QueryException
 from irods.exception import DataObjectDoesNotExist, CollectionDoesNotExist
 from irods.query import SpecificQuery
+
+from irodsrulewrapper.decorator import retry_api_call, MAX_RETRY_API_CALL
 from irodsrulewrapper.rule_managers.collections import CollectionRuleManager
 from irodsrulewrapper.rule_managers.groups import GroupRuleManager
 from irodsrulewrapper.rule_managers.ingest import IngestRuleManager
@@ -40,6 +43,10 @@ class RuleManager(
 
     def __init__(self, client_user=None, config=None, admin_mode=False):
         BaseRuleManager.__init__(self, client_user, config, admin_mode)
+
+    def cleanup(self):
+        if self.session:
+            self.session.cleanup()
 
     def check_irods_connection(self):
         """
@@ -256,6 +263,281 @@ class RuleManager(
             print(error)
 
         return file, file_information
+
+    @retry_api_call
+    def does_collection_exist(self, full_path):
+        """
+        Check if the input path matches an existing iRODS collection/directory.
+
+        Parameters
+        ----------
+        full_path: str
+            The absolute collection path to check in iRODS
+
+        Returns
+        -------
+        bool
+            True, if the path matches an existing iRODS collection/directory
+
+        Raises
+        ------
+        NetworkException
+        RuleInputValidationError
+        """
+        try:
+            validators.validate_full_path_safety(full_path)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("Invalid path provided") from err
+
+        return self.session.collections.exists(full_path)
+
+    @retry_api_call
+    def does_data_object_exist(self, full_path):
+        """
+        Check if the input path matches an existing iRODS data object/file.
+
+        Parameters
+        ----------
+        full_path: str
+            The absolute data object path to check in iRODS
+
+        Returns
+        -------
+        bool
+            True, if the path matches an existing iRODS data object/file.
+
+        Raises
+        ------
+        NetworkException
+        RuleInputValidationError
+        """
+        try:
+            validators.validate_full_path_safety(full_path)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("Invalid path provided") from err
+
+        return self.session.data_objects.exists(full_path)
+
+    @retry_api_call
+    def move_collection(self, source_path, destination_path):
+        """
+        Move the iRODS collection from the source path to the destination path.
+
+        Parameters
+        ----------
+        source_path: str
+            The absolute path to locate the collection in iRODS
+        destination_path: str
+            The absolute path to move the existing collection to its new destination path in iRODS
+
+        Raises
+        ------
+        NetworkException
+        RuleInputValidationError
+        """
+        try:
+            validators.validate_full_path_safety(source_path)
+            validators.validate_full_path_safety(destination_path)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("Invalid path provided") from err
+
+        self.session.collections.move(source_path, destination_path)
+
+    @retry_api_call
+    def move_data_object(self, source_path, destination_path):
+        """
+        Move the iRODS data object from the source path to the destination path.
+
+        Parameters
+        ----------
+        source_path: str
+            The absolute path to locate the collection in iRODS
+        destination_path: str
+            The absolute path to move the existing data object to its new destination path in iRODS
+
+        Raises
+        ------
+        NetworkException
+        RuleInputValidationError
+        """
+        try:
+            validators.validate_full_path_safety(source_path)
+            validators.validate_full_path_safety(destination_path)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("Invalid path provided") from err
+
+        self.session.data_objects.move(source_path, destination_path)
+
+    @retry_api_call
+    def remove_collection(self, full_path, force):
+        """
+        Remove an existing iRODS collection/directory.
+
+        Parameters
+        ----------
+        full_path: str
+            The absolute path to the collection to delete in iRODS
+        force: bool
+            If true, Immediate removal of the collection without putting them in trash
+
+        Raises
+        ------
+        NetworkException
+        RuleInputValidationError
+        """
+        try:
+            validators.validate_full_path_safety(full_path)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("Invalid path provided") from err
+
+        if not isinstance(force, bool):
+            raise RuleInputValidationError("invalid type for *force: expected a bool")
+
+        self.session.collections.remove(full_path, force=force)
+
+    @retry_api_call
+    def remove_data_object(self, full_path, force):
+        """
+        Remove an existing iRODS data object/file.
+
+        Parameters
+        ----------
+        full_path: str
+            The absolute path to the data object to delete in iRODS
+        force: bool
+            If true, Immediate removal of the data-objects without putting them in trash
+
+        Raises
+        ------
+        NetworkException
+        RuleInputValidationError
+        """
+        try:
+            validators.validate_full_path_safety(full_path)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("Invalid path provided") from err
+
+        if not isinstance(force, bool):
+            raise RuleInputValidationError("invalid type for *force: expected a bool")
+
+        self.session.data_objects.unlink(full_path, force=force)
+
+    @retry_api_call
+    def create_collection(self, full_path):
+        """
+        Create a new collection at the inout location.
+
+        Parameters
+        ----------
+        full_path: str
+            The absolute path to the collection to create in iRODS
+
+        Raises
+        ------
+        NetworkException
+        RuleInputValidationError
+        """
+        try:
+            validators.validate_full_path_safety(full_path)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("Invalid path provided") from err
+
+        # On folder upload with multiple sub-folders, CollectionDoesNotExist can be triggered
+        # Add retry mechanism, to fix the concurrent collection creation
+        for retry_index in range(MAX_RETRY_API_CALL):
+            try:
+                self.session.collections.create(full_path)
+            except CollectionDoesNotExist as error:
+                if retry_index < MAX_RETRY_API_CALL - 1:
+                    continue
+                raise CollectionDoesNotExist(full_path) from error
+
+    @retry_api_call
+    def create_data_object(self, full_path):
+        """
+        Create a new empty data object at the inout location.
+
+        Parameters
+        ----------
+        full_path: str
+            The absolute path to the data object to create in iRODS
+
+        Raises
+        ------
+        NetworkException
+        RuleInputValidationError
+        """
+        try:
+            validators.validate_full_path_safety(full_path)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("Invalid path provided") from err
+
+        self.session.data_objects.create(full_path)
+
+    @retry_api_call
+    def get_data_object(self, full_path):
+        """
+        Query the iRODS data object properties.
+
+        Parameters
+        ----------
+        full_path: str
+            The absolute path to the data object to retrieve in iRODS
+
+        Raises
+        ------
+        NetworkException
+        RuleInputValidationError
+
+        Returns
+        -------
+        iRODSDataObject
+            Requested data object properties
+        """
+        try:
+            validators.validate_full_path_safety(full_path)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("Invalid path provided") from err
+
+        return self.session.data_objects.get(full_path)
+
+    @retry_api_call
+    def open_data_object(self, full_path, mode):
+        """
+        Query the iRODS data object properties.
+
+        Parameters
+        ----------
+        full_path: str
+            The absolute path to the data object to retrieve in iRODS
+        mode: str
+            The mode while opening a file: read, write or append
+            'r': (self.O_RDONLY, False),
+            'r+': (self.O_RDWR, False),
+            'w': (self.O_WRONLY | createFlag | self.O_TRUNC, False),
+            'w+': (self.O_RDWR | createFlag | self.O_TRUNC, False),
+            'a': (self.O_WRONLY | createFlag, True),
+            'a+': (self.O_RDWR | createFlag, True)
+
+        Raises
+        ------
+        NetworkException
+        RuleInputValidationError
+
+        Returns
+        -------
+        io.BufferedRandom
+            Data object buffer
+        """
+        try:
+            validators.validate_full_path_safety(full_path)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("Invalid path provided") from err
+
+        if mode not in ["r", "r+", "w", "w+", "a", "a+"]:
+            raise RuleInputValidationError("Invalid data object open mode provided")
+
+        return self.session.data_objects.open(full_path, mode)
 
 
 class RuleJSONManager(RuleManager):

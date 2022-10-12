@@ -68,3 +68,9 @@ def test_read_metadata_xml_dropzone():
 def test_rule_start_ingest():
     result = RuleManager(admin_mode=True).start_ingest("jmelius", "token")
     assert result is None
+
+
+@pytest.mark.skip(reason="excluded from overall testing because these need specific setup.")
+def test_rule_calculate_direct_dropzone_size_files():
+    result = RuleManager(admin_mode=True).calculate_direct_dropzone_size_files("token")
+    assert result is None

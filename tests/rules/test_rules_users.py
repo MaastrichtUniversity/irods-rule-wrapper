@@ -1,13 +1,32 @@
-import json
 import time
 
 import pytest
 
-from irodsrulewrapper.dto.user import User
-from irodsrulewrapper.dto.user_extended import UserExtended
-from irodsrulewrapper.dto.users import Users
 from irodsrulewrapper.rule import RuleManager, RuleJSONManager
 from irodsrulewrapper.utils import RuleInputValidationError
+
+
+# region users rules
+
+
+def test_rule_get_users():
+    result = RuleManager(admin_mode=True).get_users("true")
+    users = result.users
+    assert users is not None
+    assert users.__len__() >= 2
+    assert users[0].user_name is not None
+    assert users[0].user_id is not None
+    assert users[0].display_name is not None
+
+
+def test_rule_get_data_stewards():
+    result = RuleManager(admin_mode=True).get_data_stewards()
+    data_stewards = result.data_stewards
+    assert data_stewards is not None
+    assert data_stewards.__len__() >= 2
+    assert data_stewards[0].user_name is not None
+    assert data_stewards[0].user_id is not None
+    assert data_stewards[0].display_name is not None
 
 
 def test_rule_get_user_attribute_value():
@@ -17,17 +36,12 @@ def test_rule_get_user_attribute_value():
     assert value == "jmelius@sram.surf.nl"
 
 
-def test_rule_set_username_attribute_value():
+def test_rule_set_user_attribute_value():
     RuleManager(admin_mode=True).set_user_attribute_value("jmelius", "lastToSAcceptedTimestamp", "1618476697")
     result = RuleManager(admin_mode=True).get_user_attribute_value("jmelius", "lastToSAcceptedTimestamp", "true")
     value = result.value
     assert value is not None
     assert value == "1618476697"
-
-
-def test_rule_get_user_group_memberships():
-    result = RuleManager(admin_mode=True).get_user_group_memberships("true", "jmelius")
-    assert result.groups is not None
 
 
 def test_rule_get_user_internal_affiliation_status():
@@ -37,6 +51,32 @@ def test_rule_get_user_internal_affiliation_status():
     result = RuleManager(admin_mode=True).get_user_internal_affiliation_status("auser")
     is_internal = result.boolean
     assert is_internal is False
+
+
+def test_get_user_or_group_by_id():
+    rule_manager = RuleManager(admin_mode=True)
+    user_id = rule_manager.get_irods_user_id_by_username("jmelius")
+    result = rule_manager.get_user_or_group_by_id(str(user_id))
+    assert result is not None
+
+
+def test_get_user_or_group():
+    rule_manager = RuleManager(admin_mode=True)
+    user_id = rule_manager.get_irods_user_id_by_username("jmelius")
+    user = rule_manager.get_user_or_group(str(user_id))
+    assert user is not None
+    assert user.user_name == "jmelius"
+    assert user.user_id == str(user_id)
+
+
+# endregion
+
+# region temporary password
+
+
+def test_get_temporary_password_lifetime():
+    ttl = RuleJSONManager(admin_mode=True).get_temporary_password_lifetime()
+    assert ttl >= 0
 
 
 def test_count_user_temporary_passwords():
@@ -106,43 +146,4 @@ def test_remove_user_temporary_passwords():
     assert result == 0
 
 
-def test_rule_get_users():
-    result = RuleManager(admin_mode=True).get_users("true")
-    users = result.users
-    assert users is not None
-    assert users.__len__() >= 2
-    assert users[0].user_name is not None
-    assert users[0].user_id is not None
-    assert users[0].display_name is not None
-
-
-def test_dto_user():
-    user = User.create_from_rule_result(json.loads(PROJECT_USER))
-    assert user is not None
-    assert user.user_name == "jmelius"
-    assert user.user_id == "10068"
-    assert user.display_name == "Jonathan Melius"
-
-
-def test_dto_users():
-    result = Users.create_from_mock_result()
-    assert result is not None
-    assert result.users.__len__() == 20
-    assert result.users[0].user_name == "jmelius"
-    assert result.users[6].user_name == "auser"
-
-
-def test_dto_user_extended():
-    result = UserExtended.create_from_mock_result()
-    assert result is not None
-    assert result.display_name == "Olav Palmen"
-    assert result.username == "opalmen"
-
-
-PROJECT_USER = """
-{
-    "displayName": "Jonathan Melius",
-    "userId": "10068",
-    "userName": "jmelius"
-}
-"""
+# endregion

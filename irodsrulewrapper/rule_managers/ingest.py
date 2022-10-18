@@ -130,6 +130,15 @@ class IngestRuleManager(BaseRuleManager):
             admin_rule_manager.set_acl(
                 "default", "admin:own", user, formatters.format_schema_dropzone_path(token, dropzone_type)
             )
+        if dropzone_type == "mounted":
+            # CAUTION: This is an admin level rule call
+            admin_rule_manager = ProjectRuleManager(admin_mode=True)
+            admin_rule_manager.set_acl(
+                "default", "admin:own", user, formatters.format_instance_dropzone_path(token, dropzone_type)
+            )
+            admin_rule_manager.set_acl(
+                "default", "admin:own", user, formatters.format_schema_dropzone_path(token, dropzone_type)
+            )
         self.start_ingest(user, token, dropzone_type)
 
     def create_drop_zone(self, data: dict, schema_path: str, instance: dict, schema_name: str, schema_version: str):

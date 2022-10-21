@@ -122,14 +122,15 @@ class IngestRuleManager(BaseRuleManager):
         # except RuntimeError as err:
         #     log_warning_message(user, f"set_total_size_dropzone failed with error: {err}")
 
-        # CAUTION: This is an admin level rule call
-        admin_rule_manager = ProjectRuleManager(admin_mode=True)
-        admin_rule_manager.set_acl(
-            "default", "admin:own", user, formatters.format_instance_dropzone_path(token, dropzone_type)
-        )
-        admin_rule_manager.set_acl(
-            "default", "admin:own", user, formatters.format_schema_dropzone_path(token, dropzone_type)
-        )
+        if dropzone_type == "direct":
+            # CAUTION: This is an admin level rule call
+            admin_rule_manager = ProjectRuleManager(admin_mode=True)
+            admin_rule_manager.set_acl(
+                "default", "admin:own", user, formatters.format_instance_dropzone_path(token, dropzone_type)
+            )
+            admin_rule_manager.set_acl(
+                "default", "admin:own", user, formatters.format_schema_dropzone_path(token, dropzone_type)
+            )
 
         self.start_ingest(user, token, dropzone_type)
 

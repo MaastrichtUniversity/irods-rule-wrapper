@@ -101,7 +101,7 @@ class IngestRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid value for *dropzone_type: expected 'mounted' or 'direct'") from err
         return RuleInfo(name="start_ingest", get_result=False, session=self.session, dto=None)
 
-    def ingest(self, user, token, dropzone_type):
+    def ingest(self, user: str, token: str, dropzone_type: str):
         """
         Ingest the requested dropzone
         NOTE: We do the 'set_total_size_dropzone' here. This allows for the progress bar to be visible in the frontend.
@@ -111,7 +111,7 @@ class IngestRuleManager(BaseRuleManager):
         Parameters
         ----------
         user: str
-            The user requesting the ingest
+            The user requesting the ingestion
         token: str
             The dropzone token to be ingested
         dropzone_type : str
@@ -131,6 +131,7 @@ class IngestRuleManager(BaseRuleManager):
             admin_rule_manager.set_acl(
                 "default", "admin:own", user, formatters.format_schema_dropzone_path(token, dropzone_type)
             )
+
         self.start_ingest(user, token, dropzone_type)
 
     def create_drop_zone(self, data: dict, schema_path: str, instance: dict, schema_name: str, schema_version: str):

@@ -1,7 +1,9 @@
 """
 This module contains the decorator function to execute iRODS rule
 """
+import io
 import json
+import textwrap
 from typing import Callable
 
 from irods.exception import NetworkException
@@ -80,18 +82,29 @@ def rule_call(func: Callable):
         """
         rule_info = kwargs["rule_info"]
         arguments_string = ""
+        input_string = ""
         for argument_index in range(2, len(args) + 1):
             arguments_string += "*arg" + str(argument_index) + ","
+            input_string += "*arg" + str(argument_index) + "=\"\","
+
+        input_string = input_string.rstrip(',')
+        if len(input_string) > 0:
+            input_string = "INPUT " + input_string
 
         if rule_info.get_result:
             arguments_string = arguments_string + "*result"
         else:
             arguments_string = arguments_string[:-1]
 
+
         rule_body = f"""
         execute_rule{{
-        {rule_info.name}({arguments_string});
+                *result="";    
+                {rule_info.name}({arguments_string});
+                writeLine('stdout', "*result"); 
         }}
+        {input_string}
+        OUTPUT ruleExecOut
         """
         return rule_body
 
@@ -111,10 +124,7 @@ def rule_call(func: Callable):
             '''
         """
         rule_info = kwargs["rule_info"]
-        if rule_info.get_result:
-            input_params = {"*result": '""'}
-        else:
-            input_params = {}
+        input_params = {}
         for argument_index in range(2, len(args) + 1):
             key = "*arg" + str(argument_index)
             value = f'"{args[argument_index - 1]}"'
@@ -122,11 +132,22 @@ def rule_call(func: Callable):
         return input_params
 
     def execute_rule(rule_body, input_params, rule_info):
-        myrule = Rule(rule_info.session, body=rule_body, params=input_params, output="*result")
+
+        rule_file_contents = textwrap.dedent(rule_body)
+        myrule = Rule(
+            rule_info.session,
+            rule_file=io.BytesIO(rule_file_contents.encode("utf-8")),
+            instance_name="irods_rule_engine_plugin-irods_rule_language-instance",
+            params=input_params,
+            output="ruleExecOut",
+        )
+
         result = myrule.execute()
         if rule_info.get_result:
-            buf = result.MsParam_PI[0].inOutStruct.myStr
-            buf_json = json.loads(buf)
+            buf = result.MsParam_PI[0].inOutStruct.stdoutBuf.buf
+            output = buf.rstrip(b"\0").decode("utf8")
+            print("output: "+ output)
+            buf_json = json.loads(output)
             # Check if it will return the JSON rule's output or the DTO
             if rule_info.parse_to_dto:
                 return rule_info.dto.create_from_rule_result(buf_json)
@@ -148,7 +169,14 @@ def rule_call(func: Callable):
         else:
             input_params = rule_info.input_params
 
+
+        print(rule_info)
+        print(rule_body)
+        print(input_params)
+
         result = execute_rule(rule_body, input_params, rule_info)
+
+        print (result)
         return result
 
     return wrapper_decorator

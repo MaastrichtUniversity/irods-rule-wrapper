@@ -85,9 +85,9 @@ def rule_call(func: Callable):
         input_string = ""
         for argument_index in range(2, len(args) + 1):
             arguments_string += "*arg" + str(argument_index) + ","
-            input_string += "*arg" + str(argument_index) + "=\"\","
+            input_string += "*arg" + str(argument_index) + '="",'
 
-        input_string = input_string.rstrip(',')
+        input_string = input_string.rstrip(",")
         if len(input_string) > 0:
             input_string = "INPUT " + input_string
 
@@ -95,7 +95,6 @@ def rule_call(func: Callable):
             arguments_string = arguments_string + "*result"
         else:
             arguments_string = arguments_string[:-1]
-
 
         rule_body = f"""
         execute_rule{{
@@ -123,7 +122,6 @@ def rule_call(func: Callable):
             }
             '''
         """
-        rule_info = kwargs["rule_info"]
         input_params = {}
         for argument_index in range(2, len(args) + 1):
             key = "*arg" + str(argument_index)
@@ -146,7 +144,6 @@ def rule_call(func: Callable):
         if rule_info.get_result:
             buf = result.MsParam_PI[0].inOutStruct.stdoutBuf.buf
             output = buf.rstrip(b"\0").decode("utf8")
-            print("output: "+ output)
             buf_json = json.loads(output)
             # Check if it will return the JSON rule's output or the DTO
             if rule_info.parse_to_dto:
@@ -169,14 +166,8 @@ def rule_call(func: Callable):
         else:
             input_params = rule_info.input_params
 
-
-        print(rule_info)
-        print(rule_body)
-        print(input_params)
-
         result = execute_rule(rule_body, input_params, rule_info)
 
-        print (result)
         return result
 
     return wrapper_decorator

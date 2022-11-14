@@ -142,7 +142,7 @@ def rule_call(func: Callable):
             output="ruleExecOut",
         )
 
-        result = myrule.execute()
+        result = myrule.execute(session_cleanup=False)
         if rule_info.get_result:
             buf = result.MsParam_PI[0].inOutStruct.stdoutBuf.buf
             output = buf.rstrip(b"\0").decode("utf8")

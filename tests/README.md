@@ -15,12 +15,12 @@ Additionally, some of these tests expect the following to pass:
 * `icat` up
 * `ires` up
 * `keycloak` execution followed by `sram-sync` execution (wait for keycloak to finish before `up`ing `sram-sync`!)
-* a second resource up (e.g. `ires-s3-1`)
+* a second resource up (e.g. `ires-ceph-ac`)
 * `irods.dh.local` needs to point to localhost in your `/etc/hosts` (so the hostname in the SSL cert matches)
 
 To accomplish this, you can do:
 ```
-$ ./rit.sh up -d irods ires ires-s3-1
+$ ./rit.sh up -d icat ires-hnas-um ires-ceph-ac
 $ ./rit.sh up -d keycloak
    ... wait for it to finish ...
 $ ./rit.sh up -d sram-sync

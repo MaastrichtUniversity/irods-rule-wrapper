@@ -1,7 +1,7 @@
 from irodsrulewrapper.rule import RuleManager
 
 
-# requires at least two resources up, like `ires` and `ires-s3-1`
+# requires at least two resources up, like `ires-hnas-um` and `ires-ceph-ac`
 def test_rule_get_ingest_resources():
     result = RuleManager(admin_mode=True).get_ingest_resources()
     resources = result.resources
@@ -11,7 +11,7 @@ def test_rule_get_ingest_resources():
     assert resources[0].comment is not None
 
 
-# requires at least two resources up, like `ires` and `ires-s3-1`
+# requires at least two resources up, like `ires-hnas-um` and `ires-ceph-ac`
 def test_rule_get_destination_resources():
     result = RuleManager(admin_mode=True).get_destination_resources()
     resources = result.resources

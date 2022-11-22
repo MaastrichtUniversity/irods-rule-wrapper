@@ -584,3 +584,17 @@ class CollectionRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid value for *open_acl/close_acl: expected 'true' or 'false'")
 
         return RuleInfo(name="set_acl_for_metadata_snapshot", get_result=False, session=self.session, dto=None)
+
+    @rule_call
+    def get_project_collection_checksum(self, project_id, collection_id):
+        """
+
+        Parameters
+        ----------
+
+        Returns
+        -------
+        """
+        return RuleInfo(
+            name="checksum_collection", get_result=True, session=self.session, dto=None, parse_to_dto=self.parse_to_dto
+        )

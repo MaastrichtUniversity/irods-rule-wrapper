@@ -44,6 +44,12 @@ class RuleManager(
     def __init__(self, client_user=None, config=None, admin_mode=False):
         BaseRuleManager.__init__(self, client_user, config, admin_mode)
 
+    def set_session_connection_timeout(self, timeout_value: int):
+        if isinstance(timeout_value, int):
+            self.session.connection_timeout = timeout_value
+        else:
+            raise ValueError
+
     def cleanup(self):
         if self.session:
             self.session.cleanup()

@@ -34,6 +34,6 @@ def test_get_collection_size_per_resource():
 
 
 def test_get_project_resource_availability():
-    result = RuleManager(admin_mode=True).get_project_resource_availability("P000000010", "true", "false", "false")
+    result = RuleManager(admin_mode=True).get_project_resource_availability("P000000001", "true", "false", "false")
     status = result.boolean
-    assert status is False
+    assert status is True

@@ -7,7 +7,7 @@ tests a broken here. :warning:
 ### PyCharm configuration for irods rules call
 To be able to execute a rule during a test in PyCharm, we need to set up some irods environment variables:
 ```
-IRODS_HOST=irods.dh.local;IRODS_USER=rods;IRODS_PASS=irods;IRODS_CLIENT_SERVER_POLICY=CS_NEG_REQUIRE;CACHE_TTL_VALUE=86400
+IRODS_HOST=icat.dh.local;IRODS_USER=rods;IRODS_PASS=irods;IRODS_CLIENT_SERVER_POLICY=CS_NEG_REQUIRE;CACHE_TTL_VALUE=86400
 ```
 Click on: Run > Edit configurations > Edit configuration templates > Python tests > pytest
 
@@ -18,7 +18,7 @@ Additionally, some of these tests expect the following to pass:
 * `ires` up
 * `keycloak` execution followed by `sram-sync` execution (wait for keycloak to finish before `up`ing `sram-sync`!)
 * a second resource up (e.g. `ires-ceph-ac`)
-* `irods.dh.local` needs to point to localhost in your `/etc/hosts` (so the hostname in the SSL cert matches)
+* `icat.dh.local` needs to point to localhost in your `/etc/hosts` (so the hostname in the SSL cert matches)
 
 To accomplish this, you can do:
 ```
@@ -29,7 +29,7 @@ $ ./rit.sh up -d sram-sync
 ```
 And add this to `/etc/hosts`:
 ```
-127.0.0.1	irods.dh.local
+127.0.0.1	icat.dh.local
 ```
 
 ### Run the tests in PyCharm
@@ -40,6 +40,12 @@ And add this to `/etc/hosts`:
 
 
 ### Run test without PyCharm (in CLI)
+
+Make sure you have this:
+`/etc/hosts`:
+```
+127.0.0.1	icat.dh.local
+```
 
 Set up iRODS dev environment expected from the tests
 ```

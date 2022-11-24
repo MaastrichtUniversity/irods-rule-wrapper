@@ -33,6 +33,7 @@ class Projects:
         {
           "project": "test_project",
           "title": "test_title",
+          "description": "test_description",
           "enableOpenAccessExport": false,
           "enableArchive": true,
           "enableUnarchive": true,
@@ -100,6 +101,7 @@ class Projects:
         {
           "project": "test_project2",
           "title": "test_title2",
+          "description": "test_description2",
           "enableOpenAccessExport": false,
           "enableArchive": true,
           "enableUnarchive": true,

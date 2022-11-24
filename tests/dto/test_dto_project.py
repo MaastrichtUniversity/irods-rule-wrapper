@@ -423,7 +423,7 @@ PROJECTS_OVERVIEW = """
         "enableDropzoneSharing": "true",
         "enableOpenAccessExport": "false",
         "enableUnarchive": "true",
-        "ingestResource": "iresResource",
+        "ingestResource": "ires-hnas-umResource",
         "managers": [
             "10055"
         ],
@@ -450,7 +450,7 @@ PROJECTS_OVERVIEW = """
         "enableDropzoneSharing": "true",
         "enableOpenAccessExport": "false",
         "enableUnarchive": "true",
-        "ingestResource": "iresResource",
+        "ingestResource": "ires-hnas-umResource",
         "managers": [
             "10055"
         ],
@@ -479,7 +479,7 @@ PROJECTS_OVERVIEW = """
         "enableOpenAccessExport": "true",
         "enableUnarchive": "true",
         "exporterState": "DataverseNL:in-queue-for-export",
-        "ingestResource": "iresResource",
+        "ingestResource": "ires-hnas-umResource",
         "managers": [
             "10060",
             "10085"
@@ -507,7 +507,7 @@ PROJECTS_OVERVIEW = """
         "enableDropzoneSharing": "true",
         "enableOpenAccessExport": "true",
         "enableUnarchive": "true",
-        "ingestResource": "iresResource",
+        "ingestResource": "ires-hnas-umResource",
         "managers": [
             "10060",
             "10085"

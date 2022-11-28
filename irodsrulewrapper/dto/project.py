@@ -66,7 +66,7 @@ class Project:
         project_details = cls(
             result["project"],
             result[ProjectAVUs.TITLE.value],
-            result["description"],
+            result[ProjectAVUs.DESCRIPTION.value],
             formatters.format_string_to_boolean(result[ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value]),
             formatters.format_string_to_boolean(result[ProjectAVUs.ENABLE_ARCHIVE.value]),
             formatters.format_string_to_boolean(result[ProjectAVUs.ENABLE_UNARCHIVE.value]),

@@ -131,6 +131,7 @@ def test_dto_projects_overview():
 
     assert projects[0].id == "P000000012"
     assert projects[0].title == "You recoil from the crude; you tend naturally toward the exquisite."
+    assert projects[0].description == "test"
     assert projects[0].principal_investigator == "pvanschay2"
     assert projects[0].data_steward == "pvanschay2"
     assert projects[0].size == 0.0
@@ -146,6 +147,7 @@ def test_dto_projects_overview():
 
     assert projects[3].id == "P000000015"
     assert projects[3].title == "Your society will be sought by people of taste and refinement."
+    assert projects[3].description == ""
     assert projects[3].principal_investigator == "psuppers"
     assert projects[3].data_steward == "opalmen"
     assert projects[3].size == 0.0
@@ -419,6 +421,7 @@ PROJECTS_OVERVIEW = """
         "dataRetentionPeriodEndDate": "1-1-2018",
         "dataSizeGiB": 0.0,
         "dataSteward": "pvanschay2",
+        "description": "test",
         "enableArchive": "true",
         "enableContributorEditMetadata": "false",
         "enableDropzoneSharing": "true",
@@ -475,6 +478,7 @@ PROJECTS_OVERVIEW = """
         "dataSizeGiB": 0.9723356142640114,
         "dataSteward": "opalmen",
         "enableArchive": "true",
+        "description": "foobar",
         "enableContributorEditMetadata": "false",
         "enableDropzoneSharing": "true",
         "enableOpenAccessExport": "true",

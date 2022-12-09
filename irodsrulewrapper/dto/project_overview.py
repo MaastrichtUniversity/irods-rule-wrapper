@@ -13,6 +13,7 @@ class ProjectOverview:
         self,
         project_id: str,
         title: str,
+        description: str,
         principal_investigator: str,
         data_steward: str,
         size: int,
@@ -24,6 +25,7 @@ class ProjectOverview:
     ):
         self.id: str = project_id
         self.title: str = title
+        self.description: str = description
         self.principal_investigator: str = principal_investigator
         self.data_steward: str = data_steward
         self.size: int = size
@@ -61,9 +63,13 @@ class ProjectOverview:
             elif isinstance(viewer, Group):
                 viewer_groups.append(viewer)
 
+        if ProjectAVUs.DESCRIPTION.value not in result:
+            result[ProjectAVUs.DESCRIPTION.value] = ""
+
         project_details = cls(
             result["path"],
             result[ProjectAVUs.TITLE.value],
+            result[ProjectAVUs.DESCRIPTION.value],
             result[ProjectAVUs.PRINCIPAL_INVESTIGATOR.value],
             result[ProjectAVUs.DATA_STEWARD.value],
             result["dataSizeGiB"],

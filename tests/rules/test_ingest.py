@@ -1,13 +1,9 @@
 from irodsrulewrapper.rule import RuleManager
-
-# from irodsrulewrapper.dto.metadata_xml import MetadataXML
 import pytest
 
-"""
-These tests need a specific setup.
-Comment out the @pytest.mark.skip to trigger these tests
-Make the you set the variables according to your local setup.
-"""
+# These tests need a specific setup.
+# Comment out the @pytest.mark.skip to trigger these tests
+# Make you set the variables according to your local setup.
 
 
 @pytest.mark.skip(reason="excluded from overall testing because these need specific setup.")

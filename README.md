@@ -12,7 +12,7 @@ This repository contains the python package with the irods rule logic
    |    |-- rule.py/                       # Contains the RuleManager to open an iRODS connection and the rules functions
    |    |-- TODO/                          # [...]
    |
-   |-- tests/                              # 
+   |-- tests/                              #
    |    |
    |    |-- conftest.py                	   # Pytest configuration file
    |    |-- test_example.py                # Example file, all tests should be included in files starting with test for automatic detection

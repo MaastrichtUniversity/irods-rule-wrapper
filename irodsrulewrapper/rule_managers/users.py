@@ -191,3 +191,29 @@ class UserRuleManager(BaseRuleManager):
             dto=None,
             parse_to_dto=self.parse_to_dto,
         )
+
+    @rule_call
+    def get_expanded_user_group_information(self, users: str):
+        """
+        Get the information (email and display name) about users and groups
+        This expands groups to all its users and also gets their emails and display names.
+
+        Parameters
+        ----------
+        users: str
+            A semicolon separated string of users/groups
+            (e.g. 'dlinssen;datahub;jmelius')
+
+        Returns
+        -------
+        dict
+            A dictionary (unique) with all users and their emails and display names and groups and their display name
+
+        """
+        return RuleInfo(
+            name="get_expanded_user_group_information",
+            get_result=True,
+            session=self.session,
+            dto=None,
+            parse_to_dto=self.parse_to_dto,
+        )

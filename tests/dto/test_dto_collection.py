@@ -113,7 +113,7 @@ def test_dto_tape_estimate():
 
 
 COLLECTION_SIZE_PER_RESOURCE = """
-{     
+{
     "relativeSize": 72.9,
     "resourceId": "10160",
     "resourceName": "replRescUM01",

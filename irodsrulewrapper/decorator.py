@@ -98,9 +98,9 @@ def rule_call(func: Callable):
 
         rule_body = f"""
         execute_rule{{
-                *result="";    
+                *result="";
                 {rule_info.name}({arguments_string});
-                writeLine('stdout', "*result"); 
+                writeLine('stdout', "*result");
         }}
         {input_string}
         OUTPUT ruleExecOut

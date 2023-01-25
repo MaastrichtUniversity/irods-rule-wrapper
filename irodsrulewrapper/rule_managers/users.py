@@ -192,8 +192,26 @@ class UserRuleManager(BaseRuleManager):
             parse_to_dto=self.parse_to_dto,
         )
 
+    def get_expanded_user_group_information(self, users: set):
+        """
+        Wrapper around private function so user can just provide a list to the method
+        Functionality: see _get_expanded_user_group_information
+
+        Parameters
+        ----------
+        users: set
+            A list of participants to get the information from
+
+        Returns
+        -------
+        dict
+            A dictionary (unique) with all users and their emails and display names and groups and their display name
+        """
+        users = ";".join(users)
+        return self._get_expanded_user_group_information(users)
+
     @rule_call
-    def get_expanded_user_group_information(self, users: str):
+    def _get_expanded_user_group_information(self, users: str):
         """
         Get the information (email and display name) about users and groups
         This expands groups to all its users and also gets their emails and display names.

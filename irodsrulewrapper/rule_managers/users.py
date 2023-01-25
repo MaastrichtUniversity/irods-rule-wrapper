@@ -8,6 +8,7 @@ from irodsrulewrapper.dto.data_stewards import DataStewards
 from irodsrulewrapper.dto.group import Group
 from irodsrulewrapper.dto.user_or_group import UserOrGroup
 from irodsrulewrapper.dto.users import Users, User
+from irodsrulewrapper.dto.users_groups_expanded import UsersGroupsExpanded
 from irodsrulewrapper.utils import BaseRuleManager, RuleInfo, RuleInputValidationError
 
 
@@ -224,14 +225,16 @@ class UserRuleManager(BaseRuleManager):
 
         Returns
         -------
-        dict
+        UsersGroupsExpanded
             A dictionary (unique) with all users and their emails and display names and groups and their display name
-
         """
+        if not isinstance(users, str):
+            raise RuleInputValidationError("invalid type for *users: expected a string")
+
         return RuleInfo(
             name="get_expanded_user_group_information",
             get_result=True,
             session=self.session,
-            dto=None,
+            dto=UsersGroupsExpanded,
             parse_to_dto=self.parse_to_dto,
         )

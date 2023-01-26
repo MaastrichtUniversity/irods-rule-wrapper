@@ -2,6 +2,7 @@
 import json
 
 from pydantic import BaseModel
+from typing import List
 
 from irodsrulewrapper.dto.project_minimal import ProjectMinimal
 
@@ -12,7 +13,7 @@ class ProjectsMinimal(BaseModel):
     it overwrites __iter__, __getitem__ & __len__ methods to make the ProjectsMinimal object behave like a list.
     """
 
-    projects: list[ProjectMinimal]
+    projects: List[ProjectMinimal]
 
     def __iter__(self):
         return iter(self.projects)

@@ -8,6 +8,7 @@ from irodsrulewrapper.dto.data_stewards import DataStewards
 from irodsrulewrapper.dto.group import Group
 from irodsrulewrapper.dto.user_or_group import UserOrGroup
 from irodsrulewrapper.dto.users import Users, User
+from irodsrulewrapper.dto.users_groups_expanded import UsersGroupsExpanded
 from irodsrulewrapper.utils import BaseRuleManager, RuleInfo, RuleInputValidationError
 
 
@@ -189,5 +190,51 @@ class UserRuleManager(BaseRuleManager):
             get_result=True,
             session=self.session,
             dto=None,
+            parse_to_dto=self.parse_to_dto,
+        )
+
+    def get_expanded_user_group_information(self, users: set):
+        """
+        Wrapper around private function so user can just provide a list to the method
+        Functionality: see _get_expanded_user_group_information
+
+        Parameters
+        ----------
+        users: set
+            A list of participants to get the information from
+
+        Returns
+        -------
+        dict
+            A dictionary (unique) with all users and their emails and display names and groups and their display name
+        """
+        users = ";".join(users)
+        return self._get_expanded_user_group_information(users)
+
+    @rule_call
+    def _get_expanded_user_group_information(self, users: str):
+        """
+        Get the information (email and display name) about users and groups
+        This expands groups to all its users and also gets their emails and display names.
+
+        Parameters
+        ----------
+        users: str
+            A semicolon separated string of users/groups
+            (e.g. 'dlinssen;datahub;jmelius')
+
+        Returns
+        -------
+        UsersGroupsExpanded
+            A dictionary (unique) with all users and their emails and display names and groups and their display name
+        """
+        if not isinstance(users, str):
+            raise RuleInputValidationError("invalid type for *users: expected a string")
+
+        return RuleInfo(
+            name="get_expanded_user_group_information",
+            get_result=True,
+            session=self.session,
+            dto=UsersGroupsExpanded,
             parse_to_dto=self.parse_to_dto,
         )

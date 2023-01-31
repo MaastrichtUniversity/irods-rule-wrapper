@@ -2,6 +2,7 @@
 from dhpythonirodsutils import validators, exceptions
 from irodsrulewrapper.cache import CacheTTL
 from irodsrulewrapper.decorator import rule_call
+from irodsrulewrapper.dto.active_processes import ActiveProcesses
 from irodsrulewrapper.dto.attribute_value import AttributeValue
 from irodsrulewrapper.dto.boolean import Boolean
 from irodsrulewrapper.dto.data_stewards import DataStewards
@@ -238,3 +239,38 @@ class UserRuleManager(BaseRuleManager):
             dto=UsersGroupsExpanded,
             parse_to_dto=self.parse_to_dto,
         )
+
+    @rule_call
+    def get_user_active_processes(self, query_drop_zones, query_archive, query_export):
+        """
+        Query all the active process status (ingest, tape archive & DataverseNL export) of the user.
+        Parameters
+        ----------
+        query_drop_zones: str
+            'true'/'false' expected; If true, query the list of active drop_zones & ingest processes
+        query_archive: str
+            'true'/'false' expected; If true, query the list of active archive & un-archive processes
+        query_export: str
+            'true'/'false' expected; If true, query the list of active export (to DataverseNl) processes
+        Returns
+        -------
+        ActiveProcesses
+            a DTO ActiveProcesses object
+        """
+
+        try:
+            validators.validate_string_boolean(query_drop_zones)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid value for *query_drop_zones: expected 'true' or 'false'") from err
+
+        try:
+            validators.validate_string_boolean(query_archive)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid value for *query_archive: expected 'true' or 'false'") from err
+
+        try:
+            validators.validate_string_boolean(query_export)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid value for *query_export: expected 'true' or 'false'") from err
+
+        return RuleInfo(name="get_user_active_processes", get_result=True, session=self.session, dto=ActiveProcesses)

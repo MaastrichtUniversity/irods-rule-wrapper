@@ -2,7 +2,7 @@
 
 
 class ActiveProcess:
-    """This class represents an ongoing project collection migration with its attributes."""
+    """This class represents an ongoing project collection active process with its attributes."""
 
     def __init__(self, collection: str, repository: str, status: str, title: str, project: str, project_title: str):
         self.collection: str = collection

@@ -3,10 +3,11 @@ from irodsrulewrapper.dto.drop_zone import DropZone
 
 
 class ActiveProcesses:
-    def __init__(self, dropzones: list["DropZone"], exports: list["ActiveProcess"], archives: list["ActiveProcess"]):
+    def __init__(self, dropzones: list["DropZone"], exports: list["ActiveProcess"], archives: list["ActiveProcess"], unarchives: list["ActiveProcess"]):
         self.drop_zones: list["DropZone"] = dropzones
         self.exports: list["ActiveProcess"] = exports
         self.archives: list["ActiveProcess"] = archives
+        self.unarchives: list["ActiveProcess"] = unarchives
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "ActiveProcesses":
@@ -18,9 +19,13 @@ class ActiveProcesses:
         for archive_item in result["archive"]:
             archive = ActiveProcess.create_from_rule_result(archive_item)
             archives.append(archive)
+        unarchives = []
+        for unarchive_item in result["unarchive"]:
+            unarchive = ActiveProcess.create_from_rule_result(unarchive_item)
+            unarchives.append(unarchive)
         exports = []
         for export_item in result["export"]:
             export = ActiveProcess.create_from_rule_result(export_item)
             exports.append(export)
-        output = cls(dropzones, exports, archives)
+        output = cls(dropzones, exports, archives, unarchives)
         return output

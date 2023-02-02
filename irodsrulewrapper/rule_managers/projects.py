@@ -8,7 +8,6 @@ from irodsrulewrapper.dto.contributing_project import ContributingProject
 from irodsrulewrapper.dto.contributing_projects import ContributingProjects
 from irodsrulewrapper.dto.create_project import CreateProject
 from irodsrulewrapper.dto.managing_projects import ManagingProjects
-from irodsrulewrapper.dto.migration_cards import MigrationCards
 from irodsrulewrapper.dto.project_contributors import ProjectContributors
 from irodsrulewrapper.dto.project_contributors_metadata import ProjectContributorsMetadata
 from irodsrulewrapper.dto.projects_minimal import ProjectsMinimal
@@ -239,28 +238,6 @@ class ProjectRuleManager(BaseRuleManager):
             dto.ProjectsMinimal object
         """
         return RuleInfo(name="list_projects_minimal", get_result=True, session=self.session, dto=ProjectsMinimal)
-
-    @rule_call
-    def get_project_migration_status(self, project_path):
-        """
-        Get the list of project's collections
-
-        Parameters
-        ----------
-        project_path : str
-            The project's absolute path; eg. /nlmumc/projects/P000000010
-
-        Returns
-        -------
-        MigrationCards
-            dto.MigrationCards object
-        """
-        try:
-            validators.validate_project_path(project_path)
-        except exceptions.ValidationError as err:
-            raise RuleInputValidationError("invalid project's path format: eg. /nlmumc/projects/P000000010") from err
-
-        return RuleInfo(name="get_project_migration_status", get_result=True, session=self.session, dto=MigrationCards)
 
     @rule_call
     def create_new_project(

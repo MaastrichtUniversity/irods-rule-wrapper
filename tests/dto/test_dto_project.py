@@ -6,7 +6,6 @@ from irodsrulewrapper.dto.contributing_projects import ContributingProjects
 from irodsrulewrapper.dto.create_project import CreateProject
 from irodsrulewrapper.dto.group import Group
 from irodsrulewrapper.dto.managing_projects import ManagingProjects
-from irodsrulewrapper.dto.migration_cards import MigrationCards, MigrationCard
 from irodsrulewrapper.dto.project import Project
 from irodsrulewrapper.dto.project_contributors import ProjectContributors
 from irodsrulewrapper.dto.project_contributors_metadata import ProjectContributorsMetadata
@@ -64,22 +63,6 @@ def test_dto_projects_minimal():
     assert projects[0].title == "(MDL) Placeholder project"
     assert projects[1].title == "(HVC) Placeholder project"
     assert projects[6].id == "P000000016"
-
-
-def test_dto_migration_card():
-    card = MigrationCard.create_from_rule_result(json.loads(MIGRATION_CARD))
-    assert card.status == "archive-done"
-    assert card.repository == "SURFSara Tape"
-    assert card.collection == "C000000001"
-    assert card.title == "Test 1"
-
-
-def test_dto_migration_cards():
-    cards = MigrationCards.create_from_rule_result(json.loads(MIGRATION_CARDS)).cards
-    assert cards[1].status == "in-queue-for-export"
-    assert cards[1].repository == "DataverseNL"
-    assert cards[1].collection == "C000000001"
-    assert cards[1].title == "Test 1"
 
 
 def test_dto_contributing_project():
@@ -192,32 +175,6 @@ def get_user_or_group_side_effect(uid):
         }
         return Group.create_from_rule_result(group)
 
-
-MIGRATION_CARD = """
-  {
-    "status": "archive-done",
-    "repository": "SURFSara Tape",
-    "collection": "C000000001",
-    "title": "Test 1"
-  }
-"""
-
-MIGRATION_CARDS = """
-[
-  {
-    "status": "archive-done",
-    "repository": "SURFSara Tape",
-    "collection": "C000000001",
-    "title": "Test 1"
-  },
-  {
-    "status": "in-queue-for-export",
-    "repository": "DataverseNL",
-    "collection": "C000000001",
-    "title": "Test 1"
-  }
-]
-"""
 
 CONTRIBUTING_PROJECT = """
 {

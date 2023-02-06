@@ -69,12 +69,15 @@ def test_dto_user_or_group():
     assert group["groupId"] == "10129"
     assert group["account_type"] == "rodsgroup"
 
+
 def test_dto_active_process():
     active_process = ActiveProcess.create_from_rule_result(json.loads(ACTIVE_PROCESS))
     assert active_process.collection == "C000000001"
     assert active_process.project == "P000000001"
     assert active_process.project_title == "(UM) Test project #01"
     assert active_process.title == "Title"
+
+
 def test_dto_active_processes():
     active_processes = ActiveProcesses.create_from_rule_result(json.loads(ACTIVE_PROCESSES))
     assert active_processes.archives[0].collection == "C000000001"
@@ -96,6 +99,7 @@ def test_dto_active_processes():
     assert active_processes.unarchives[0].project == "P000000001"
     assert active_processes.unarchives[0].project_title == "(UM) Test project #01"
     assert active_processes.unarchives[0].status == "unarchive-in-progress 1/1"
+
 
 USER = """
 {

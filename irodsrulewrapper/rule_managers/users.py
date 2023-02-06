@@ -249,7 +249,7 @@ class UserRuleManager(BaseRuleManager):
         query_drop_zones: str
             'true'/'false' expected; If true, query the list of active drop_zones & ingest processes
         query_archive: str
-            'true'/'false' expected; If true, query the list of active archive & un-archive processes
+            'true'/'false' expected; If true, query the list of active archive
         query_unarchive: str
             'true'/'false' expected; If true, query the list of active un-archive processes
         query_export: str

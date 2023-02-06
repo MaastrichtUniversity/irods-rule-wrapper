@@ -1,9 +1,20 @@
+"""This module contains the ActiveProcesses DTO class and its factory constructor."""
 from irodsrulewrapper.dto.active_proces import ActiveProcess
 from irodsrulewrapper.dto.drop_zone import DropZone
 
 
 class ActiveProcesses:
-    def __init__(self, dropzones: list["DropZone"], exports: list["ActiveProcess"], archives: list["ActiveProcess"], unarchives: list["ActiveProcess"]):
+    """
+    This class represents a list of iRODS active data transfer processes (ingest, tape archive & DataverseNL export).
+    """
+
+    def __init__(
+        self,
+        dropzones: list["DropZone"],
+        exports: list["ActiveProcess"],
+        archives: list["ActiveProcess"],
+        unarchives: list["ActiveProcess"],
+    ):
         self.drop_zones: list["DropZone"] = dropzones
         self.exports: list["ActiveProcess"] = exports
         self.archives: list["ActiveProcess"] = archives

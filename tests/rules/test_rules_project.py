@@ -42,12 +42,6 @@ def test_rule_get_contributing_projects():
     assert result is not None
 
 
-def test_rule_get_project_migration_status():
-    result = RuleManager(admin_mode=True).get_project_migration_status("/nlmumc/projects/P000000010")
-    cards = result.cards
-    assert cards is not None
-
-
 def test_rule_create_new_project():
     manager = RuleManager(admin_mode=True)
     project = manager.create_new_project(

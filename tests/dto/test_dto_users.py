@@ -152,6 +152,7 @@ DATA_STEWARDS = """
 ACTIVE_PROCESS = """
 {
     "collection_id": "C000000001",
+    "process_id": "11310",
     "project_id": "P000000001",
     "project_title": "(UM) Test project #01",
     "repository": "SURFSara Tape",

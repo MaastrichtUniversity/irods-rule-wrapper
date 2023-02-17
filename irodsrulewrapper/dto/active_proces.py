@@ -4,22 +4,33 @@
 class ActiveProcess:
     """This class represents an ongoing project collection active process with its attributes."""
 
-    def __init__(self, collection: str, repository: str, status: str, title: str, project: str, project_title: str):
-        self.collection: str = collection
+    def __init__(
+        self,
+        collection_id: str,
+        repository: str,
+        status: str,
+        collection_title: str,
+        project_id: str,
+        project_title: str,
+        process_id: str,
+    ):
+        self.collection_id: str = collection_id
         self.repository: str = repository
         self.status: str = status
-        self.title: str = title
-        self.project: str = project
+        self.collection_title: str = collection_title
+        self.project_id: str = project_id
         self.project_title: str = project_title
+        self.process_id: str = process_id
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "ActiveProcess":
         card = cls(
-            result["collection"],
+            result["collection_id"],
             result["repository"],
             result["state"],
-            result["title"],
-            result["project"],
+            result["collection_title"],
+            result["project_id"],
             result["project_title"],
+            result["process_id"],
         )
         return card

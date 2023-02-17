@@ -10,15 +10,15 @@ class ActiveProcesses:
 
     def __init__(
         self,
-        dropzones: list["DropZone"],
-        exports: list["ActiveProcess"],
-        archives: list["ActiveProcess"],
-        unarchives: list["ActiveProcess"],
+        dropzones: list[DropZone],
+        exports: list[ActiveProcess],
+        archives: list[ActiveProcess],
+        unarchives: list[ActiveProcess],
     ):
-        self.drop_zones: list["DropZone"] = dropzones
-        self.exports: list["ActiveProcess"] = exports
-        self.archives: list["ActiveProcess"] = archives
-        self.unarchives: list["ActiveProcess"] = unarchives
+        self.drop_zones: list[DropZone] = dropzones
+        self.exports: list[ActiveProcess] = exports
+        self.archives: list[ActiveProcess] = archives
+        self.unarchives: list[ActiveProcess] = unarchives
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "ActiveProcesses":

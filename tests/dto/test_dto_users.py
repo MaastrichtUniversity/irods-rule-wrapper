@@ -72,31 +72,31 @@ def test_dto_user_or_group():
 
 def test_dto_active_process():
     active_process = ActiveProcess.create_from_rule_result(json.loads(ACTIVE_PROCESS))
-    assert active_process.collection == "C000000001"
-    assert active_process.project == "P000000001"
+    assert active_process.collection_id == "C000000001"
+    assert active_process.project_id == "P000000001"
     assert active_process.project_title == "(UM) Test project #01"
-    assert active_process.title == "Title"
+    assert active_process.collection_title == "Title"
 
 
 def test_dto_active_processes():
     active_processes = ActiveProcesses.create_from_rule_result(json.loads(ACTIVE_PROCESSES))
-    assert active_processes.archives[0].collection == "C000000001"
-    assert active_processes.archives[0].project == "P000000001"
+    assert active_processes.archives[0].collection_id == "C000000001"
+    assert active_processes.archives[0].project_id == "P000000001"
     assert active_processes.archives[0].project_title == "(UM) Test project #01"
-    assert active_processes.archives[0].title == "Title"
+    assert active_processes.archives[0].collection_title == "Title"
 
     assert active_processes.drop_zones[0].creator == "jmelius"
     assert active_processes.drop_zones[0].project == "P000000001"
     assert active_processes.drop_zones[0].project_title == "(UM) Test project #01"
     assert active_processes.drop_zones[0].state == "open"
 
-    assert active_processes.exports[0].collection == "C000000001"
-    assert active_processes.exports[0].project == "P000000001"
+    assert active_processes.exports[0].collection_id == "C000000001"
+    assert active_processes.exports[0].project_id == "P000000001"
     assert active_processes.exports[0].project_title == "(UM) Test project #01"
     assert active_processes.exports[0].status == "in-queue-for-export"
 
-    assert active_processes.unarchives[0].collection == "C000000001"
-    assert active_processes.unarchives[0].project == "P000000001"
+    assert active_processes.unarchives[0].collection_id == "C000000001"
+    assert active_processes.unarchives[0].project_id == "P000000001"
     assert active_processes.unarchives[0].project_title == "(UM) Test project #01"
     assert active_processes.unarchives[0].status == "unarchive-in-progress 1/1"
 
@@ -151,12 +151,12 @@ DATA_STEWARDS = """
 
 ACTIVE_PROCESS = """
 {
-    "collection": "C000000001",
-    "project": "P000000001",
+    "collection_id": "C000000001",
+    "project_id": "P000000001",
     "project_title": "(UM) Test project #01",
     "repository": "SURFSara Tape",
     "state": "archive-in-progress 1/1",
-    "title": "Title"
+    "collection_title": "Title"
 }
 """
 
@@ -164,12 +164,13 @@ ACTIVE_PROCESSES = """
 {
     "archive": [
         {
-            "collection": "C000000001",
-            "project": "P000000001",
+            "collection_id": "C000000001",
+            "process_id": "11310",
+            "project_id": "P000000001",
             "project_title": "(UM) Test project #01",
             "repository": "SURFSara Tape",
             "state": "archive-in-progress 1/1",
-            "title": "Title"
+            "collection_title": "Title"
         }
     ],
     "drop_zones": [
@@ -192,22 +193,24 @@ ACTIVE_PROCESSES = """
     ],
     "export": [
         {
-            "collection": "C000000001",
-            "project": "P000000001",
+            "collection_id": "C000000001",
+            "process_id": "11311",
+            "project_id": "P000000001",
             "project_title": "(UM) Test project #01",
             "repository": "Dataverse",
             "state": "in-queue-for-export",
-            "title": "Title"
+            "collection_title": "Title"
         }
     ],
     "unarchive": [
         {
-            "collection": "C000000001",
-            "project": "P000000001",
+            "collection_id": "C000000001",
+            "process_id": "11312",
+            "project_id": "P000000001",
             "project_title": "(UM) Test project #01",
             "repository": "SURFSara Tape",
             "state": "unarchive-in-progress 1/1",
-            "title": "Title"
+            "collection_title": "Title"
         }
     ]
 }

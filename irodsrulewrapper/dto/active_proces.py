@@ -13,6 +13,7 @@ class ActiveProcess:
         project_id: str,
         project_title: str,
         process_id: str,
+        process_type: str,
     ):
         self.collection_id: str = collection_id
         self.repository: str = repository
@@ -21,6 +22,7 @@ class ActiveProcess:
         self.project_id: str = project_id
         self.project_title: str = project_title
         self.process_id: str = process_id
+        self.process_type: str = process_type
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "ActiveProcess":
@@ -32,5 +34,6 @@ class ActiveProcess:
             result["project_id"],
             result["project_title"],
             result["process_id"],
+            result["process_type"],
         )
         return card

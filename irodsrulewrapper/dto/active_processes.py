@@ -10,33 +10,40 @@ class ActiveProcesses:
 
     def __init__(
         self,
-        dropzones: list[DropZone],
-        exports: list[ActiveProcess],
-        archives: list[ActiveProcess],
-        unarchives: list[ActiveProcess],
+        completed: list[DropZone],
+        error: list[ActiveProcess],
+        in_progress: list[ActiveProcess],
+        open: list[ActiveProcess],
     ):
-        self.drop_zones: list[DropZone] = dropzones
-        self.exports: list[ActiveProcess] = exports
-        self.archives: list[ActiveProcess] = archives
-        self.unarchives: list[ActiveProcess] = unarchives
+        self.completed: list[DropZone] = completed
+        self.error: list[ActiveProcess] = error
+        self.in_progress: list[ActiveProcess] = in_progress
+        self.open: list[ActiveProcess] = open
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "ActiveProcesses":
-        dropzones = []
-        for drop_zone_item in result["drop_zones"]:
-            drop_zone = DropZone.create_from_rule_result(drop_zone_item)
-            dropzones.append(drop_zone)
-        archives = []
-        for archive_item in result["archive"]:
-            archive = ActiveProcess.create_from_rule_result(archive_item)
-            archives.append(archive)
-        unarchives = []
-        for unarchive_item in result["unarchive"]:
-            unarchive = ActiveProcess.create_from_rule_result(unarchive_item)
-            unarchives.append(unarchive)
-        exports = []
-        for export_item in result["export"]:
-            export = ActiveProcess.create_from_rule_result(export_item)
-            exports.append(export)
-        output = cls(dropzones, exports, archives, unarchives)
+        completed = []
+        for process in result["completed"]:
+            cls.parse_active_process(process, completed)
+        error = []
+        for process in result["error"]:
+            cls.parse_active_process(process, error)
+        in_progress = []
+        for process in result["in_progress"]:
+            cls.parse_active_process(process, in_progress)
+        open_list = []
+        for process in result["open"]:
+            cls.parse_active_process(process, open_list)
+
+        output = cls(completed, error, in_progress, open_list)
+
         return output
+
+    @staticmethod
+    def parse_active_process(process: dict, process_state_list: list):
+        if process["process_type"] == "drop_zone":
+            drop_zone = DropZone.create_from_rule_result(process)
+            process_state_list.append(drop_zone)
+        else:
+            export = ActiveProcess.create_from_rule_result(process)
+            process_state_list.append(export)

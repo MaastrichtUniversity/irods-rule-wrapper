@@ -21,6 +21,7 @@ class DropZone:
         destination: str,
         dropzone_type: str,
         creator: str,
+        process_type: str,
         shared_with_me: bool,
         dropzone_sharing_enabled: bool,
     ):
@@ -37,6 +38,7 @@ class DropZone:
         self.destination: str = destination
         self.type: str = dropzone_type
         self.creator: str = creator
+        self.process_type: str = process_type
         self.shared_with_me: bool = shared_with_me
         self.dropzone_sharing_enabled: bool = dropzone_sharing_enabled
 
@@ -59,6 +61,7 @@ class DropZone:
             result["destination"],
             result["type"],
             result["creator"],
+            result["process_type"],
             formatters.format_string_to_boolean(result["sharedWithMe"]),
             formatters.format_string_to_boolean(result[ProjectAVUs.ENABLE_DROPZONE_SHARING.value]),
         )

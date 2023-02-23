@@ -10,15 +10,15 @@ class ActiveProcesses:
 
     def __init__(
         self,
-        completed: list[DropZone],
-        error: list[ActiveProcess],
-        in_progress: list[ActiveProcess],
-        open: list[ActiveProcess],
+        completed: list[DropZone | ActiveProcess],
+        error: list[DropZone | ActiveProcess],
+        in_progress: list[DropZone | ActiveProcess],
+        open: list[DropZone],
     ):
-        self.completed: list[DropZone] = completed
-        self.error: list[ActiveProcess] = error
-        self.in_progress: list[ActiveProcess] = in_progress
-        self.open: list[ActiveProcess] = open
+        self.completed: list[DropZone | ActiveProcess] = completed
+        self.error: list[DropZone | ActiveProcess] = error
+        self.in_progress: list[DropZone | ActiveProcess] = in_progress
+        self.open: list[DropZone] = open
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "ActiveProcesses":

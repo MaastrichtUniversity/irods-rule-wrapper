@@ -22,6 +22,7 @@ class DropZone:
         dropzone_type: str,
         creator: str,
         process_type: str,
+        percentage_ingested: float,
         shared_with_me: bool,
         dropzone_sharing_enabled: bool,
     ):
@@ -39,6 +40,7 @@ class DropZone:
         self.type: str = dropzone_type
         self.creator: str = creator
         self.process_type: str = process_type
+        self.percentage_ingested: float = percentage_ingested
         self.shared_with_me: bool = shared_with_me
         self.dropzone_sharing_enabled: bool = dropzone_sharing_enabled
 
@@ -62,6 +64,7 @@ class DropZone:
             result["type"],
             result["creator"],
             result["process_type"],
+            float(result["percentage_ingested"]),
             formatters.format_string_to_boolean(result["sharedWithMe"]),
             formatters.format_string_to_boolean(result[ProjectAVUs.ENABLE_DROPZONE_SHARING.value]),
         )

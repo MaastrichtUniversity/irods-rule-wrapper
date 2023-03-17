@@ -72,33 +72,40 @@ def test_dto_user_or_group():
 
 def test_dto_active_process():
     active_process = ActiveProcess.create_from_rule_result(json.loads(ACTIVE_PROCESS))
-    assert active_process.collection == "C000000001"
-    assert active_process.project == "P000000001"
+    assert active_process.collection_id == "C000000001"
+    assert active_process.project_id == "P000000001"
     assert active_process.project_title == "(UM) Test project #01"
-    assert active_process.title == "Title"
+    assert active_process.collection_title == "Title"
 
 
 def test_dto_active_processes():
     active_processes = ActiveProcesses.create_from_rule_result(json.loads(ACTIVE_PROCESSES))
-    assert active_processes.archives[0].collection == "C000000001"
-    assert active_processes.archives[0].project == "P000000001"
-    assert active_processes.archives[0].project_title == "(UM) Test project #01"
-    assert active_processes.archives[0].title == "Title"
+    assert active_processes.in_progress[0].process_type == "drop_zone"
 
-    assert active_processes.drop_zones[0].creator == "jmelius"
-    assert active_processes.drop_zones[0].project == "P000000001"
-    assert active_processes.drop_zones[0].project_title == "(UM) Test project #01"
-    assert active_processes.drop_zones[0].state == "open"
+    assert active_processes.in_progress[1].collection_id == "C000000001"
+    assert active_processes.in_progress[1].project_id == "P000000009"
+    assert active_processes.in_progress[1].project_title == "(S3-GL) Test project #02"
+    assert active_processes.in_progress[1].collection_title == "Dataset1"
+    assert active_processes.in_progress[1].process_type == "archive"
 
-    assert active_processes.exports[0].collection == "C000000001"
-    assert active_processes.exports[0].project == "P000000001"
-    assert active_processes.exports[0].project_title == "(UM) Test project #01"
-    assert active_processes.exports[0].status == "in-queue-for-export"
+    assert active_processes.in_progress[2].process_type == "export"
+    assert active_processes.in_progress[3].process_type == "unarchive"
 
-    assert active_processes.unarchives[0].collection == "C000000001"
-    assert active_processes.unarchives[0].project == "P000000001"
-    assert active_processes.unarchives[0].project_title == "(UM) Test project #01"
-    assert active_processes.unarchives[0].status == "unarchive-in-progress 1/1"
+    assert active_processes.open[0].creator == "test_manager"
+    assert active_processes.open[0].project == "P000000014"
+    assert active_processes.open[0].project_title == "PROJECTNAME"
+    assert active_processes.open[0].state == "open"
+
+    assert active_processes.error[0].destination == "C000000001"
+    assert active_processes.error[0].project == "P000000014"
+    assert active_processes.error[0].project_title == "PROJECTNAME"
+    assert active_processes.error[0].state == "error-post-ingestion"
+
+    assert active_processes.completed[0].destination == "C000000001"
+    assert active_processes.completed[0].project == "P000000014"
+    assert active_processes.completed[0].project_title == "PROJECTNAME"
+    assert active_processes.completed[0].state == "ingested"
+    assert active_processes.completed[0].percentage_ingested == 100
 
 
 USER = """
@@ -151,63 +158,155 @@ DATA_STEWARDS = """
 
 ACTIVE_PROCESS = """
 {
-    "collection": "C000000001",
-    "project": "P000000001",
+    "collection_id": "C000000001",
+    "collection_title": "Title",
+    "process_id": "11310",
+    "process_type": "archive",
+    "project_id": "P000000001",
     "project_title": "(UM) Test project #01",
     "repository": "SURFSara Tape",
-    "state": "archive-in-progress 1/1",
-    "title": "Title"
+    "state": "archive-in-progress 1/1"
 }
 """
 
 ACTIVE_PROCESSES = """
 {
-    "archive": [
+    "completed": [
         {
-            "collection": "C000000001",
-            "project": "P000000001",
-            "project_title": "(UM) Test project #01",
-            "repository": "SURFSara Tape",
-            "state": "archive-in-progress 1/1",
-            "title": "Title"
-        }
-    ],
-    "drop_zones": [
-        {
-            "creator": "jmelius",
-            "date": "01675264813",
-            "destination": "",
+            "creator": "test_manager",
+            "date": "01676630173",
+            "destination": "C000000001",
             "enableDropzoneSharing": "true",
-            "project": "P000000001",
-            "projectTitle": "(UM) Test project #01",
+            "percentage_ingested": 100,
+            "process_type": "drop_zone",
+            "project": "P000000014",
+            "projectTitle": "PROJECTNAME",
             "sharedWithMe": "true",
-            "state": "open",
-            "title": "Title",
-            "token": "condemned-magpie",
-            "totalSize": "0",
+            "state": "ingested",
+            "title": "collection_title",
+            "token": "strange-tarantula",
+            "totalSize": "262347618",
             "type": "direct",
             "validateMsg": "N/A",
             "validateState": "N/A"
         }
     ],
-    "export": [
+    "error": [
         {
-            "collection": "C000000001",
-            "project": "P000000001",
-            "project_title": "(UM) Test project #01",
-            "repository": "Dataverse",
-            "state": "in-queue-for-export",
-            "title": "Title"
+            "creator": "jmelius",
+            "date": "01676631376",
+            "destination": "C000000001",
+            "enableDropzoneSharing": "true",
+            "percentage_ingested": 100.0,
+            "process_type": "drop_zone",
+            "project": "P000000014",
+            "projectTitle": "PROJECTNAME",
+            "sharedWithMe": "false",
+            "state": "error-post-ingestion",
+            "title": "collection_title",
+            "token": "ashamed-oyster",
+            "totalSize": "203618",
+            "type": "direct",
+            "validateMsg": "N/A",
+            "validateState": "N/A"
+        },
+        {
+            "creator": "jmelius",
+            "date": "01676626131",
+            "destination": "C000000001",
+            "enableDropzoneSharing": "true",
+            "percentage_ingested": 0,
+            "process_type": "drop_zone",
+            "project": "P000000002",
+            "projectTitle": "(UM) Test project #02",
+            "sharedWithMe": "false",
+            "state": "error-post-ingestion",
+            "title": "Dataset",
+            "token": "yucky-elk",
+            "totalSize": "0",
+            "type": "mounted",
+            "validateMsg": "N/A",
+            "validateState": "N/A"
         }
     ],
-    "unarchive": [
+    "in_progress": [
         {
-            "collection": "C000000001",
-            "project": "P000000001",
-            "project_title": "(UM) Test project #01",
+            "creator": "foobar",
+            "date": "01676631887",
+            "destination": "C000000001",
+            "enableDropzoneSharing": "",
+            "percentage_ingested": 0,
+            "process_type": "drop_zone",
+            "project": "P000000015",
+            "projectTitle": "",
+            "sharedWithMe": "true",
+            "state": "validating",
+            "title": "collection_title",
+            "token": "magnificent-salamander",
+            "totalSize": "203618",
+            "type": "direct",
+            "validateMsg": "N/A",
+            "validateState": "N/A"
+        },
+        {
+            "collection_id": "C000000001",
+            "collection_title": "Dataset1",
+            "process_id": "11308",
+            "process_type": "archive",
+            "project_id": "P000000009",
+            "project_title": "(S3-GL) Test project #02",
             "repository": "SURFSara Tape",
-            "state": "unarchive-in-progress 1/1",
-            "title": "Title"
+            "state": "complete1"
+        },
+        {
+            "collection_id": "C000000001",
+            "collection_title": "Dataset1",
+            "process_id": "11307",
+            "process_type": "export",
+            "project_id": "P000000009",
+            "project_title": "(S3-GL) Test project #02",
+            "repository": "dataverse",
+            "state": "in-queue1"
+        },
+        {
+            "collection_id": "C000000001",
+            "collection_title": "Dataset1",
+            "process_id": "11309",
+            "process_type": "unarchive",
+            "project_id": "P000000009",
+            "project_title": "(S3-GL) Test project #02",
+            "repository": "SURFSara Tape",
+            "state": "hola"
+        },
+        {
+            "collection_id": "C000000002",
+            "collection_title": "Test1",
+            "process_id": "11318",
+            "process_type": "unarchive",
+            "project_id": "P000000009",
+            "project_title": "(S3-GL) Test project #02",
+            "repository": "SURFSara Tape",
+            "state": "in-queue1"
+        }
+    ],
+    "open": [
+        {
+            "creator": "test_manager",
+            "date": "01676629090",
+            "destination": "C000000001",
+            "enableDropzoneSharing": "true",
+            "percentage_ingested": 0.0,
+            "process_type": "drop_zone",
+            "project": "P000000014",
+            "projectTitle": "PROJECTNAME",
+            "sharedWithMe": "true",
+            "state": "open",
+            "title": "collection_title",
+            "token": "talented-fish",
+            "totalSize": "262347618",
+            "type": "direct",
+            "validateMsg": "N/A",
+            "validateState": "N/A"
         }
     ]
 }

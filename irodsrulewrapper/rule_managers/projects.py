@@ -464,58 +464,6 @@ class ProjectRuleManager(BaseRuleManager):
         return RuleInfo(name="optimized_list_projects", get_result=True, session=self.session, dto=ProjectsOverview)
 
     @rule_call
-    def list_projects_by_user(self):
-        """
-        Get the list of projects that each user has access into.
-
-
-        Returns
-        -------
-        dict
-            JSON rule output
-        """
-
-        return RuleInfo(
-            name="listProjectsByUser", get_result=True, session=self.session, dto=None, parse_to_dto=self.parse_to_dto
-        )
-
-    @rule_call
-    def details_project(self, project_id, inherited):
-        """
-        Native iRODS language rule detailsProject.
-        Get the project AVUs and its collections details in one rule.
-
-        Parameters
-        ----------
-        project_id : str
-            The project's id path; eg. P000000010.
-        inherited : str
-            Role inheritance
-            * inherited='true' cumulates authorizations to designate the role.
-                i.e. A contributor has 'OWN' or 'WRITE' access
-            * inherited='false' only shows explicit contributors.
-                i.e. A contributor only has 'WRITE' access
-
-        Returns
-        -------
-        dict
-            JSON rule output
-        """
-
-        try:
-            validators.validate_project_id(project_id)
-        except exceptions.ValidationError as err:
-            raise RuleInputValidationError("invalid project id; eg. P000000001") from err
-        try:
-            validators.validate_string_boolean(inherited)
-        except exceptions.ValidationError as err:
-            raise RuleInputValidationError("invalid value for *inherited: expected 'true' or 'false'") from err
-
-        return RuleInfo(
-            name="detailsProject", get_result=True, session=self.session, dto=None, parse_to_dto=self.parse_to_dto
-        )
-
-    @rule_call
     def get_project_contributors_metadata(self, project_id):
         """
         Get the contributors(PI, data-steward, etc) metadata of the given project.

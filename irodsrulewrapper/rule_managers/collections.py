@@ -279,15 +279,6 @@ class CollectionRuleManager(BaseRuleManager):
         publish_message("datahub.events_tx", "projectCollection.exporter.requested", json.dumps(message))
 
     @rule_call
-    def __export(self, message, project, collection, repository, amqp_host, amqp_port, amqp_user, amqp_pass):
-        """
-        Calls the rule to start an export.
-        This method is private since it requires a lot of parameters and should not be called directly but
-        always via 'export_project_collection'
-        """
-        return RuleInfo(name="requestExportProjectCollection", get_result=False, session=self.session, dto=None)
-
-    @rule_call
     def prepare_export(self, project, collection, repository):
         """
         Calls the rule to prepare the project collection for the export:

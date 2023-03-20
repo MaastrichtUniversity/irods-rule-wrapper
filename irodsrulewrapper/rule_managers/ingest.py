@@ -23,28 +23,6 @@ class IngestRuleManager(BaseRuleManager):
         BaseRuleManager.__init__(self, client_user, admin_mode=admin_mode)
 
     @rule_call
-    def get_active_drop_zones(self, report):
-        """
-        Get the list of active drop zones
-
-        Parameters
-        ----------
-        report : str
-            'true'/'false' excepted values; If true, show extra values: startDate, endDate & userName
-
-        Returns
-        -------
-        DropZones
-            dto.DropZones object
-        """
-        try:
-            validators.validate_string_boolean(report)
-        except exceptions.ValidationError as err:
-            raise RuleInputValidationError("invalid value for *report: expected 'true' or 'false'") from err
-
-        return RuleInfo(name="listActiveDropZones", get_result=True, session=self.session, dto=DropZones)
-
-    @rule_call
     def get_active_drop_zone(self, token, check_ingest_resource_status, dropzone_type):
         """
         Get the list of active drop zones

@@ -2,11 +2,6 @@ from irodsrulewrapper.rule import RuleManager
 import pytest
 
 
-def test_rule_get_active_drop_zones():
-    result = RuleManager(admin_mode=True).get_active_drop_zones("false")
-    assert result is not None
-
-
 def test_generate_token():
     result = RuleManager(admin_mode=True).generate_token()
     assert result is not None and result.token is not None

@@ -30,11 +30,6 @@ def test_rule_get_project_collection_details():
     assert collection.enable_open_access_export is False
 
 
-def test_rule_get_project_collection_tape_estimate():
-    collection = RuleManager(admin_mode=True).get_project_collection_tape_estimate("P000000010", "C000000001")
-    assert collection is not None
-
-
 def test_rule_archive_project_collection():
     RuleManager("service-surfarchive").archive_project_collection("/nlmumc/projects/P000000014/C000000002")
 

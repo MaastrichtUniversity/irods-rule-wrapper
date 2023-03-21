@@ -1,6 +1,5 @@
 import json
 
-from irodsrulewrapper.dto.tape_estimate import TapeEstimate
 from irodsrulewrapper.dto.attribute_value import AttributeValue
 from irodsrulewrapper.dto.boolean import Boolean
 from irodsrulewrapper.dto.collection import Collection
@@ -101,15 +100,6 @@ def test_dto_external_pid():
     assert pid is not None
     assert pid.pid == "https://doi.org/10.34894/UMF5VF"
     assert pid.repository == "DataverseNL"
-
-
-def test_dto_tape_estimate():
-    estimate = TapeEstimate.create_from_rule_result(json.loads(PROJECT_COLLECTION_TAPE_ESTIMATE))
-    assert estimate.above_threshold_bytes_size == 521638758
-    assert estimate.above_threshold_number_files == 1
-    assert estimate.archivable_bytes_size == 521638758
-    assert estimate.archivable_number_files == 1
-    assert estimate.status == "online"
 
 
 COLLECTION_SIZE_PER_RESOURCE = """

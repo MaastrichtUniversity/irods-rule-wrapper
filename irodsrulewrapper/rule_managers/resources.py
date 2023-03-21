@@ -41,20 +41,6 @@ class ResourceRuleManager(BaseRuleManager):
         return RuleInfo(name="getDestinationResources", get_result=True, session=self.session, dto=Resources)
 
     @rule_call
-    def list_destination_resources_status(self):
-        """
-        Lists the destination resources and their statuses
-
-        Returns
-        -------
-        Resources
-            The resources
-
-        """
-
-        return RuleInfo(name="list_destination_resources_status", get_result=True, session=self.session, dto=Resources)
-
-    @rule_call
     def get_collection_size_per_resource(self, project):
         """
         List collection size per resource

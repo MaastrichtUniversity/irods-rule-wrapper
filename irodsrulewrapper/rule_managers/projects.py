@@ -11,7 +11,7 @@ from irodsrulewrapper.dto.managing_projects import ManagingProjects
 from irodsrulewrapper.dto.project_contributors import ProjectContributors
 from irodsrulewrapper.dto.project_contributors_metadata import ProjectContributorsMetadata
 from irodsrulewrapper.dto.projects_minimal import ProjectsMinimal
-from irodsrulewrapper.dto.projects import Projects, Project
+from irodsrulewrapper.dto.project import Project
 from irodsrulewrapper.dto.projects_cost import ProjectsCost
 from irodsrulewrapper.dto.projects_overview import ProjectsOverview
 from irodsrulewrapper.utils import (
@@ -202,30 +202,6 @@ class ProjectRuleManager(BaseRuleManager):
         """
 
         return RuleInfo(name="get_projects_finance", get_result=True, session=self.session, dto=ProjectsCost)
-
-    @rule_call
-    def get_projects(self, show_service_accounts):
-        """
-        Get the list of projects
-
-        Parameters
-        ----------
-        show_service_accounts: str
-            'true'/'false' expected; If true, hide the service accounts in the result
-
-        Returns
-        -------
-        Projects
-            dto.Projects object
-        """
-        try:
-            validators.validate_string_boolean(show_service_accounts)
-        except exceptions.ValidationError as err:
-            raise RuleInputValidationError(
-                "invalid value for *show_service_accounts: expected 'true' or 'false'"
-            ) from err
-
-        return RuleInfo(name="list_projects", get_result=True, session=self.session, dto=Projects)
 
     @rule_call
     def get_projects_minimal(self):
@@ -457,7 +433,7 @@ class ProjectRuleManager(BaseRuleManager):
 
         Returns
         -------
-        Projects
+        ProjectsOverview
             dto.ProjectsOverview object
         """
 

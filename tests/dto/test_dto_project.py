@@ -9,7 +9,6 @@ from irodsrulewrapper.dto.managing_projects import ManagingProjects
 from irodsrulewrapper.dto.project import Project
 from irodsrulewrapper.dto.project_contributors import ProjectContributors
 from irodsrulewrapper.dto.project_contributors_metadata import ProjectContributorsMetadata
-from irodsrulewrapper.dto.projects import Projects
 from irodsrulewrapper.dto.projects_cost import ProjectsCost
 from irodsrulewrapper.dto.projects_minimal import ProjectsMinimal
 from irodsrulewrapper.dto.projects_overview import ProjectsOverview
@@ -39,14 +38,6 @@ def test_dto_project():
     assert project_details.enable_archive is False
     assert project_details.has_financial_view_access is True
     assert project_details.size == 99
-
-
-def test_dto_projects():
-    projects = Projects.create_from_mock_result()
-    assert projects is not None
-    assert projects.projects.__len__() == 2
-    assert projects.projects[0].title == "test_title"
-    assert projects.projects[1].title == "test_title2"
 
 
 def test_dto_project_contributors_metadata():

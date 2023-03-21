@@ -11,7 +11,6 @@ from irodsrulewrapper.dto.collection_details import CollectionDetails
 from irodsrulewrapper.dto.collections import Collection
 from irodsrulewrapper.dto.collections import Collections
 from irodsrulewrapper.dto.metadata_json import MetadataJSON
-from irodsrulewrapper.dto.tape_estimate import TapeEstimate
 from irodsrulewrapper.utils import publish_message, BaseRuleManager, RuleInfo, RuleInputValidationError
 
 
@@ -156,33 +155,6 @@ class CollectionRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid value for *inherited: expected 'true' or 'false'") from err
 
         return RuleInfo(name="detailsProjectCollection", get_result=True, session=self.session, dto=CollectionDetails)
-
-    @rule_call
-    def get_project_collection_tape_estimate(self, project, collection):
-        """
-        The project collection tape status & the number and total bytes size of files eligible for tape
-
-        Parameters
-        ----------
-        project: str
-            The project's id; e.g P000000010
-        collection: str
-            The collection's id; e.g C000000001
-
-        Returns
-        -------
-        dict
-            The project collection tape status, above_threshold and achievable
-        """
-        try:
-            validators.validate_project_id(project)
-            validators.validate_collection_id(collection)
-        except exceptions.ValidationError as err:
-            raise RuleInputValidationError("invalid project or collection id; eg. P000000001") from err
-
-        return RuleInfo(
-            name="get_project_collection_tape_estimate", get_result=True, session=self.session, dto=TapeEstimate
-        )
 
     @rule_call
     def archive_project_collection(self, collection):
@@ -575,17 +547,3 @@ class CollectionRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid value for *open_acl/close_acl: expected 'true' or 'false'")
 
         return RuleInfo(name="set_acl_for_metadata_snapshot", get_result=False, session=self.session, dto=None)
-
-    @rule_call
-    def get_project_collection_checksum(self, project_id, collection_id):
-        """
-
-        Parameters
-        ----------
-
-        Returns
-        -------
-        """
-        return RuleInfo(
-            name="checksum_collection", get_result=True, session=self.session, dto=None, parse_to_dto=self.parse_to_dto
-        )

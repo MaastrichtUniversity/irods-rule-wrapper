@@ -23,28 +23,6 @@ class IngestRuleManager(BaseRuleManager):
         BaseRuleManager.__init__(self, client_user, admin_mode=admin_mode)
 
     @rule_call
-    def get_active_drop_zones(self, report):
-        """
-        Get the list of active drop zones
-
-        Parameters
-        ----------
-        report : str
-            'true'/'false' excepted values; If true, show extra values: startDate, endDate & userName
-
-        Returns
-        -------
-        DropZones
-            dto.DropZones object
-        """
-        try:
-            validators.validate_string_boolean(report)
-        except exceptions.ValidationError as err:
-            raise RuleInputValidationError("invalid value for *report: expected 'true' or 'false'") from err
-
-        return RuleInfo(name="listActiveDropZones", get_result=True, session=self.session, dto=DropZones)
-
-    @rule_call
     def get_active_drop_zone(self, token, check_ingest_resource_status, dropzone_type):
         """
         Get the list of active drop zones
@@ -104,9 +82,7 @@ class IngestRuleManager(BaseRuleManager):
     def ingest(self, user: str, token: str, dropzone_type: str):
         """
         Ingest the requested dropzone
-        NOTE: We do the 'set_total_size_dropzone' here. This allows for the progress bar to be visible in the frontend.
-        However, this call can fail and the ingestion will still continue. This is by design, because we do not know
-        the duration the call will take for huge dropzones.
+        NOTE: 'set_total_size_dropzone' is now handle by the iRODS policy "acPostProcForPut".
 
         Parameters
         ----------
@@ -117,11 +93,6 @@ class IngestRuleManager(BaseRuleManager):
         dropzone_type : str
             The type of dropzone, 'mounted' or 'direct'
         """
-        # try:
-        #     self.set_total_size_dropzone(token, dropzone_type)
-        # except RuntimeError as err:
-        #     log_warning_message(user, f"set_total_size_dropzone failed with error: {err}")
-
         if dropzone_type == "direct":
             # CAUTION: This is an admin level rule call
             admin_rule_manager = ProjectRuleManager(admin_mode=True)
@@ -310,28 +281,6 @@ class IngestRuleManager(BaseRuleManager):
         """
 
         return RuleInfo(name="generate_token", get_result=True, session=self.session, dto=Token)
-
-    @rule_call
-    def set_total_size_dropzone(self, token, dropzone_type):
-        """
-        Set an attribute value to the input user
-
-        Parameters
-        ----------
-        token : str
-            The dropzone token to be ingested
-        dropzone_type: str
-            The type of dropzone, 'mounted' or 'direct'
-
-        """
-        if not isinstance(token, str):
-            raise RuleInputValidationError("invalid type for *token: expected a string")
-        try:
-            validators.validate_dropzone_type(dropzone_type)
-        except exceptions.ValidationError as err:
-            raise RuleInputValidationError("invalid value for *dropzone_type: expected 'mounted' or 'direct'") from err
-
-        return RuleInfo(name="set_dropzone_total_size_avu", get_result=False, session=self.session, dto=None)
 
     @rule_call
     def get_versioned_pids(self, project_id, collection_id, version):

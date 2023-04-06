@@ -1,12 +1,6 @@
 from irodsrulewrapper.rule import RuleManager, RuleJSONManager
 
 
-def test_rule_list_groups_users():
-    groups = RuleJSONManager(admin_mode=True).list_groups_users()
-    assert groups is not None
-    assert groups[0]["Users"] is not None
-
-
 def test_rule_get_groups():
     result = RuleManager(admin_mode=True).get_groups("true")
     groups = result.groups

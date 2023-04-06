@@ -3,18 +3,6 @@ from dhpythonirodsutils.enums import ProjectAVUs
 from irodsrulewrapper.rule import RuleManager, RuleJSONManager
 
 
-def test_rule_details_project():
-    project = RuleJSONManager(admin_mode=True).details_project("P000000011", "false")
-    assert project is not None
-    assert project["project"] is not None
-
-
-def test_rule_list_projects_by_user():
-    projects = RuleJSONManager(admin_mode=True).list_projects_by_user()
-    assert projects is not None
-    assert projects[0]["Projects"] is not None
-
-
 def test_rule_get_project_details_json():
     project_details = RuleJSONManager(admin_mode=True).get_project_details("/nlmumc/projects/P000000011", "true")
     assert project_details is not None

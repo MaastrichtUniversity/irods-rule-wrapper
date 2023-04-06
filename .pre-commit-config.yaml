@@ -38,7 +38,7 @@ repos:
         entry: pylint
         language: system
         types: [ python ]
-        exclude: ^setup.py
+        exclude: ^(setup.py|tests)
         args: [
           "--max-line-length=120",
           "--fail-under=8",

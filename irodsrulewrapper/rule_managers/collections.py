@@ -157,24 +157,29 @@ class CollectionRuleManager(BaseRuleManager):
         return RuleInfo(name="detailsProjectCollection", get_result=True, session=self.session, dto=CollectionDetails)
 
     @rule_call
-    def archive_project_collection(self, collection):
+    def archive_project_collection(self, collection: str, initiator: str):
         """
         Archive all the eligible files from the collection to tape
 
         Parameters
+        ----------
         collection: str
             The absolute collection path: e.g /nlmumc/projects/P000000010/C000000001
-
+        initiator: str
+            The user who started the process
         """
         try:
             validators.validate_project_collection_path(collection)
         except exceptions.ValidationError as err:
             raise RuleInputValidationError("invalid collection id; eg. C000000001") from err
 
+        if not isinstance(initiator, str):
+            raise RuleInputValidationError("invalid type for *initiator: expected a string")
+
         return RuleInfo(name="prepareTapeArchive", get_result=False, session=self.session, dto=None)
 
     @rule_call
-    def unarchive_project_collection(self, path):
+    def unarchive_project_collection(self, path: str, initiator: str):
         """
         Un-archive a single file or entire collection from tape
 
@@ -183,7 +188,14 @@ class CollectionRuleManager(BaseRuleManager):
         path: str
             The absolute path of the collection or the single file to un-archive
             e.g: /nlmumc/projects/P000000010/C000000001 or /nlmumc/projects/P000000010/C000000001/test.txt
+        initiator: str
+            The user who started the process
         """
+        if not isinstance(path, str):
+            raise RuleInputValidationError("invalid type for *path: expected a string")
+
+        if not isinstance(initiator, str):
+            raise RuleInputValidationError("invalid type for *initiator: expected a string")
 
         return RuleInfo(name="prepareTapeUnArchive", get_result=False, session=self.session, dto=None)
 

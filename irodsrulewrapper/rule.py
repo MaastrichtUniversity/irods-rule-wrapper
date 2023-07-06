@@ -577,7 +577,7 @@ class RuleManager(
             "rods",
             dropzone_path,
         )
-        self.remove_dropzone_acl(dropzone_path)
+        self.remove_users_dropzone_acl(dropzone_path)
 
         self.delete_dropzone(token)
 

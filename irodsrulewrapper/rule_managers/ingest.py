@@ -467,3 +467,34 @@ class IngestRuleManager(BaseRuleManager):
         return RuleInfo(
             name="calculate_direct_dropzone_size_files", get_result=True, session=self.session, dto=CollectionStats
         )
+
+    @rule_call
+    def delete_dropzone(self, token):
+        """
+        This rule triggers the deletion of the dropzone in iCAT and also physical storage.
+
+        Parameters
+        ----------
+        token: str
+            The dropzone token
+        """
+        try:
+            validators.validate_dropzone_token(token)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid dropzone token: e.g crazy-frog") from err
+
+        return RuleInfo(name="closeDropZone", get_result=False, session=self.session, dto=None)
+
+    @rule_call
+    def remove_users_dropzone_acl(self, dropzone_path):
+        """
+        Revoke all the end user dropzone permissions.
+        This is immediate, so the requested dropzone for deletion doesn't appear in any dropzone listing.
+
+        Parameters
+        ----------
+        dropzone_path: str
+            Dropzone logical path
+        """
+
+        return RuleInfo(name="remove_users_dropzone_acl", get_result=False, session=self.session, dto=None)

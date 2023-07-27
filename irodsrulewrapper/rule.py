@@ -1,7 +1,7 @@
 """This module contains the user-client Rule managers classes: RuleManager & RuleJSONManager."""
 from typing import TypedDict
 
-from dhpythonirodsutils import validators, exceptions
+from dhpythonirodsutils import validators, exceptions, formatters
 from irods.data_object import iRODSDataObject
 from irods.exception import CAT_INVALID_CLIENT_USER, CAT_NO_ROWS_FOUND, QueryException
 from irods.exception import DataObjectDoesNotExist, CollectionDoesNotExist
@@ -544,6 +544,42 @@ class RuleManager(
             raise RuleInputValidationError("Invalid data object open mode provided")
 
         return self.session.data_objects.open(full_path, mode)
+
+    def remove_dropzone(self, token, dropzone_type):
+        """
+        This function is meant to be called as an admin:
+            * Make sure the admin has 'own' access to the dropzone
+            * Revoke all the users permissions => dropzone won't appear in any the dropzone listing
+            * Start to delete the dropzone.
+
+        Parameters
+        ----------
+        token : str
+            The dropzone token
+        dropzone_type : str
+            The type of dropzone: 'mounted' or 'direct'
+        """
+        try:
+            validators.validate_dropzone_token(token)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid dropzone token: e.g crazy-frog") from err
+
+        try:
+            validators.validate_dropzone_type(dropzone_type)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid value for *dropzone_type: expected 'mounted' or 'direct'") from err
+
+        dropzone_path = formatters.format_dropzone_path(token, dropzone_type)
+
+        self.set_acl(
+            "recursive",
+            "admin:own",
+            "rods",
+            dropzone_path,
+        )
+        self.remove_users_dropzone_acl(dropzone_path)
+
+        self.delete_dropzone(token)
 
 
 class RuleJSONManager(RuleManager):

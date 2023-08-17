@@ -2,13 +2,14 @@
 import json
 
 from irodsrulewrapper.dto.group import Group
+from pydantic import BaseModel
+from typing import List
 
 
-class Groups:
+class Groups(BaseModel):
     """This class represents a list of iRODS Group DTOs."""
 
-    def __init__(self, groups: list["Group"]):
-        self.groups: list["Group"] = groups
+    groups: List[Group]
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "Groups":
@@ -16,7 +17,7 @@ class Groups:
         for item in result:
             group = Group.create_from_rule_result(item)
             output.append(group)
-        groups = cls(output)
+        groups = cls(groups=output)
         return groups
 
     @classmethod

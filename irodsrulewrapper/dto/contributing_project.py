@@ -4,33 +4,23 @@ from dhpythonirodsutils.enums import ProjectAVUs
 from irodsrulewrapper.dto.groups import Groups
 from irodsrulewrapper.dto.users import Users
 
+from pydantic import BaseModel
 
-class ContributingProject:
+
+class ContributingProject(BaseModel):
     """
     This class represents an iRODS project with its attributes and ACL, where the user has contributing access level.
     """
 
-    def __init__(
-        self,
-        project_id: str,
-        title: str,
-        managers: Users,
-        contributors_users: Users,
-        contributors_groups: Groups,
-        viewers_users: Users,
-        viewers_groups: Groups,
-        resource: str,
-        collection_metadata_schemas,
-    ):
-        self.id: str = project_id
-        self.title: str = title
-        self.managers: Users = managers
-        self.contributors_users: Users = contributors_users
-        self.contributors_groups: Groups = contributors_groups
-        self.viewers_users: Users = viewers_users
-        self.viewers_groups: Groups = viewers_groups
-        self.resource: str = resource
-        self.collection_metadata_schemas = collection_metadata_schemas
+    id: str
+    title: str
+    managers: Users
+    contributors_users: Users
+    contributors_groups: Groups
+    viewers_users: Users
+    viewers_groups: Groups
+    resource: str
+    collection_metadata_schemas: str
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "ContributingProject":
@@ -45,15 +35,15 @@ class ContributingProject:
         viewers_groups = Groups.create_from_rule_result(result["viewers"]["groupObjects"])
         resource = result[ProjectAVUs.RESOURCE.value]
         project = cls(
-            result["id"],
-            result[ProjectAVUs.TITLE.value],
-            managers,
-            contributors_users,
-            contributors_groups,
-            viewers_users,
-            viewers_groups,
-            resource,
-            result[ProjectAVUs.COLLECTION_METADATA_SCHEMAS.value],
+            id=result["id"],
+            title=result[ProjectAVUs.TITLE.value],
+            managers=managers,
+            contributors_users=contributors_users,
+            contributors_groups=contributors_groups,
+            viewers_users=viewers_users,
+            viewers_groups=viewers_groups,
+            resource=resource,
+            collection_metadata_schemas=result[ProjectAVUs.COLLECTION_METADATA_SCHEMAS.value],
         )
 
         return project

@@ -3,12 +3,14 @@ import json
 
 from irodsrulewrapper.dto.user import User
 
+from pydantic import BaseModel
+from typing import List
 
-class Users:
+
+class Users(BaseModel):
     """This class represents a list of iRODS User DTOs."""
 
-    def __init__(self, users: list["User"]):
-        self.users: list["User"] = users
+    users: List[User]
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "Users":
@@ -16,7 +18,7 @@ class Users:
         for item in result:
             user = User.create_from_rule_result(item)
             output.append(user)
-        users = cls(output)
+        users = cls(users=output)
         return users
 
     @classmethod

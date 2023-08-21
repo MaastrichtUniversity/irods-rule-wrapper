@@ -559,3 +559,58 @@ class CollectionRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid value for *open_acl/close_acl: expected 'true' or 'false'")
 
         return RuleInfo(name="set_acl_for_metadata_snapshot", get_result=False, session=self.session, dto=None)
+
+    @rule_call
+    def revoke_project_collection_user_access(self, user_project_collection: str, reason: str, description: str):
+        """
+        Revoke all user access to the input project collection, after a deletion have been requested.
+
+        Parameters
+        ----------
+        user_project_collection : str
+            The absolute path of the project collection
+        reason : str
+            The reason of the deletion
+        description : str
+            Optional, the description text for the deletion
+        """
+        try:
+            validators.validate_project_collection_path(user_project_collection)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError(
+                "invalid project collection path; eg. /nlmumc/projects/P000000010/C000000070"
+            ) from err
+
+        if not isinstance(reason, str):
+            raise RuleInputValidationError("invalid type for *reason: expected a string")
+
+        if not isinstance(description, str):
+            raise RuleInputValidationError("invalid type for *description: expected a string")
+
+        return RuleInfo(name="revoke_project_collection_user_access", get_result=False, session=self.session, dto=None)
+
+    @rule_call
+    def get_project_collection_process_activity(self, user_project_collection: str):
+        """
+        Query for any process activity linked to the input project collection.
+
+        Parameters
+        ----------
+        user_project_collection : str
+            The absolute path of the project collection
+
+        Returns
+        -------
+        Boolean
+            True, if the project collection has at least one active process.
+        """
+        try:
+            validators.validate_project_collection_path(user_project_collection)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError(
+                "invalid project collection path; eg. /nlmumc/projects/P000000010/C000000070"
+            ) from err
+
+        return RuleInfo(
+            name="get_project_collection_process_activity", get_result=True, session=self.session, dto=Boolean
+        )

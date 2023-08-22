@@ -572,7 +572,7 @@ class CollectionRuleManager(BaseRuleManager):
         reason : str
             The reason of the deletion
         description : str
-            Optional, the description text for the deletion
+            An optional description providing additional details, empty string if not provided by the form/user
         """
         try:
             validators.validate_project_collection_path(user_project_collection)

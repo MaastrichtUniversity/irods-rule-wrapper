@@ -1,15 +1,16 @@
 """This module contains the User DTO class and its factory constructor."""
 
+from pydantic import BaseModel
 
-class User:
+
+class User(BaseModel):
     """This class represents an iRODS user with its minimal attributes"""
 
-    def __init__(self, user_name: str, user_id: str, display_name: str):
-        self.user_name: str = user_name
-        self.user_id: str = user_id
-        self.display_name: str = display_name
+    user_name: str
+    user_id: str
+    display_name: str
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "User":
-        user = cls(result["userName"], result["userId"], result["displayName"])
+        user = cls(user_name=result["userName"], user_id=result["userId"], display_name=result["displayName"])
         return user

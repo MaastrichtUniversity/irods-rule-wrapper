@@ -1,12 +1,14 @@
 """This module contains the ContributingProjects DTO class and its factory constructor."""
 from irodsrulewrapper.dto.contributing_project import ContributingProject
 
+from pydantic import BaseModel
+from typing import List
 
-class ContributingProjects:
+
+class ContributingProjects(BaseModel):
     """This class represents a list of iRODS ContributingProject DTOs."""
 
-    def __init__(self, projects: list["ContributingProject"]):
-        self.projects: list["ContributingProject"] = projects
+    projects: List[ContributingProject]
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "ContributingProject":
@@ -16,7 +18,7 @@ class ContributingProjects:
 
         output = []
         for item in result:
-            drop_zone = ContributingProject.create_from_rule_result(item)
-            output.append(drop_zone)
-        projects = cls(output)
+            project = ContributingProject.create_from_rule_result(item)
+            output.append(project)
+        projects = cls(projects=output)
         return projects

@@ -72,6 +72,10 @@ def test_rule_get_collection_tree():
 # def parse_general_instance(instance: dict) -> GeneralInstance:
 #
 # def read_instance_version_from_collection(self, project_id: str, collection_id: str, version: str) -> dict:
+#
+# def revoke_project_collection_user_access(self, user_project_collection: str, reason: str, description: str):
+#
+# def get_project_collection_process_activity(self, user_project_collection: str):
 
 
 def test_rule_get_collection_size_per_resource():

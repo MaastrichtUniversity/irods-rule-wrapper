@@ -22,7 +22,7 @@ setuptools.setup(
     install_requires=[
         "python-irodsclient==1.1.6",
         "cedar-parsing-utils @ git+https://github.com/MaastrichtUniversity/cedar-parsing-utils.git@v1.0.0#egg=cedar-parsing-utils",
-        "dh-python-irods-utils @ git+https://github.com/MaastrichtUniversity/dh-python-irods-utils.git@v1.1.4#egg=dh-python-irods-utils",
+        "dh-python-irods-utils @ git+https://github.com/MaastrichtUniversity/dh-python-irods-utils.git@DHS-3024#egg=dh-python-irods-utils",
         "pika>=1.2.0,<2.0.0",
         "pytz>=2021.3",
         "pydantic>=1.9.1,<2.0.0",

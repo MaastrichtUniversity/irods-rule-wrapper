@@ -8,6 +8,7 @@ from irodsrulewrapper.dto.contributing_project import ContributingProject
 from irodsrulewrapper.dto.contributing_projects import ContributingProjects
 from irodsrulewrapper.dto.create_project import CreateProject
 from irodsrulewrapper.dto.managing_projects import ManagingProjects
+from irodsrulewrapper.dto.project_activity import ProjectActivity
 from irodsrulewrapper.dto.project_contributors import ProjectContributors
 from irodsrulewrapper.dto.project_contributors_metadata import ProjectContributorsMetadata
 from irodsrulewrapper.dto.projects_minimal import ProjectsMinimal
@@ -498,3 +499,24 @@ class ProjectRuleManager(BaseRuleManager):
             session=self.session,
             dto=ProjectsMinimal,
         )
+
+    @rule_call
+    def get_project_process_activity(self, project_id: str):
+        """
+        Query for any process activity linked to the input project.
+
+        Parameters
+        ----------
+        project_id: str
+        e.g: P000000001
+
+        Returns
+        -------
+        ProjectActivity
+        """
+        try:
+            validators.validate_project_id(project_id)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid project id; e.g: P000000010") from err
+
+        return RuleInfo(name="get_project_process_activity", get_result=True, session=self.session, dto=ProjectActivity)

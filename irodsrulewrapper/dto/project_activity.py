@@ -6,9 +6,9 @@ from pydantic import BaseModel
 class ProjectActivity(BaseModel):
     """This class represents a list of iRODS Group DTOs."""
 
-    has_active_drop_zones = bool
-    has_active_processes = bool
-    has_pending_deletions = bool
+    has_active_drop_zones: bool
+    has_active_processes: bool
+    has_pending_deletions: bool
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "ProjectActivity":

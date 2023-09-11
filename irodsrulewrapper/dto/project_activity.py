@@ -1,21 +1,19 @@
-"""This module contains the Users DTO class and its factory constructors"""
+"""This module contains the ProjectActivity DTO class and its factory constructors"""
 
 from pydantic import BaseModel
 
 
 class ProjectActivity(BaseModel):
-    """This class represents a list of iRODS Group DTOs."""
+    """This class represents the different activities related to a project. It is relevant for a project deletion"""
 
-    has_active_drop_zones: bool
-    has_active_processes: bool
-    has_pending_deletions: bool
+    has_process_activity: bool
+    has_only_active_collection: bool
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "ProjectActivity":
         project_activity = cls(
-            has_active_drop_zones=result["has_active_drop_zones"],
-            has_active_processes=result["has_active_processes"],
-            has_pending_deletions=result["has_pending_deletions"],
+            has_process_activity=result["has_process_activity"],
+            has_only_active_collection=result["has_only_active_collection"],
         )
 
         return project_activity

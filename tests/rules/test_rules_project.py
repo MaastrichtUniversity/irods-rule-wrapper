@@ -16,7 +16,7 @@ def test_rule_get_contributing_project_success():
 
 def test_rule_get_contributing_project_fail():
     # 'mcooonen' is in datahub group, and datahub group only has read permissions for P0..010
-    result = RuleManager("mcoonen").get_contributing_project("P000000010", "false")
+    result = RuleManager("dlinssen").get_contributing_project("P000000010", "false")
     assert result is None
 
 

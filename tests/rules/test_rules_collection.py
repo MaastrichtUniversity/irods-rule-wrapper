@@ -96,7 +96,7 @@ def test_rule_get_collection_size_per_resource():
 #     result = False
 #     try:
 #         # RuleManager(admin_mode=True).export_project_collection("P000000016", "C000000001", "DataverseNL", {})
-#         RuleManager("mcoonen").export_project_collection("P000000016", "C000000001", "DataverseNL", {})
+#         RuleManager("dlinssen").export_project_collection("P000000016", "C000000001", "DataverseNL", {})
 #     except CAT_NO_ACCESS_PERMISSION:
 #         result = True
 #

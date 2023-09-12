@@ -501,6 +501,36 @@ class ProjectRuleManager(BaseRuleManager):
         )
 
     @rule_call
+    def revoke_project_user_access(self, project: str, reason: str, description: str):
+        """
+        Revoke all user access to the input project, after a deletion has been requested.
+
+        Parameters
+        ----------
+        project : str
+            The absolute path of the project eg. /nlmumc/projects/P000000010
+        reason : str
+            The reason of the deletion
+        description : str
+            An optional description providing additional details, empty string if not provided by the form/user
+        """
+        try:
+            validators.validate_project_path(project)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError(
+                "invalid project collection path; eg. /nlmumc/projects/P000000010"
+            ) from err
+
+        if not isinstance(reason, str):
+            raise RuleInputValidationError("invalid type for *reason: expected a string")
+
+        if not isinstance(description, str):
+            raise RuleInputValidationError("invalid type for *description: expected a string")
+
+        return RuleInfo(name="revoke_project_user_access", get_result=False, session=self.session, dto=None)
+
+
+    @rule_call
     def get_project_process_activity(self, project_id: str):
         """
         Query for any process activity linked to the input project.

@@ -64,10 +64,6 @@ USERS_GROUPS_JSON: str = """
         "displayName": "Jonathan M\u00e9lius",
         "email": "jmelius@um.nl"
     },
-    "mcoonen": {
-        "displayName": "Maarten Coonen",
-        "email": "mcoonen@um.nl"
-    },
     "opalmen": {
         "displayName": "Olav Palmen",
         "email": "opalmen@um.nl"

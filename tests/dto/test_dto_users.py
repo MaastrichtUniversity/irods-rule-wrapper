@@ -19,7 +19,7 @@ def test_dto_user():
 def test_dto_users():
     result = Users.create_from_mock_result()
     assert result is not None
-    assert result.users.__len__() == 20
+    assert result.users.__len__() == 19
     assert result.users[0].user_name == "jmelius"
     assert result.users[6].user_name == "auser"
 

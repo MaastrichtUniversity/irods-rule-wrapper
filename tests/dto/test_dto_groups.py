@@ -28,7 +28,7 @@ def test_dto_users_groups_extended():
     result = UsersGroupsExpanded.create_from_mock_result()
     user_groups = result
     assert user_groups is not None
-    assert user_groups.__len__() == 11
+    assert user_groups.__len__() == 10
     assert user_groups["auser"].display_name == "Additional User newly created in LDAP"
     assert user_groups["auser"].email == "auser"
     assert user_groups["jmelius"].display_name == "Jonathan M\u00e9lius"

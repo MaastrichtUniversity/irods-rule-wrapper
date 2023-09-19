@@ -517,9 +517,7 @@ class ProjectRuleManager(BaseRuleManager):
         try:
             validators.validate_project_path(project)
         except exceptions.ValidationError as err:
-            raise RuleInputValidationError(
-                "invalid project collection path; eg. /nlmumc/projects/P000000010"
-            ) from err
+            raise RuleInputValidationError("invalid project collection path; eg. /nlmumc/projects/P000000010") from err
 
         if not isinstance(reason, str):
             raise RuleInputValidationError("invalid type for *reason: expected a string")
@@ -528,7 +526,6 @@ class ProjectRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid type for *description: expected a string")
 
         return RuleInfo(name="revoke_project_user_access", get_result=False, session=self.session, dto=None)
-
 
     @rule_call
     def get_project_process_activity(self, project_id: str):

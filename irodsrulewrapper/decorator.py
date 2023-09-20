@@ -125,8 +125,20 @@ def rule_call(func: Callable):
         input_params = {}
         for argument_index in range(2, len(args) + 1):
             key = "*arg" + str(argument_index)
-            value = f'"{args[argument_index - 1]}"'
+            argument = args[argument_index - 1]
+
+            if '"' in argument and "'" in argument:
+                argument = argument.replace('"', '\\"')
+                value = f'"{argument}"'
+            elif '"' in argument:
+                value = f"'{argument}'"
+            elif "'" in argument:
+                value = f'"{argument}"'
+            else:
+                value = f'"{argument}"'
+
             input_params[key] = value
+
         return input_params
 
     def execute_rule(rule_body, input_params, rule_info):

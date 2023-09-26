@@ -34,6 +34,27 @@ def convert_to_current_timezone(date, date_format="%Y-%m-%d %H:%M:%S"):
     return old_timezone.localize(date).astimezone(new_timezone).strftime(date_format)
 
 
+def format_rule_argument(argument):
+    """
+    Format a rule argument to prevent single or double quote issues
+    Parameters
+    ----------
+    argument : string
+        Argument that needs to be formatted
+    """
+    if '"' in argument and "'" in argument:
+        argument = argument.replace('"', '\\"')
+        value = f'"{argument}"'
+    elif '"' in argument:
+        value = f"'{argument}'"
+    elif "'" in argument:
+        value = f'"{argument}"'
+    else:
+        value = f'"{argument}"'
+
+    return value
+
+
 class BaseRuleManager:
     """
     This (abstract) class has the basic methods to set up an iRODS (SSL) connection.

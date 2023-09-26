@@ -9,6 +9,8 @@ from typing import Callable
 from irods.exception import NetworkException
 from irods.rule import Rule
 
+from irodsrulewrapper.utils import format_rule_argument
+
 
 def rule_call(func: Callable):
     """
@@ -126,18 +128,7 @@ def rule_call(func: Callable):
         for argument_index in range(2, len(args) + 1):
             key = "*arg" + str(argument_index)
             argument = args[argument_index - 1]
-
-            if '"' in argument and "'" in argument:
-                argument = argument.replace('"', '\\"')
-                value = f'"{argument}"'
-            elif '"' in argument:
-                value = f"'{argument}'"
-            elif "'" in argument:
-                value = f'"{argument}"'
-            else:
-                value = f'"{argument}"'
-
-            input_params[key] = value
+            input_params[key] = format_rule_argument(argument)
 
         return input_params
 

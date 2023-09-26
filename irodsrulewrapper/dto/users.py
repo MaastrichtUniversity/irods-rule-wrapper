@@ -27,7 +27,6 @@ class Users(BaseModel):
             mock_json = MOCK_JSON
         return cls.create_from_rule_result(json.loads(mock_json))
 
-
 MOCK_JSON = """
 [
     {
@@ -41,9 +40,9 @@ MOCK_JSON = """
         "userName": "pvanschay2"
     },
     {
-        "displayName": "Dr. Maarten Coonen (MUMC+)",
+        "displayName": "Dean Linssen (MUMC+)",
         "userId": "10033",
-        "userName": "mcoonen2"
+        "userName": "dlinssen2"
     },
     {
         "displayName": "Olav Palmen",
@@ -79,11 +78,6 @@ MOCK_JSON = """
         "displayName": "Ralph Brecheisen",
         "userId": "10068",
         "userName": "rbrecheis"
-    },
-    {
-        "displayName": "Maarten Coonen",
-        "userId": "10028",
-        "userName": "mcoonen"
     },
     {
         "displayName": "Daniel Theunissen",

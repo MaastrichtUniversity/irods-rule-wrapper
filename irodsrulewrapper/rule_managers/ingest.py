@@ -12,7 +12,7 @@ from irodsrulewrapper.utils import (
     BaseRuleManager,
     RuleInfo,
     RuleInputValidationError,
-    log_warning_message,
+    log_warning_message, format_rule_argument,
 )
 
 
@@ -248,10 +248,15 @@ class IngestRuleManager(BaseRuleManager):
             The type of dropzone (mounted or direct)
         """
 
+        try:
+            validators.validate_project_id(project)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid project or collection id format: e.g P000000010") from err
+
         input_params = {
             "*dropzonePath": f'"{formatters.format_dropzone_path(token, dropzone_type)}"',
             "*project": f'"{project}"',
-            "*title": f'"{title}"',
+            "*title": format_rule_argument(title),
         }
 
         rule_body = """

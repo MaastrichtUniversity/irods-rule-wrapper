@@ -4,7 +4,6 @@ from unittest.mock import patch
 from irodsrulewrapper.dto.contributing_project import ContributingProject
 from irodsrulewrapper.dto.contributing_projects import ContributingProjects
 from irodsrulewrapper.dto.create_project import CreateProject
-from irodsrulewrapper.dto.group import Group
 from irodsrulewrapper.dto.managing_projects import ManagingProjects
 from irodsrulewrapper.dto.project import Project
 from irodsrulewrapper.dto.project_contributors import ProjectContributors
@@ -12,7 +11,7 @@ from irodsrulewrapper.dto.project_contributors_metadata import ProjectContributo
 from irodsrulewrapper.dto.projects_cost import ProjectsCost
 from irodsrulewrapper.dto.projects_minimal import ProjectsMinimal
 from irodsrulewrapper.dto.projects_overview import ProjectsOverview
-from irodsrulewrapper.dto.user import User
+from irodsrulewrapper.dto.user_or_group import UserOrGroup
 
 
 def test_dto_managing_projects():
@@ -97,9 +96,9 @@ def test_dto_project_contributors():
 
 
 def test_dto_projects_overview():
-    mock_user_rule_manager = patch("irodsrulewrapper.dto.project_overview.UserRuleManager").start()
+    mock_user_rule_manager = patch("irodsrulewrapper.convert_uid.UserRuleManager").start()
     instance_user_rule_manager = mock_user_rule_manager.return_value
-    instance_user_rule_manager.get_user_or_group.side_effect = get_user_or_group_side_effect
+    instance_user_rule_manager.get_user_or_group_by_id.side_effect = get_user_or_group_side_effect
 
     projects = ProjectsOverview.create_from_rule_result(json.loads(PROJECTS_OVERVIEW)).projects
 
@@ -141,30 +140,47 @@ def test_dto_projects_overview():
 
 def get_user_or_group_side_effect(uid):
     if uid == "10055":
-        user = {"displayName": "Paul van Schayck", "userId": "10055", "userName": "pvanschay2"}
-        return User.create_from_rule_result(user)
+        user = {
+            "displayName": "Paul van Schayck",
+            "userId": "10055",
+            "userName": "pvanschay2",
+            "account_type": "rodsuser",
+        }
+        return UserOrGroup.create_from_rule_result(user)
     elif uid == "10060":
-        user = {"displayName": "Pascal Suppers", "userId": "10060", "userName": "psuppers"}
-        return User.create_from_rule_result(user)
+        user = {
+            "displayName": "Pascal Suppers",
+            "userId": "10060",
+            "userName": "psuppers",
+            "account_type": "rodsuser",
+        }
+        return UserOrGroup.create_from_rule_result(user)
     elif uid == "10085":
-        user = {"displayName": "Olav Palmen", "userId": "10085", "userName": "opalmen"}
-        return User.create_from_rule_result(user)
+        user = {
+            "displayName": "Olav Palmen",
+            "userId": "10085",
+            "userName": "opalmen",
+            "account_type": "rodsuser",
+        }
+        return UserOrGroup.create_from_rule_result(user)
     elif uid == "10126":
         group = {
             "description": "CO for all of nanoscopy",
             "displayName": "Nanoscopy",
             "userId": "10126",
             "userName": "m4i-nanoscopy",
+            "account_type": "rodsgroup",
         }
-        return Group.create_from_rule_result(group)
-    elif uid == "10129":
+        return UserOrGroup.create_from_rule_result(group)
+    elif uid == "10129":  # rodsgroup
         group = {
             "description": "It's DataHub! The place to store your data.",
             "displayName": "DataHub",
             "userId": "10129",
             "userName": "datahub",
+            "account_type": "rodsgroup",
         }
-        return Group.create_from_rule_result(group)
+        return UserOrGroup.create_from_rule_result(group)
 
 
 CONTRIBUTING_PROJECT = """

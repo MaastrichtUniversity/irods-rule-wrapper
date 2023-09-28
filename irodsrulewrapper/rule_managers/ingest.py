@@ -3,7 +3,7 @@ from dhpythonirodsutils import validators, formatters, exceptions
 
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.dto.collection_stats import CollectionStats
-from irodsrulewrapper.dto.drop_zones import DropZones, DropZone
+from irodsrulewrapper.dto.drop_zones import DropZone
 from irodsrulewrapper.dto.metadata_json import MetadataJSON
 from irodsrulewrapper.dto.metadata_pid import MetadataPID
 from irodsrulewrapper.dto.token import Token
@@ -12,7 +12,7 @@ from irodsrulewrapper.utils import (
     BaseRuleManager,
     RuleInfo,
     RuleInputValidationError,
-    log_warning_message, format_rule_argument,
+    format_rule_argument,
 )
 
 

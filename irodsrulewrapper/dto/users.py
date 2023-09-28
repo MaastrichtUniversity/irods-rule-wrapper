@@ -27,6 +27,7 @@ class Users(BaseModel):
             mock_json = MOCK_JSON
         return cls.create_from_rule_result(json.loads(mock_json))
 
+
 MOCK_JSON = """
 [
     {

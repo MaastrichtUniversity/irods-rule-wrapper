@@ -10,7 +10,7 @@ class Collection:
         self,
         collection_id: str,
         creator: str,
-        size: float,
+        size: int,
         title: str,
         pid: str,
         num_files: int,
@@ -22,7 +22,7 @@ class Collection:
 
         self.id: str = collection_id
         self.creator: str = creator
-        self.size: float = size
+        self.size: int = size
         self.title: str = title
         self.pid: str = pid
         self.num_files: int = num_files

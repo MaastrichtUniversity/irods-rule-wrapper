@@ -253,8 +253,6 @@ class ProjectRuleManager(BaseRuleManager):
                     Date
                 storageQuotaGb  : str
                     The storage quota in Gb
-                enableOpenAccessExport : str
-                    'true'/'false' expected values
                 enableArchive : str
                     'true'/'false' expected values
                 enableUnarchive : str
@@ -312,14 +310,6 @@ class ProjectRuleManager(BaseRuleManager):
                 raise RuleInputValidationError(
                     f"invalid type for *{ProjectAVUs.STORAGE_QUOTA_GB.value}: expected an integer"
                 )
-
-        if ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value in extra_parameters:
-            try:
-                validators.validate_string_boolean(extra_parameters[ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value])
-            except exceptions.ValidationError as err:
-                raise RuleInputValidationError(
-                    f"invalid value for *{ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value}: expected 'true' or 'false'"
-                ) from err
 
         if ProjectAVUs.ENABLE_ARCHIVE.value in extra_parameters:
             try:

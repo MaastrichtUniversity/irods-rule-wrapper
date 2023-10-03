@@ -43,10 +43,6 @@ def test_rule_get_collection_attribute_value():
     assert avu is not None
 
 
-# def export_project_collection(self, project, collection, repository, message)
-
-# def prepare_export(self, project, collection, repository):
-
 # def set_collection_size(self, project_id, collection_id, open_collection, close_collection)
 
 
@@ -96,18 +92,6 @@ def test_rule_get_collection_size_per_resource():
 #
 #
 # @pytest.mark.skip()
-# def test_rule_export():
-#     result = False
-#     try:
-#         # RuleManager(admin_mode=True).export_project_collection("P000000016", "C000000001", "DataverseNL", {})
-#         RuleManager("dlinssen").export_project_collection("P000000016", "C000000001", "DataverseNL", {})
-#     except CAT_NO_ACCESS_PERMISSION:
-#         result = True
-#
-#     assert result is True
-#
-#
-# @pytest.mark.skip()
 # def test_rule_archive():
 #     result = False
 #     try:
@@ -118,65 +102,3 @@ def test_rule_get_collection_size_per_resource():
 #
 #     assert result is True
 #
-#
-# @pytest.mark.skip(reason="needs local setup first.")
-# def test_publish_message():
-#     message = {
-#         "project": "P000000015",
-#         "collection": "C000000002",
-#         "repository": "Dataverse",
-#         "dataverse_alias": "DataHub",
-#         "restrict": False,
-#         "restrict_list": "P000000015/C000000002/specialchars_~!@#$%^&()-+=[]{};',.txt,\tP000000015/C000000002/test.log",
-#         "data_export": False,
-#         "delete": False,
-#         "depositor": "jonathan.melius@maastrichtuniversity.nl",
-#     }
-#     json_message = json.dumps(message)
-#     publish_message("datahub.events_tx", "projectCollection.exporter.requested", json_message)
-#     assert True is True
-#
-#
-# @pytest.mark.skip(reason="needs local setup first.")
-# def test_export_project_collection_by_step():
-#     project = "P000000015"
-#     collection = "C000000002"
-#     repository = "Dataverse"
-#
-#     RuleManager(admin_mode=True).prepare_export(project, collection, repository)
-#
-#     message = {
-#         "project": project,
-#         "collection": collection,
-#         "repository": repository,
-#         "dataverse_alias": "DataHub",
-#         "restrict": False,
-#         "restrict_list": "P000000015/C000000002/specialchars_~!@#$%^&()-+=[]{};\"',.txt,\tP000000015/C000000002/test.log",
-#         "data_export": False,
-#         "delete": False,
-#         "depositor": "jonathan.melius@maastrichtuniversity.nl",
-#     }
-#     json_message = json.dumps(message)
-#     publish_message("datahub.events_tx", "projectCollection.exporter.requested", json_message)
-#     assert True is True
-#
-#
-# @pytest.mark.skip(reason="needs local setup first.")
-# def test_rule_export_project_collection():
-#     project = "P000000015"
-#     collection = "C000000002"
-#     repository = "Dataverse"
-#     message = {
-#         "project": project,
-#         "collection": collection,
-#         "repository": repository,
-#         "dataverse_alias": "DataHub",
-#         "restrict": False,
-#         "restrict_list": "P000000015/C000000002/specialchars_~!@#$%^&()-+=[]{};\"',.txt,\tP000000015/C000000002/test.log",
-#         "data_export": False,
-#         "delete": False,
-#         "depositor": "jonathan.melius@maastrichtuniversity.nl",
-#     }
-#     RuleManager(admin_mode=True).export_project_collection(project, collection, repository, message)
-#
-#     assert True is True

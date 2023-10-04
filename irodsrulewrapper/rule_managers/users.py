@@ -241,9 +241,10 @@ class UserRuleManager(BaseRuleManager):
         )
 
     @rule_call
-    def get_user_active_processes(self, query_drop_zones, query_archive, query_unarchive, query_export):
+    def get_user_active_processes(self, query_drop_zones, query_archive, query_unarchive):
         """
         Query all the active process status (ingest, tape archive & DataverseNL export) of the user.
+
         Parameters
         ----------
         query_drop_zones: str
@@ -252,8 +253,7 @@ class UserRuleManager(BaseRuleManager):
             'true'/'false' expected; If true, query the list of active archive
         query_unarchive: str
             'true'/'false' expected; If true, query the list of active un-archive processes
-        query_export: str
-            'true'/'false' expected; If true, query the list of active export (to DataverseNl) processes
+
         Returns
         -------
         ActiveProcesses
@@ -274,10 +274,5 @@ class UserRuleManager(BaseRuleManager):
             validators.validate_string_boolean(query_unarchive)
         except exceptions.ValidationError as err:
             raise RuleInputValidationError("invalid value for *query_unarchive: expected 'true' or 'false'") from err
-
-        try:
-            validators.validate_string_boolean(query_export)
-        except exceptions.ValidationError as err:
-            raise RuleInputValidationError("invalid value for *query_export: expected 'true' or 'false'") from err
 
         return RuleInfo(name="get_user_active_processes", get_result=True, session=self.session, dto=ActiveProcesses)

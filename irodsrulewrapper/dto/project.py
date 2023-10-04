@@ -16,7 +16,6 @@ class Project:
         project_id: str,
         title: str,
         description: str,
-        enable_open_access_export: bool,
         enable_archive: bool,
         enable_unarchive: bool,
         enable_contributor_edit_metadata: bool,
@@ -38,7 +37,6 @@ class Project:
         self.id: str = project_id
         self.title: str = title
         self.description: str = description
-        self.enable_open_access_export: bool = enable_open_access_export
         self.enable_archive: bool = enable_archive
         self.enable_unarchive: bool = enable_unarchive
         self.enable_contributor_edit_metadata: bool = enable_contributor_edit_metadata
@@ -67,7 +65,6 @@ class Project:
             result["project"],
             result[ProjectAVUs.TITLE.value],
             result[ProjectAVUs.DESCRIPTION.value],
-            formatters.format_string_to_boolean(result[ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value]),
             formatters.format_string_to_boolean(result[ProjectAVUs.ENABLE_ARCHIVE.value]),
             formatters.format_string_to_boolean(result[ProjectAVUs.ENABLE_UNARCHIVE.value]),
             formatters.format_string_to_boolean(result[ProjectAVUs.ENABLE_CONTRIBUTOR_EDIT_METADATA.value]),
@@ -99,7 +96,6 @@ class Project:
         "project": "test_project",
         "title": "test_title",
         "description": "test_description",
-        "enableOpenAccessExport": false,
         "enableArchive": true,
         "enableUnarchive": true,
         "enableContributorEditMetadata": true,

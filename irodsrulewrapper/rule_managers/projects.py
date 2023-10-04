@@ -467,8 +467,8 @@ class ProjectRuleManager(BaseRuleManager):
         Parameters
         ----------
         attribute: str
-            The attribute value of a project feature AVU. e.g: 'enableArchive', 'enableUnarchive',
-            'enableOpenAccessExport', 'enableContributorEditMetadata'
+            The attribute value of a project feature AVU.
+            e.g: 'enableArchive', 'enableUnarchive', 'enableContributorEditMetadata'
 
         Returns
         -------

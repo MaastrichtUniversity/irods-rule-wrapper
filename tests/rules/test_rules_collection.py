@@ -27,7 +27,6 @@ def test_rule_get_project_collection_details():
     assert collection.creator == "irods_bootstrap@docker.dev"
     assert collection.title == "(HVC) Placeholder collection"
     assert collection.enable_archive is False
-    assert collection.enable_open_access_export is False
 
 
 def test_rule_archive_project_collection():

@@ -34,7 +34,6 @@ def test_dto_project():
     assert project_details.viewer_users.users[0].display_name == "test_viewer"
     assert project_details.title == "test_title"
     assert project_details.description == "test_description"
-    assert project_details.enable_open_access_export is False
     assert project_details.enable_archive is False
     assert project_details.has_financial_view_access is True
     assert project_details.size == 99
@@ -373,7 +372,6 @@ PROJECTS_OVERVIEW = """
         "enableArchive": "true",
         "enableContributorEditMetadata": "false",
         "enableDropzoneSharing": "true",
-        "enableOpenAccessExport": "false",
         "enableUnarchive": "true",
         "ingestResource": "ires-hnas-umResource",
         "managers": [
@@ -400,7 +398,6 @@ PROJECTS_OVERVIEW = """
         "enableArchive": "true",
         "enableContributorEditMetadata": "false",
         "enableDropzoneSharing": "true",
-        "enableOpenAccessExport": "false",
         "enableUnarchive": "true",
         "ingestResource": "ires-hnas-umResource",
         "managers": [
@@ -429,7 +426,6 @@ PROJECTS_OVERVIEW = """
         "description": "foobar",
         "enableContributorEditMetadata": "false",
         "enableDropzoneSharing": "true",
-        "enableOpenAccessExport": "true",
         "enableUnarchive": "true",
         "exporterState": "DataverseNL:in-queue-for-export",
         "ingestResource": "ires-hnas-umResource",
@@ -458,7 +454,6 @@ PROJECTS_OVERVIEW = """
         "enableArchive": "true",
         "enableContributorEditMetadata": "false",
         "enableDropzoneSharing": "true",
-        "enableOpenAccessExport": "true",
         "enableUnarchive": "true",
         "ingestResource": "ires-hnas-umResource",
         "managers": [

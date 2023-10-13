@@ -427,7 +427,6 @@ PROJECTS_OVERVIEW = """
         "enableContributorEditMetadata": "false",
         "enableDropzoneSharing": "true",
         "enableUnarchive": "true",
-        "exporterState": "DataverseNL:in-queue-for-export",
         "ingestResource": "ires-hnas-umResource",
         "managers": [
             "10060",

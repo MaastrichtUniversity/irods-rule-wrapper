@@ -243,7 +243,7 @@ class UserRuleManager(BaseRuleManager):
     @rule_call
     def get_user_active_processes(self, query_drop_zones, query_archive, query_unarchive):
         """
-        Query all the active process status (ingest, tape archive & DataverseNL export) of the user.
+        Query all the active process status (ingest and  tape archive) of the user.
 
         Parameters
         ----------

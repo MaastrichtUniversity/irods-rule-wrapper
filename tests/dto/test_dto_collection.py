@@ -214,7 +214,6 @@ COLLECTION_DETAILS = """
     "creator": "jonathan.melius@maastrichtuniversity.nl",
     "enableArchive": "true",
     "enableUnarchive": "true",
-    "exporterState": "no-state-set",
     "externals": "no-externalPID-set",
     "managers": {
         "groupObjects": [],

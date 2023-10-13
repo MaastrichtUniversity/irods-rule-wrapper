@@ -88,8 +88,7 @@ def test_dto_active_processes():
     assert active_processes.in_progress[1].collection_title == "Dataset1"
     assert active_processes.in_progress[1].process_type == "archive"
 
-    assert active_processes.in_progress[2].process_type == "export"
-    assert active_processes.in_progress[3].process_type == "unarchive"
+    assert active_processes.in_progress[2].process_type == "unarchive"
 
     assert active_processes.open[0].creator == "test_manager"
     assert active_processes.open[0].project == "P000000014"
@@ -257,16 +256,6 @@ ACTIVE_PROCESSES = """
             "project_title": "(S3-GL) Test project #02",
             "repository": "SURFSara Tape",
             "state": "complete1"
-        },
-        {
-            "collection_id": "C000000001",
-            "collection_title": "Dataset1",
-            "process_id": "11307",
-            "process_type": "export",
-            "project_id": "P000000009",
-            "project_title": "(S3-GL) Test project #02",
-            "repository": "dataverse",
-            "state": "in-queue1"
         },
         {
             "collection_id": "C000000001",

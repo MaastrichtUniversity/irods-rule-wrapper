@@ -18,7 +18,6 @@ import logging
 import os
 import ssl
 
-import pika
 import pytz
 from dhpythonirodsutils import loggers
 from irods.session import iRODSSession
@@ -134,24 +133,6 @@ class RuleInfo:
         self.input_params = input_params
         self.rule_body = rule_body
         self.parse_to_dto = parse_to_dto
-
-
-def publish_message(exchange, routing_key, message):
-    credentials = pika.PlainCredentials(os.environ["RABBITMQ_USER"], os.environ["RABBITMQ_PASS"])
-    parameters = pika.ConnectionParameters(
-        host=os.environ["RABBITMQ_HOST"],
-        port=5672,
-        virtual_host="/",
-        credentials=credentials,
-        heartbeat=600,
-        blocked_connection_timeout=300,
-    )
-    connection = pika.BlockingConnection(parameters)
-    channel = connection.channel()
-
-    channel.basic_publish(exchange=exchange, routing_key=routing_key, body=message)
-
-    connection.close()
 
 
 def log_error_message(user, message):

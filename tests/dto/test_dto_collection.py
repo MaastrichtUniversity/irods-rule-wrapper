@@ -213,9 +213,7 @@ COLLECTION_DETAILS = """
     },
     "creator": "jonathan.melius@maastrichtuniversity.nl",
     "enableArchive": "true",
-    "enableOpenAccessExport": "true",
     "enableUnarchive": "true",
-    "exporterState": "no-state-set",
     "externals": "no-externalPID-set",
     "managers": {
         "groupObjects": [],

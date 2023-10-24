@@ -7,7 +7,7 @@ from dhpythonirodsutils.enums import ProcessType, ProcessState
 
 class ActiveProcesses(BaseModel):
     """
-    This class represents a list of iRODS active data transfer processes (ingest, tape archive & DataverseNL export).
+    This class represents a list of iRODS active data transfer processes (ingest and tape archive).
     """
 
     completed: list[DropZone | ActiveProcess]

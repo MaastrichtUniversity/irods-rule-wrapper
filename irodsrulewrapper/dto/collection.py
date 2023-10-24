@@ -17,7 +17,6 @@ class Collection:
         num_user_files: int,
         enable_archive: bool,
         enable_unarchive: bool,
-        enable_open_access_export: bool,
     ):
 
         self.id: str = collection_id
@@ -29,7 +28,6 @@ class Collection:
         self.num_user_files: int = num_user_files
         self.enable_archive: bool = enable_archive
         self.enable_unarchive: bool = enable_unarchive
-        self.enable_open_access_export: bool = enable_open_access_export
 
     @classmethod
     def create_from_rule_result(cls, result: dict) -> "Collection":
@@ -65,16 +63,6 @@ class Collection:
         ):
             enable_unarchive = False
 
-        enable_open_access_export = None
-        if ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value in result and formatters.format_string_to_boolean(
-            result[ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value]
-        ):
-            enable_open_access_export = True
-        elif ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value in result and not formatters.format_string_to_boolean(
-            result[ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value]
-        ):
-            enable_open_access_export = False
-
         collection = cls(
             collection_id,
             result["creator"],
@@ -85,6 +73,5 @@ class Collection:
             result["numUserFiles"],
             enable_archive,
             enable_unarchive,
-            enable_open_access_export,
         )
         return collection

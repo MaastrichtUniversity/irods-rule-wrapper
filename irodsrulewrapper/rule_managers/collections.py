@@ -11,7 +11,7 @@ from irodsrulewrapper.dto.collection_details import CollectionDetails
 from irodsrulewrapper.dto.collections import Collection
 from irodsrulewrapper.dto.collections import Collections
 from irodsrulewrapper.dto.metadata_json import MetadataJSON
-from irodsrulewrapper.utils import publish_message, BaseRuleManager, RuleInfo, RuleInputValidationError
+from irodsrulewrapper.utils import BaseRuleManager, RuleInfo, RuleInputValidationError
 
 
 class CollectionRuleManager(BaseRuleManager):
@@ -227,49 +227,6 @@ class CollectionRuleManager(BaseRuleManager):
         return RuleInfo(
             name="get_collection_attribute_value", get_result=True, session=self.session, dto=AttributeValue
         )
-
-    def export_project_collection(self, project, collection, repository, message):
-        """
-        Starts the exporting process of a collection. Be sure to call this rule
-        as 'rodsadmin' because it will open a collection using admin-mode.
-
-        Parameters
-        ----------
-        project: str
-            The project ID e.g. P000000010
-        collection: str
-            The collection ID e.g. C000000001
-        repository: str
-            The repository to copy to e.g. Dataverse
-        message: dict
-            The json input to execute the export
-
-        Returns
-        -------
-        AttributeValue
-            dto.AttributeValue object
-        """
-        try:
-            validators.validate_project_id(project)
-            validators.validate_collection_id(collection)
-        except exceptions.ValidationError as err:
-            raise RuleInputValidationError("invalid project or collection id; eg. P000000001") from err
-
-        # This rule can only be executed by 'rodsadmin', so validating on that here
-        if self.session.username != "rods":
-            raise RuleInputValidationError("this function has to be run as 'rods'")
-
-        self.prepare_export(project, collection, repository)
-        publish_message("datahub.events_tx", "projectCollection.exporter.requested", json.dumps(message))
-
-    @rule_call
-    def prepare_export(self, project, collection, repository):
-        """
-        Calls the rule to prepare the project collection for the export:
-        * Open the project collection for modification
-        * Add the 'in-queue-for-export' AVU
-        """
-        return RuleInfo(name="prepareExportProjectCollection", get_result=False, session=self.session, dto=None)
 
     def read_schema_from_collection(self, project_id: str, collection_id: str) -> dict:
         """

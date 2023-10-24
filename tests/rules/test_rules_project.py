@@ -78,7 +78,6 @@ def test_rule_get_project_details():
     assert project_details.contributor_users.users[0].display_name == "service-mdl"
     # assert project_details.viewer_groups.groups[0].display_name == 'DataHub'
     assert project_details.title == "(HVC) Placeholder project"
-    assert project_details.enable_open_access_export is False
     assert project_details.enable_archive is False
     assert project_details.has_financial_view_access is False
     assert project_details.size == 0

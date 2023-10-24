@@ -18,7 +18,6 @@ class CollectionDetails:
         num_files: str,
         enable_archive: bool,
         enable_unarchive: bool,
-        enable_open_access_export: bool,
         external_pid_list: list,
     ):
 
@@ -30,7 +29,6 @@ class CollectionDetails:
         self.num_files: str = num_files
         self.enable_archive: bool = enable_archive
         self.enable_unarchive: bool = enable_unarchive
-        self.enable_open_access_export: bool = enable_open_access_export
         self.external_pid_list: list = external_pid_list
 
     @classmethod
@@ -60,16 +58,6 @@ class CollectionDetails:
         ):
             enable_unarchive = False
 
-        enable_open_access_export = None
-        if ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value in result and formatters.format_string_to_boolean(
-            result[ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value]
-        ):
-            enable_open_access_export = True
-        elif ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value in result and not formatters.format_string_to_boolean(
-            result[ProjectAVUs.ENABLE_OPEN_ACCESS_EXPORT.value]
-        ):
-            enable_open_access_export = False
-
         collection = cls(
             result["collection"],
             result["creator"],
@@ -79,7 +67,6 @@ class CollectionDetails:
             result["numFiles"],
             enable_archive,
             enable_unarchive,
-            enable_open_access_export,
             external_pid_list,
         )
         return collection

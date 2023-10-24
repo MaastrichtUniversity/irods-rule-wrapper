@@ -1,14 +1,13 @@
 """This module contains the UserRuleManager class."""
 from dhpythonirodsutils import validators, exceptions
-from irodsrulewrapper.cache import CacheTTL
+
 from irodsrulewrapper.decorator import rule_call
 from irodsrulewrapper.dto.active_processes import ActiveProcesses
 from irodsrulewrapper.dto.attribute_value import AttributeValue
 from irodsrulewrapper.dto.boolean import Boolean
 from irodsrulewrapper.dto.data_stewards import DataStewards
-from irodsrulewrapper.dto.group import Group
 from irodsrulewrapper.dto.user_or_group import UserOrGroup
-from irodsrulewrapper.dto.users import Users, User
+from irodsrulewrapper.dto.users import Users
 from irodsrulewrapper.dto.users_groups_expanded import UsersGroupsExpanded
 from irodsrulewrapper.utils import BaseRuleManager, RuleInfo, RuleInputValidationError
 
@@ -111,31 +110,6 @@ class UserRuleManager(BaseRuleManager):
 
         return RuleInfo(name="set_user_attribute_value", get_result=False, session=self.session, dto=None)
 
-    def get_user_or_group(self, uid: str):
-        """
-        Retrieve a user or group DTO based on the input uid.
-        First check if the uid is present the cached dict. Otherwise, query the uid.
-
-        Parameters
-        ----------
-        uid: str
-            The uid to query and retrieve from the cache
-
-        Returns
-        -------
-        User|Group
-            The DTO of the input uid
-        """
-        if uid not in CacheTTL.CACHE_USERS_GROUPS:
-            # TODO Find an another way, as performing, to skip rodsadmin & service-accounts than hard-coded values
-            item = self.get_user_or_group_by_id(uid)
-            if item.result["account_type"] == "rodsuser":
-                CacheTTL.CACHE_USERS_GROUPS[uid] = User.create_from_rule_result(item.result)
-            elif item.result["account_type"] == "rodsgroup":
-                CacheTTL.CACHE_USERS_GROUPS[uid] = Group.create_from_rule_result(item.result)
-
-        return CacheTTL.CACHE_USERS_GROUPS[uid]
-
     @rule_call
     def get_user_or_group_by_id(self, uid):
         """
@@ -144,7 +118,7 @@ class UserRuleManager(BaseRuleManager):
         Parameters
         ----------
         uid : str
-            The account's id; eg.g '10132'
+            The account's id; e.g: '10132'
 
         Returns
         -------

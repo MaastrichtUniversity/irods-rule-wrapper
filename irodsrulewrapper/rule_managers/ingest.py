@@ -178,16 +178,13 @@ class IngestRuleManager(BaseRuleManager):
         metadata_json = MetadataJSON(self.session)
         instance_irods_path = formatters.format_instance_dropzone_path(token, dropzone_type)
 
-        prefix = ""
-        # If the user calling this rule is 'rods' we need to escalate
-        if self.session.username == "rods":
-            prefix = "admin:"
-
+        prefix = "admin:"
+        
         if dropzone_type == "direct":
-            self.set_acl("default", f"{prefix}write", self.session.username, instance_irods_path)
+            self.set_acl("default", f"{prefix}modify_object", self.session.username, instance_irods_path)
         metadata_json.write_instance(instance, instance_irods_path)
         if dropzone_type == "direct":
-            self.set_acl("default", f"{prefix}read", self.session.username, instance_irods_path)
+            self.set_acl("default", f"{prefix}null", self.session.username, instance_irods_path)
 
     def read_schema_from_dropzone(self, token, dropzone_type) -> dict:
         """

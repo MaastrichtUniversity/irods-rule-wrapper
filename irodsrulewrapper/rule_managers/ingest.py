@@ -95,12 +95,14 @@ class IngestRuleManager(BaseRuleManager):
         """
         if dropzone_type == "direct":
             # CAUTION: This is an admin level rule call
-            admin_rule_manager = ProjectRuleManager(admin_mode=True)
-            admin_rule_manager.set_acl(
+            self.set_acl(
                 "default", "admin:own", user, formatters.format_instance_dropzone_path(token, dropzone_type)
             )
-            admin_rule_manager.set_acl(
+            self.set_acl(
                 "default", "admin:own", user, formatters.format_schema_dropzone_path(token, dropzone_type)
+            )
+            self.set_acl(
+                "recursive", "admin:own", 'rods', formatters.format_dropzone_path(token, dropzone_type)
             )
 
         self.start_ingest(user, token, dropzone_type)

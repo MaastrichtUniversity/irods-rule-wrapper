@@ -68,7 +68,7 @@ class CollectionRuleManager(BaseRuleManager):
         except exceptions.ValidationError as err:
             raise RuleInputValidationError("invalid project or collection id; eg. P000000001") from err
 
-        return RuleInfo(name="closeProjectCollection", get_result=False, session=self.session, dto=None)
+        return RuleInfo(name="close_project_collection", get_result=False, session=self.session, dto=None)
 
     @rule_call
     def set_collection_avu(self, collection_path, attribute, value):

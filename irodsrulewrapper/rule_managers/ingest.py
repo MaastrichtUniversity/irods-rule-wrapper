@@ -95,12 +95,14 @@ class IngestRuleManager(BaseRuleManager):
         """
         if dropzone_type == "direct":
             # CAUTION: This is an admin level rule call
-            admin_rule_manager = ProjectRuleManager(admin_mode=True)
-            admin_rule_manager.set_acl(
+            self.set_acl(
                 "default", "admin:own", user, formatters.format_instance_dropzone_path(token, dropzone_type)
             )
-            admin_rule_manager.set_acl(
+            self.set_acl(
                 "default", "admin:own", user, formatters.format_schema_dropzone_path(token, dropzone_type)
+            )
+            self.set_acl(
+                "recursive", "admin:own", 'rods', formatters.format_dropzone_path(token, dropzone_type)
             )
 
         self.start_ingest(user, token, dropzone_type)
@@ -178,16 +180,13 @@ class IngestRuleManager(BaseRuleManager):
         metadata_json = MetadataJSON(self.session)
         instance_irods_path = formatters.format_instance_dropzone_path(token, dropzone_type)
 
-        prefix = ""
-        # If the user calling this rule is 'rods' we need to escalate
-        if self.session.username == "rods":
-            prefix = "admin:"
-
+        prefix = "admin:"
+        
         if dropzone_type == "direct":
-            self.set_acl("default", f"{prefix}write", self.session.username, instance_irods_path)
+            self.set_acl("default", f"{prefix}modify_object", self.session.username, instance_irods_path)
         metadata_json.write_instance(instance, instance_irods_path)
         if dropzone_type == "direct":
-            self.set_acl("default", f"{prefix}read", self.session.username, instance_irods_path)
+            self.set_acl("default", f"{prefix}null", self.session.username, instance_irods_path)
 
     def read_schema_from_dropzone(self, token, dropzone_type) -> dict:
         """

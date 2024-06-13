@@ -164,7 +164,7 @@ class ProjectRuleManager(BaseRuleManager):
         mode : str
             'default', 'recursive' excepted values
         access_level : str
-            access level: 'own', 'write', 'read'
+            access level: 'own', 'modify_object', 'read_object'
         user : str
             The username
         path : str
@@ -172,8 +172,8 @@ class ProjectRuleManager(BaseRuleManager):
         """
         if mode not in ["default", "recursive"]:
             raise RuleInputValidationError("invalid value for *mode: expected 'default' or 'recursive'")
-        if access_level not in ["own", "write", "read", "null", "admin:own", "admin:write", "admin:read", "admin:null"]:
-            raise RuleInputValidationError("invalid value for *access_level: expected 'read', 'write', 'own, 'null'")
+        if access_level not in ["own", "modify_object", "read_object", "null", "admin:own", "admin:modify_object", "admin:read_object", "admin:null"]:
+            raise RuleInputValidationError("invalid value for *access_level: expected 'read_object', 'modify_object', 'own, 'null'")
         if not isinstance(user, str):
             raise RuleInputValidationError("invalid type for *user: expected a string")
         if not isinstance(path, str):

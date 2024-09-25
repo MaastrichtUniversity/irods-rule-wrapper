@@ -176,7 +176,7 @@ class CollectionRuleManager(BaseRuleManager):
         if not isinstance(initiator, str):
             raise RuleInputValidationError("invalid type for *initiator: expected a string")
 
-        return RuleInfo(name="prepareTapeArchive", get_result=False, session=self.session, dto=None)
+        return RuleInfo(name="start_archive", get_result=False, session=self.session, dto=None)
 
     @rule_call
     def unarchive_project_collection(self, path: str, initiator: str):
@@ -197,7 +197,7 @@ class CollectionRuleManager(BaseRuleManager):
         if not isinstance(initiator, str):
             raise RuleInputValidationError("invalid type for *initiator: expected a string")
 
-        return RuleInfo(name="prepareTapeUnArchive", get_result=False, session=self.session, dto=None)
+        return RuleInfo(name="start_unarchive", get_result=False, session=self.session, dto=None)
 
     @rule_call
     def get_collection_attribute_value(self, path, attribute):

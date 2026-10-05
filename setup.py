@@ -18,13 +18,13 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.6",
+    python_requires=">=3.10",
     install_requires=[
         "python-irodsclient>=3.2.0,<4.0.0",
         "cedar-parsing-utils @ git+https://github.com/MaastrichtUniversity/cedar-parsing-utils.git@v1.0.0#egg=cedar-parsing-utils",
         "dh-python-irods-utils @ git+https://github.com/MaastrichtUniversity/dh-python-irods-utils.git@v1.2.4#egg=dh-python-irods-utils",
-        "pytz>=2021.3",
-        "pydantic>=1.9.1,<2.0.0",
+        "pytz>=2026.5",
+        "pydantic>=2.13.5,<3.0.0",
     ],
     tests_requires=["pytest"],
 )

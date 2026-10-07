@@ -24,7 +24,8 @@ This repository contains the python package with the irods rule logic
 ```
 
 ### Installing
-Required Python 3.6+ to install with pip from the github repository
+Required Python 3.10+ to install with pip from the github repository. DTOs use Pydantic 2; use
+`model_dump()` and `model_dump_json()` to serialize them.
 ```
 # From the default branch
 pip3 install git+https://github.com/MaastrichtUniversity/irods-rule-wrapper.git

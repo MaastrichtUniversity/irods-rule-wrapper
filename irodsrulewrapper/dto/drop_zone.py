@@ -1,7 +1,7 @@
 """This module contains the DropZone class and its factory constructor."""
 from dhpythonirodsutils import formatters
 from dhpythonirodsutils.enums import ProjectAVUs
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class DropZone(BaseModel):
@@ -16,7 +16,7 @@ class DropZone(BaseModel):
     validate_msg: str
     validate_state: str
     resource_status: str
-    total_size: str
+    total_size: str = Field(coerce_numbers_to_str=True)
     destination: str
     type: str
     creator: str
@@ -46,9 +46,12 @@ class DropZone(BaseModel):
             creator=result["creator"],
             process_type=result["process_type"],
             percentage_ingested=float(result["percentage_ingested"]),
-            shared_with_me=formatters.format_string_to_boolean(result["sharedWithMe"]),
-            dropzone_sharing_enabled=formatters.format_string_to_boolean(
-                result[ProjectAVUs.ENABLE_DROPZONE_SHARING.value]
+            shared_with_me=(
+                result["sharedWithMe"] is True or formatters.format_string_to_boolean(result["sharedWithMe"])
+            ),
+            dropzone_sharing_enabled=(
+                result[ProjectAVUs.ENABLE_DROPZONE_SHARING.value] is True
+                or formatters.format_string_to_boolean(result[ProjectAVUs.ENABLE_DROPZONE_SHARING.value])
             ),
         )
 

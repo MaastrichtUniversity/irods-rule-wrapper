@@ -78,8 +78,26 @@ def test_dto_active_process():
     assert active_process.collection_title == "Title"
 
 
+def test_dto_active_processes_live_dropzone_types():
+    result = json.loads(ACTIVE_PROCESSES)
+    dropzone = result["open"][0]
+    dropzone["totalSize"] = 0
+    dropzone["sharedWithMe"] = True
+    dropzone["enableDropzoneSharing"] = True
+
+    active_processes = ActiveProcesses.create_from_rule_result(result)
+
+    assert active_processes.open[0].total_size == "0"
+    assert active_processes.open[0].shared_with_me is True
+    assert active_processes.open[0].dropzone_sharing_enabled is True
+
+
 def test_dto_active_processes():
     active_processes = ActiveProcesses.create_from_rule_result(json.loads(ACTIVE_PROCESSES))
+    restored = ActiveProcesses.model_validate_json(active_processes.model_dump_json())
+    assert restored.model_dump() == active_processes.model_dump()
+    assert type(restored.in_progress[0]) is type(active_processes.in_progress[0])
+    assert type(restored.in_progress[1]) is type(active_processes.in_progress[1])
     assert active_processes.in_progress[0].process_type == "drop_zone"
 
     assert active_processes.in_progress[1].collection_id == "C000000001"

@@ -17,12 +17,36 @@ import datetime
 import logging
 import os
 import ssl
+from contextlib import contextmanager
+from contextvars import ContextVar
 
 import pytz
 from dhpythonirodsutils import loggers
 from irods.session import iRODSSession
 
 logger = logging.getLogger(__name__)
+_session_scope = ContextVar("irods_session_scope", default=None)
+
+
+@contextmanager
+def irods_session_scope():
+    """Reuse sessions within this context, and close them all on exit.
+
+    Managers borrow the scoped sessions: their cleanup calls and finalizers
+    defer closing connections until scope exit. Outside a scope they retain
+    their normal ownership. Nested scopes own independent sets of sessions.
+    """
+    sessions = {}
+    token = _session_scope.set(sessions)
+    try:
+        yield
+    finally:
+        _session_scope.reset(token)
+        for session in sessions.values():
+            try:
+                session.cleanup()
+            except Exception:  # Clean up the other sessions and preserve request errors.
+                logger.exception("Failed to clean up a scoped iRODS session")
 
 
 def convert_to_current_timezone(date, date_format="%Y-%m-%d %H:%M:%S"):
@@ -73,6 +97,7 @@ class BaseRuleManager:
 
     def __init__(self, client_user=None, config=None, admin_mode=False):
         self.session = None
+        self._owns_session = True
         self.parse_to_dto = True
         if not client_user and not admin_mode:
             raise Exception("No user to initialize RuleManager provided")
@@ -80,12 +105,13 @@ class BaseRuleManager:
         self.init_irods_session(client_user, admin_mode, with_config=config)
 
     def __del__(self):
-        # __del__() is a finalizer that is called when the object is garbage
-        # collected. And this happens *after* all the references to the object
-        # have been deleted. This is what CPython does, however it is not
-        # guaranteed behavior by Python. Ideally we do the cleanup() after using
-        # this object to execute a rule/s. Perhaps with a try/finally.
-        if self.session:
+        # Standalone managers retain finalizer cleanup; scoped sessions live
+        # until scope exit, regardless of when their managers are collected.
+        self.cleanup()
+
+    def cleanup(self):
+        """Close an owned session; borrowed sessions are closed by their scope."""
+        if self.session and self._owns_session:
             self.session.cleanup()
 
     def init_irods_session(self, client_user, admin_mode, with_config=None):
@@ -100,9 +126,17 @@ class BaseRuleManager:
         }
 
         if not admin_mode:
-            irods_session_settings["client_user"] = client_user
+            irods_session_settings["client_user"] = str(getattr(client_user, "username", client_user))
 
-        self.session = iRODSSession(**irods_session_settings)
+        sessions = _session_scope.get()
+        self._owns_session = sessions is None
+        if self._owns_session:
+            self.session = iRODSSession(**irods_session_settings)
+        else:
+            key = (bool(admin_mode), tuple(sorted(irods_session_settings.items())))
+            if key not in sessions:
+                sessions[key] = iRODSSession(**irods_session_settings)
+            self.session = sessions[key]
 
 
 class RuleInputValidationError(Exception):

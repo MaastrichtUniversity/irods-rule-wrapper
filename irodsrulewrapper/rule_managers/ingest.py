@@ -188,6 +188,18 @@ class IngestRuleManager(BaseRuleManager):
         if dropzone_type == "direct":
             self.set_acl("default", f"{prefix}null", self.session.username, instance_irods_path)
 
+    @rule_call
+    def read_metadata_from_dropzone(self, token, dropzone_type):
+        """Read the instance and schema together for a dropzone form."""
+        try:
+            validators.validate_dropzone_token(token)
+            validators.validate_dropzone_type(dropzone_type)
+        except exceptions.ValidationError as err:
+            raise RuleInputValidationError("invalid dropzone token or type") from err
+        return RuleInfo(
+            name="read_dropzone_metadata", get_result=True, session=self.session, dto=None, parse_to_dto=False
+        )
+
     def read_schema_from_dropzone(self, token, dropzone_type) -> dict:
         """
         Save the schema.json to the indicated iRODS path.

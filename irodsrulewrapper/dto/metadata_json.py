@@ -65,8 +65,11 @@ class MetadataJSON:
             The json schema
         """
         try:
+            # The session getter releases its connection; the client's cold
+            # data-object manager version lookup can leave one checked out.
+            _ = self.session.server_version
             with self.session.data_objects.open(irods_file_path, "r") as irods_file:
-                json_string = irods_file.read()
+                json_string = b"".join(iter(lambda: irods_file.read1(1024 * 1024), b""))
         except (exception.DataObjectDoesNotExist, exception.SYS_FILE_DESC_OUT_OF_RANGE):
             log_error_message(self.session.username, f"{irods_file_path} is missing")
         else:

@@ -59,7 +59,7 @@ def convert_uids_to_users_or_groups(result):
         elif isinstance(viewer, Group):
             output.viewer_groups.append(viewer)
 
-    rule_manager.session.cleanup()
+    rule_manager.cleanup()
 
     return output
 

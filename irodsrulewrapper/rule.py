@@ -50,10 +50,6 @@ class RuleManager(
         else:
             raise ValueError
 
-    def cleanup(self):
-        if self.session:
-            self.session.cleanup()
-
     def check_irods_connection(self):
         """
         Check if an iRODS connection can be established
@@ -88,7 +84,7 @@ class RuleManager(
         """
         pwd = self.session.users.temp_password_for_user(username)
         if sessions_cleanup:
-            self.session.cleanup()
+            self.cleanup()
         return pwd
 
     def generate_temporary_password(self, irods_user_name: str, irods_id: int) -> TemporaryPasswordTTL:

@@ -26,25 +26,34 @@ from irods.session import iRODSSession
 
 logger = logging.getLogger(__name__)
 _session_scope = ContextVar("irods_session_scope", default=None)
+_scope_pool = ContextVar("irods_session_scope_pool", default=None)
 
 
 @contextmanager
-def irods_session_scope():
-    """Reuse sessions within this context, and close them all on exit.
+def irods_session_scope(pool=None):
+    """Reuse sessions within this context; optionally borrow from a pool.
 
     Managers borrow the scoped sessions: their cleanup calls and finalizers
-    defer closing connections until scope exit. Outside a scope they retain
-    their normal ownership. Nested scopes own independent sets of sessions.
+    defer cleanup until scope exit. Without a pool, sessions close on exit.
+    Outside a scope managers retain their normal ownership. Nested scopes
+    own independent sets of sessions.
     """
     sessions = {}
     token = _session_scope.set(sessions)
+    pool_token = _scope_pool.set(pool)
+    failed = True
     try:
         yield
+        failed = False
     finally:
         _session_scope.reset(token)
+        _scope_pool.reset(pool_token)
         for session in sessions.values():
             try:
-                session.cleanup()
+                if pool is None:
+                    session.cleanup()
+                else:
+                    pool.release(session, discard=failed)
             except Exception:  # Clean up the other sessions and preserve request errors.
                 logger.exception("Failed to clean up a scoped iRODS session")
 
@@ -135,7 +144,11 @@ class BaseRuleManager:
         else:
             key = (bool(admin_mode), tuple(sorted(irods_session_settings.items())))
             if key not in sessions:
-                sessions[key] = iRODSSession(**irods_session_settings)
+                pool = _scope_pool.get()
+                if pool is None:
+                    sessions[key] = iRODSSession(**irods_session_settings)
+                else:
+                    sessions[key] = pool.borrow(key, lambda: iRODSSession(auto_cleanup=False, **irods_session_settings))
             self.session = sessions[key]
 
 

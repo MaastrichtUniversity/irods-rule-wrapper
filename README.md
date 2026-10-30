@@ -45,6 +45,27 @@ pip3 uninstall irods-rule-wrapper
 
 ### How to use it
 
+`irods_session_scope()` shares sessions within one scope and closes them on
+exit. HTTP applications can opt into reuse across requests:
+
+```python
+from irodsrulewrapper.rule import RuleManager
+from irodsrulewrapper.session_pool import get_irods_session_pool
+from irodsrulewrapper.utils import irods_session_scope
+
+with irods_session_scope(pool=get_irods_session_pool()):
+    rule_manager = RuleManager("username")
+    # Use borrowed managers only within this scope.
+```
+
+The worker-local pool retains up to 32 idle sessions, separated by identity and
+connection settings. Idle sessions expire after 60 seconds; expiry is checked
+on borrowing and returning, so inactive workers may retain sockets longer.
+Concurrent scopes borrow separate sessions. Cached connections receive a
+read-only health check before reuse; application writes are never replayed on
+network failure. Call `close_irods_session_pool()` at worker exit (also registered
+with `atexit`). Standalone managers keep their existing ownership behavior.
+
 ```
 from irodsrulewrapper.rule import *
 import json

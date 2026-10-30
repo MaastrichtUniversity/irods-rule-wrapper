@@ -320,7 +320,6 @@ class RuleManager(
 
         return self.session.data_objects.exists(full_path)
 
-    @retry_api_call
     def move_collection(self, source_path, destination_path):
         """
         Move the iRODS collection from the source path to the destination path.
@@ -345,7 +344,6 @@ class RuleManager(
 
         self.session.collections.move(source_path, destination_path)
 
-    @retry_api_call
     def move_data_object(self, source_path, destination_path):
         """
         Move the iRODS data object from the source path to the destination path.
@@ -370,7 +368,6 @@ class RuleManager(
 
         self.session.data_objects.move(source_path, destination_path)
 
-    @retry_api_call
     def remove_collection(self, full_path, force):
         """
         Remove an existing iRODS collection/directory.
@@ -397,7 +394,6 @@ class RuleManager(
 
         self.session.collections.remove(full_path, force=force)
 
-    @retry_api_call
     def remove_data_object(self, full_path, force):
         """
         Remove an existing iRODS data object/file.
@@ -424,7 +420,6 @@ class RuleManager(
 
         self.session.data_objects.unlink(full_path, force=force)
 
-    @retry_api_call
     def create_collection(self, full_path):
         """
         Create a new collection at the inout location.
@@ -454,7 +449,6 @@ class RuleManager(
                     continue
                 raise CollectionDoesNotExist(full_path) from error
 
-    @retry_api_call
     def create_data_object(self, full_path):
         """
         Create a new empty data object at the inout location.
@@ -503,7 +497,6 @@ class RuleManager(
 
         return self.session.data_objects.get(full_path)
 
-    @retry_api_call
     def open_data_object(self, full_path, mode):
         """
         Query the iRODS data object properties.

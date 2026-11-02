@@ -3,6 +3,19 @@ import pytest
 from dhpythonirodsutils import validators
 from dhpythonirodsutils.exceptions import ValidationError
 
+from irodsrulewrapper.utils import convert_to_current_timezone
+
+
+@pytest.mark.parametrize(
+    "date, expected_result",
+    [
+        ("2026-01-15 12:00:00", "2026-01-15 13:00:00"),
+        ("2026-07-15 12:00:00", "2026-07-15 14:00:00"),
+    ],
+)
+def test_convert_to_current_timezone(date, expected_result):
+    assert convert_to_current_timezone(date) == expected_result
+
 
 @pytest.mark.parametrize(
     "path, expected_result",

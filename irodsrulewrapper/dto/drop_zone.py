@@ -1,6 +1,6 @@
 """This module contains the DropZone class and its factory constructor."""
 from dhpythonirodsutils import formatters
-from dhpythonirodsutils.enums import ProjectAVUs
+from dhpythonirodsutils.enums import ProjectAVUs, DropzoneAVUs
 from pydantic import BaseModel, Field
 
 
@@ -40,7 +40,7 @@ class DropZone(BaseModel):
             validate_msg=result["validateMsg"],
             validate_state=result["validateState"],
             resource_status=result["resourceStatus"],
-            total_size=result["totalSize"],
+            total_size=result[DropzoneAVUs.TOTAL_SIZE.value],
             destination=result["destination"],
             type=result["type"],
             creator=result["creator"],

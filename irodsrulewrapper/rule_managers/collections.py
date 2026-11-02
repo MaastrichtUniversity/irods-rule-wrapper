@@ -1,5 +1,6 @@
 """This module contains the CollectionRuleManager class."""
 import json
+import uuid
 
 from cedarparsingutils.dto.general_instance import GeneralInstance
 from dhpythonirodsutils import validators, exceptions, formatters
@@ -430,13 +431,10 @@ class CollectionRuleManager(BaseRuleManager):
 
     def save_metadata_json_to_collection(self, project_id, collection_id, instance, schema_dict):
         """
-        After a user edits the collection metadata, this method takes care of metadata saving workflow:
-            * Check if the AVU latest_version_number exists and is an integer
-            * Overwrite the current instance with the new one
-            * Check if we need to overwrite the schema, if yes do it
-            * Create a snapshot of the new collection metadata
-            * Update collection-AVUs: 'schemaVersion', 'schemaName' & 'title'
-            * Run the rule that recalculates the collection size and number of files
+        Submit edited metadata to the server for version assignment, one write
+        per document, snapshot creation, and collection-AVU/index updates.
+        The current schema is retained unless schema_dict["overwrite"] is true.
+        Requires the save_collection_metadata server rule.
 
         Parameters
         ----------
@@ -461,26 +459,43 @@ class CollectionRuleManager(BaseRuleManager):
             raise RuleInputValidationError("invalid project id; eg. P000000001") from err
 
         collection_path = formatters.format_project_collection_path(project_id, collection_id)
-        schema_irods_path = formatters.format_schema_collection_path(project_id, collection_id)
-        instance_irods_path = formatters.format_instance_collection_path(project_id, collection_id)
-
         latest_version_number = self.get_collection_attribute_value(collection_path, "latest_version_number").value
         if not latest_version_number.isdigit():
             raise RuleInputValidationError(
                 f"The AVU 'latest_version_number' for {collection_path} is incorrect: {latest_version_number}"
             )
 
-        metadata_json = MetadataJSON(self.session)
-        metadata_json.write_instance(instance, instance_irods_path)
+        schema = None
         if schema_dict["overwrite"]:
-            metadata_json.write_schema(schema_dict["schema_path"], schema_irods_path)
+            with open(schema_dict["schema_path"], encoding="utf-8") as schema_file:
+                schema = json.load(schema_file)
 
-        self.set_collection_avu(collection_path, "schemaVersion", schema_dict["schema_version"])
-        self.set_collection_avu(collection_path, "schemaName", schema_dict["schema_file_name"])
-        self.set_collection_avu(collection_path, "title", schema_dict["title"])
-        pid_request_status = self.create_collection_metadata_snapshot(project_id, collection_id)
+        payload = {
+            "instance": instance,
+            "schema": schema,
+            "metadata": {
+                "schemaVersion": schema_dict["schema_version"],
+                "schemaName": schema_dict["schema_file_name"],
+                "title": schema_dict["title"],
+            },
+        }
+        # DHDO-2369: Stage one payload so the server can write final documents
+        # once; native rule parameters cannot carry a complete metadata schema.
+        # The caller's home permits cleanup without project ownership rights.
+        filename = f".metadata-save-{uuid.uuid4().hex}.json"
+        staging_path = f"/{self.session.zone}/home/{self.session.username}/{filename}"
+        try:
+            with self.session.data_objects.open(staging_path, "w") as staging_file:
+                staging_file.write(json.dumps(payload, ensure_ascii=False).encode("utf-8"))
+            return self._save_collection_metadata(project_id, collection_id, filename)
+        finally:
+            # Remove the temporary payload even when the server save fails.
+            if self.session.data_objects.exists(staging_path):
+                self.session.data_objects.unlink(staging_path, force=True)
 
-        return pid_request_status
+    @rule_call
+    def _save_collection_metadata(self, project_id, collection_id, filename):
+        return RuleInfo(name="save_collection_metadata", get_result=True, session=self.session, dto=Boolean)
 
     @rule_call
     def set_acl_for_metadata_snapshot(

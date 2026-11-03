@@ -84,4 +84,4 @@ class GroupRuleManager(BaseRuleManager):
         if not group_id.isdigit():
             raise RuleInputValidationError("invalid value for *group_id: expected an integer as string")
 
-        return RuleInfo(name="getUsersInGroup", get_result=True, session=self.session, dto=Users)
+        return RuleInfo(name="get_users_in_group", get_result=True, session=self.session, dto=Users)

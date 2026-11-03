@@ -41,7 +41,7 @@ class UserRuleManager(BaseRuleManager):
                 "invalid value for *show_service_accounts: expected 'true' or 'false'"
             ) from err
 
-        return RuleInfo(name="getUsers", get_result=True, session=self.session, dto=Users)
+        return RuleInfo(name="get_users", get_result=True, session=self.session, dto=Users)
 
     @rule_call
     def get_data_stewards(self):
@@ -53,7 +53,7 @@ class UserRuleManager(BaseRuleManager):
         DataStewards
             dto.DataStewards object
         """
-        return RuleInfo(name="getDataStewards", get_result=True, session=self.session, dto=DataStewards)
+        return RuleInfo(name="get_data_stewards", get_result=True, session=self.session, dto=DataStewards)
 
     @rule_call
     def get_user_attribute_value(self, username, attribute, fatal):

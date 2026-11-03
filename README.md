@@ -45,6 +45,13 @@ pip3 uninstall irods-rule-wrapper
 
 ### How to use it
 
+Collection metadata saves require the matching `save_collection_metadata` rule
+from irods-ruleset. Deploy that ruleset before updating application workers.
+The server assigns versioned identifiers and writes each document once before
+creating its snapshot; the existing snapshot rule remains available to callers.
+The submitted payload is staged in the caller's iRODS home and removed when the
+save call finishes, including on failure.
+
 `irods_session_scope()` shares sessions within one scope and closes them on
 exit. HTTP applications can opt into reuse across requests:
 
@@ -73,11 +80,11 @@ import json
 
 rule_manager = RuleManager(admin_mode=True)
 
-print("Call iRODS rule getUsers")
+print("Call iRODS rule get_users")
 result = json.loads(rule_manager.get_users("false"))
 print(json.dumps(result, indent=4, sort_keys=True))
 
-print("Call iRODS rule getDataStewards")
+print("Call iRODS rule get_data_stewards")
 result = json.loads(rule_manager.get_data_stewards())
 print(json.dumps(result, indent=4, sort_keys=True))
 
